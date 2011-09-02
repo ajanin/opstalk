@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Frequency Control">
+
+		<ListPreference android:title="Reconnect Frequency"
+			android:key="connList" android:defaultValue="5000" android:entries="@array/connect"
+			android:entryValues="@array/connectV" />
+		<ListPreference android:title="Location Update Frequency"
+			android:key="locList" android:defaultValue="10000" android:entries="@array/locationUpdate"
+			android:entryValues="@array/locationUpdateV" />
+
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Map Options">
+		<CheckBoxPreference android:title="Lock my location"
+			android:defaultValue="false" android:summary="Always center at my Location or not"
+			android:key="lockLocPref" />
+		<CheckBoxPreference android:title="Enable compass"
+			android:defaultValue="true" android:summary="Show compass on the map or not"
+			android:key="showCompassPref" />
+		<CheckBoxPreference android:title="Enable location"
+			android:defaultValue="true" android:summary="Allow location update or not"
+			android:key="showLocationPref" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Items for Debugging ">
+		<ListPreference android:title="Select Name"
+			android:key="idList" android:defaultValue="firetalk.t" android:entries="@array/nameList"
+			android:entryValues="@array/idList" />
+		<EditTextPreference android:name="EditText Preference"
+			android:summary="This allows you to enter a string"
+			android:defaultValue="Nothing" android:title="Edit This Text"
+			android:key="editTextPref" />
+		<!--		<RingtonePreference android:name="Ringtone Preference"-->
+		<!--			android:summary="Select a ringtone" android:title="Ringtones"-->
+		<!--			android:key="ringtonePref" />-->
+		<PreferenceScreen android:key="SecondPrefScreen"
+			android:title="Second PreferenceScreen" android:summary="This is a second PreferenceScreen">
+			<EditTextPreference android:name="An other EditText Preference"
+				android:summary="This is a preference in the second PreferenceScreen"
+				android:title="Edit text" android:key="SecondEditTextPref" />
+		</PreferenceScreen>
+		<!--		<Preference android:title="Custom Preference"-->
+		<!--
+			android:summary="This works almost like a button"
+			android:key="customPref" />
+		-->
+	</PreferenceCategory>
+</PreferenceScreen>

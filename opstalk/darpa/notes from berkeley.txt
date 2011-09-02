@@ -1,0 +1,19 @@
+1. set subjective rally point from android
+
+2. display objective , rally point, message list 
+
+3. add numbers to points
+
+4. make the whole list item green ,not only the icon
+
+5. different shapes for different types of points
+
+6. associate time with points ( deadline: absolute time)
+
+7. show a clock on the screen
+
+8. objective orange , waypoint yellow, rally point blues (blink after reached)
+
+9. IED location, set before leave
+
+10. 10s for high, 30s for low

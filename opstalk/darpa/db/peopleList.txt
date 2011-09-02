@@ -1,0 +1,13 @@
+# rank 0 is the top rank
+# id  rank firstName lastName teamID
+01 1 Mike Smith 1
+02 1 James Hieronymus 1
+03 1 Sharad Mehrotra 1
+04 2 Adam Janin 1
+05 2 Jeffrey Lee 1
+06 3 Mary Clark 1
+07 3 Joe Walker 1
+08 3 John Henderson 1
+09 3 Sarah Mills 1
+10 3 Bruce Watkins 1
+11 3 Alan Heart 1
