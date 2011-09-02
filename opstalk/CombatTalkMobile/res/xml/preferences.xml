@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Frequency Control">
+
+		<ListPreference android:title="Reconnect Frequency"
+			android:key="connList" android:defaultValue="5000" android:entries="@array/connect"
+			android:entryValues="@array/connectV" />
+		<ListPreference android:title="Location Update Frequency"
+			android:key="locList" android:defaultValue="2000" android:entries="@array/locationUpdate"
+			android:entryValues="@array/locationUpdateV" />
+
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Map Options">
+		<CheckBoxPreference android:title="Lock my location"
+			android:defaultValue="false" android:summary="Always center at my Location or not"
+			android:key="lockLocPref" />
+		<CheckBoxPreference android:title="Enable compass"
+			android:defaultValue="true" android:summary="Show compass on the map or not"
+			android:key="showCompassPref" />
+		<CheckBoxPreference android:title="Enable location"
+			android:defaultValue="true" android:summary="Allow location update or not"
+			android:key="showLocationPref" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Miscellaneous">
+		<CheckBoxPreference android:title="Save battery"
+			android:defaultValue="true" android:summary="Save battery or not"
+			android:key="batteryPref" />
+		<ListPreference android:title="Select Name"
+			android:key="idList" />
+
+		<EditTextPreference android:name="EditText Preference"
+			android:summary="This allows you to enter server ip"
+			android:defaultValue="169.234.133.205" android:title="Enter server ip"
+			android:key="ipPref" />
+	</PreferenceCategory>
+</PreferenceScreen>

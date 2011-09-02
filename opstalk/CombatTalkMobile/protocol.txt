@@ -1,0 +1,16 @@
+We have A,B,C,D, 4 devices (including server)
+
+for device A:
+
+a hashMap of transTime
+
+<A, ta> <B, tb> <C, tc> <D, td>
+
+ta transTime is the time up to when the A has receive data from.
+
+The transTime is the time when A send the event to other device. 
+So, When A sends events to other device,it must send by the order of transTime of these events. 
+
+When A connected to B, A send tb to B, so that B will only send to A the
+events whose transTime is later than tb. 
+
