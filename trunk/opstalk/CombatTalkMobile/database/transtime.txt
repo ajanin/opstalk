@@ -1,0 +1,2 @@
+# userID transTime
+server 1309322007282

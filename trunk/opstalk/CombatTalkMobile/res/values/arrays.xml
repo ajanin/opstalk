@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<array name="connect">
+		<item>"Low"</item>
+		<item>"Medium"</item>
+		<item>"High"</item>
+	</array>
+	<array name="connectV">
+		<item>"10000"</item>
+		<item>"5000"</item>
+		<item>"2000"</item>
+	</array>
+	<array name="locationUpdate">
+		<item>"Low"</item>
+		<item>"Medium"</item>
+		<item>"High"</item>
+	</array>
+	<array name="locationUpdateV">
+		<item>"30000"</item>
+		<item>"10000"</item>
+		<item>"2000"</item>
+	</array>
+	<array name="nameList">
+		<item>"Jeffrey"</item>
+		<item>"Tom"</item>
+		<item>"Jack"</item>
+	</array>
+	<array name="idList">
+		<item>"001"</item>
+		<item>"002"</item>
+		<item>"003"</item>
+	</array>
+</resources>
