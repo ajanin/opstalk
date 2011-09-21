@@ -106,7 +106,7 @@ public class CombatTalkView extends MapActivity {
 	private boolean SRPresent; // whether speech recognizer is avaiable in the
 	private SpeechSynthesis mTts;
 	private LinkedList<String> speakQueue = new LinkedList<String>();
-	private LocationOverlay myLocationOverlay = null;
+	public LocationOverlay myLocationOverlay = null;
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
