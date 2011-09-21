@@ -456,6 +456,7 @@ public class Network extends Thread {
 					} else
 						out.write(NetUtil.value2bytes(0, 10));
 				}
+				
 				return true; // successfully send location
 			} catch (IOException e) {
 				this.handleConnectFailure();
