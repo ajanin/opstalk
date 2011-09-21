@@ -58,54 +58,62 @@ public class SpeechCapture {
 	}
 
 	public void stop() {
-		isRecording=false;
+		isRecording = false;
+	}
+
+	class RecordThread extends Thread {
+		private String bufferPath = null;
+
+		RecordThread(String path) {
+			this.bufferPath = path;
+		}
+
+		public void run() {
+			AudioRecord audioRecord = null;
+			audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+					frequency, channelConfiguration, audioEncoding, bufferSize);
+			audioRecord.startRecording();
+			while (isRecording) {
+				currSeg = bufferPath + "/" + baseName + "_"
+						+ System.currentTimeMillis() + ".pcm";
+				File file = new File(currSeg);
+				// Delete any previous recording.
+				if (file.exists())
+					file.delete();
+
+				// Create the new file.
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					throw new IllegalStateException("Failed to create "
+							+ file.toString());
+				}
+				try {
+					// OutputStream os = new FileOutputStream(file);
+					// BufferedOutputStream bos = new BufferedOutputStream(os);
+					// DataOutputStream dos = new DataOutputStream(bos);
+					short[] buffer = new short[bufferSize];
+					int bufferReadResult = audioRecord.read(buffer, 0,
+							bufferSize);
+					// for (int i = 0; i < bufferReadResult; i++)
+					// dos.writeShort(buffer[i]);
+					// dos.close();
+					int isSpeech = SpeechDetector.detect(currSeg) ? 1 : 0;
+					Location loc = Preferences.saveBattery ? parent.locationHandler
+							.getLocation() : parent.myLocationOverlay
+							.getLastFix();
+					segList.addFirst(new Segment(buffer, bufferReadResult,
+							System.currentTimeMillis(), loc, actOn));
+				} catch (Throwable t) {
+					Log.e("AudioRecord", "Recording Failed");
+				}
+			}
+			audioRecord.stop();
+		}
 	}
 
 	public void startRecord(String bufferPath) throws IOException {
-		// make sure the directory we plan to store the recording in exists
-		File directory = new File(bufferPath);
-		if (!directory.exists() && !directory.mkdirs()) {
-			throw new IOException("Path to file could not be created.");
-		}
 
-		AudioRecord audioRecord = null;
-		audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, frequency,
-				channelConfiguration, audioEncoding, bufferSize);
-		audioRecord.startRecording();
-		while (isRecording) {
-			currSeg = bufferPath + "/" + baseName + "_"
-					+ System.currentTimeMillis() + ".pcm";
-			File file = new File(currSeg);
-			// Delete any previous recording.
-			if (file.exists())
-				file.delete();
-
-			// Create the new file.
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				throw new IllegalStateException("Failed to create "
-						+ file.toString());
-			}
-			try {
-				// OutputStream os = new FileOutputStream(file);
-				// BufferedOutputStream bos = new BufferedOutputStream(os);
-				// DataOutputStream dos = new DataOutputStream(bos);
-				short[] buffer = new short[bufferSize];
-				int bufferReadResult = audioRecord.read(buffer, 0, bufferSize);
-				// for (int i = 0; i < bufferReadResult; i++)
-				// dos.writeShort(buffer[i]);
-				// dos.close();
-				int isSpeech = SpeechDetector.detect(currSeg) ? 1 : 0;
-				Location loc = Preferences.saveBattery ? parent.locationHandler
-						.getLocation() : parent.myLocationOverlay.getLastFix();
-				segList.addFirst(new Segment(buffer, bufferReadResult, System
-						.currentTimeMillis(), loc, actOn));
-			} catch (Throwable t) {
-				Log.e("AudioRecord", "Recording Failed");
-			}
-		}
-		audioRecord.stop();
 	}
 
 	public void start() throws IOException {
@@ -127,12 +135,11 @@ public class SpeechCapture {
 		}
 		isRecording = true;
 		new streaming().start();
-		startRecord(path);
+		new RecordThread(path).start();
 		// message("Recording thread stop...");
 	}
 
 	public void send(Segment seg) throws IOException {
-
 		Event event = new Event(Event.AUDIO);
 		if (seg.location != null) {
 			event.setLatitude(seg.location.getLatitude());
@@ -146,6 +153,7 @@ public class SpeechCapture {
 			event.setContent(buffer);
 		}
 		parent.addEvent(event);
+		parent.showMessage("event "+ seg.timeStamp+" sent");
 	}
 
 	class streaming extends Thread {
