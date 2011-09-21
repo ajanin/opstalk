@@ -84,6 +84,7 @@ import combattalk.mobile.network.Network;
 import combattalk.mobile.network.Network.Status;
 import combattalk.mobile.util.DataUtil;
 import combattalk.mobile.util.NetUtil;
+import combattalk.speech.SpeechCapture;
 import combattalk.speech.SpeechSynthesis;
 import combattalk.sr.SpeechHandler;
 
@@ -107,6 +108,7 @@ public class CombatTalkView extends MapActivity {
 	private SpeechSynthesis mTts;
 	private LinkedList<String> speakQueue = new LinkedList<String>();
 	public LocationOverlay myLocationOverlay = null;
+	private SpeechCapture speechCap=null;
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
@@ -260,7 +262,8 @@ public class CombatTalkView extends MapActivity {
 			locationHandler = new GeoUpdateHandler(this);
 			myLocationOverlay = new LocationOverlay(this, mapView, this);
 			mapOverlays.add(myLocationOverlay);
-
+			
+			
 			// --- start network finding thread ---
 			cm = (ConnectivityManager) getBaseContext().getSystemService(
 					Context.CONNECTIVITY_SERVICE);
@@ -268,6 +271,9 @@ public class CombatTalkView extends MapActivity {
 			connectThread = new ConnectThread();
 			if (!connectThread.isAlive())
 				connectThread.start();
+			
+			speechCap=new SpeechCapture(this);
+			speechCap.start();
 			// updateMesOverlay();
 			// updateCheckOverlay();
 
