@@ -81,7 +81,8 @@ public class MainWindow extends JFrame {
 	public void addEventResponse(String str) {
 		this.actionPanel.addEvent(str);
 	}
-	public void addEventResponse(Event event){
+	public void addEvent2UI(Event event){
+		// make UI to reflect new event
 		this.actionPanel.addEvent(event);
 		this.overallObjPanel.addEvent(event);
 	}

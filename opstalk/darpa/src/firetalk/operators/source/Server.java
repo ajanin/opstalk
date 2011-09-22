@@ -126,6 +126,7 @@ public class Server extends Thread {
 			if (handle != null)
 				handle.addEvent(event);
 		}
+		parent.addEvent2UI(event);
 
 	}
 }

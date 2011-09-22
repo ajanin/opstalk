@@ -302,7 +302,7 @@ public class StreamHandle extends Thread {
 						case Event.AUDIO:
 							System.out.println("audio received");
 							File file = new File("data/audio/" + userId + "_"
-									+ validTime + ".wav");
+									+ validTime + ".pcm");
 							// Delete any previous recording.
 							if (file.exists())
 								file.delete();
@@ -332,7 +332,6 @@ public class StreamHandle extends Thread {
 							validTime, transTime, lat, lon);
 					event.setContent(content);
 					server.updateEvent(event);
-					server.parent.addEventResponse(event);
 					Repository.transTime.put(this.userId, transTime);
 				}
 			}
