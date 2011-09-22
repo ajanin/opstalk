@@ -1,7 +1,9 @@
 package firetalk.operators.source;
 
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import firetalk.db.Repository;
 import firetalk.model.CheckPoint;
 import firetalk.model.Event;
@@ -207,7 +208,8 @@ public class StreamHandle extends Thread {
 	public boolean sendEvent(Event event) {
 		try {
 			if (out != null && status == Status.CONNECT
-					&&this.getPeopleId()!=null&& !this.getPeopleId().equals(event.getId())) {
+					&& this.getPeopleId() != null
+					&& !this.getPeopleId().equals(event.getId())) {
 				if (event.getEventType() == Event.DUMMY)
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
 				else if (event.getTransTime() > transTime) {
@@ -273,7 +275,6 @@ public class StreamHandle extends Thread {
 							server.updateCheckPoints();
 							break;
 						case Event.QUERY:
-						case Event.AUDIO:
 						case Event.LOCATION:
 							// parse location, format:<speed direction>
 							String str = new String(content);
@@ -298,7 +299,34 @@ public class StreamHandle extends Thread {
 							}
 							server.updateCheckPoints();
 							break;
+						case Event.AUDIO:
+							System.out.println("audio received");
+							File file = new File("data/audio/" + userId + "_"
+									+ validTime + ".wav");
+							// Delete any previous recording.
+							if (file.exists())
+								file.delete();
+
+							// Create the new file.
+							try {
+								file.createNewFile();
+							} catch (IOException e) {
+								System.out.println("Failed to create "
+										+ file.toString());
+								break;
+							}
+							try {
+								OutputStream os = new FileOutputStream(file);
+								BufferedOutputStream bos = new BufferedOutputStream(
+										os);
+								DataOutputStream dos = new DataOutputStream(bos);
+								dos.write(content);
+								dos.close();
+							} catch (Throwable t) {
+								System.out.println(t.getMessage());
+							}
 						}
+
 					}
 					Event event = new Event(eventType, this.user.getId(),
 							validTime, transTime, lat, lon);
@@ -408,9 +436,9 @@ public class StreamHandle extends Thread {
 			}
 			receiveContext();
 			for (IEDPoint p : Repository.IEDList) {
-				Event event = new Event(Event.MESSAGE, p.getUserId(), p
-						.getValidTime(), System.currentTimeMillis(), p
-						.getLatitude(), p.getLongitude());
+				Event event = new Event(Event.MESSAGE, p.getUserId(),
+						p.getValidTime(), System.currentTimeMillis(),
+						p.getLatitude(), p.getLongitude());
 				String mes = p.getMes();
 				byte[] content = null;
 				if (mes != null) {
