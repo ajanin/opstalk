@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -74,20 +75,20 @@ public class SpeechCapture {
 					frequency, channelConfiguration, audioEncoding, bufferSize);
 			audioRecord.startRecording();
 			while (isRecording) {
-				currSeg = bufferPath + "/" + baseName + "_"
-						+ System.currentTimeMillis() + ".pcm";
-				File file = new File(currSeg);
-				// Delete any previous recording.
-				if (file.exists())
-					file.delete();
-
-				// Create the new file.
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-					throw new IllegalStateException("Failed to create "
-							+ file.toString());
-				}
+				// currSeg = bufferPath + "/" + baseName + "_"
+				// + System.currentTimeMillis() + ".pcm";
+				// File file = new File(currSeg);
+				// // Delete any previous recording.
+				// if (file.exists())
+				// file.delete();
+				//
+				// // Create the new file.
+				// try {
+				// file.createNewFile();
+				// } catch (IOException e) {
+				// throw new IllegalStateException("Failed to create "
+				// + file.toString());
+				// }
 				try {
 					// OutputStream os = new FileOutputStream(file);
 					// BufferedOutputStream bos = new BufferedOutputStream(os);
@@ -102,18 +103,15 @@ public class SpeechCapture {
 					Location loc = Preferences.saveBattery ? parent.locationHandler
 							.getLocation() : parent.myLocationOverlay
 							.getLastFix();
-					segList.addFirst(new Segment(buffer, bufferReadResult,
+					send(new Segment(buffer, bufferReadResult,
 							System.currentTimeMillis(), loc, actOn));
+					// segList.addFirst();
 				} catch (Throwable t) {
 					Log.e("AudioRecord", "Recording Failed");
 				}
 			}
 			audioRecord.stop();
 		}
-	}
-
-	public void startRecord(String bufferPath) throws IOException {
-
 	}
 
 	public void start() throws IOException {
@@ -134,7 +132,7 @@ public class SpeechCapture {
 					+ ".");
 		}
 		isRecording = true;
-		new streaming().start();
+		// new streaming().start();
 		new RecordThread(path).start();
 		// message("Recording thread stop...");
 	}
@@ -146,36 +144,37 @@ public class SpeechCapture {
 			event.setLongitude(seg.location.getLongitude());
 		}
 		event.setValidTime(seg.timeStamp);
-		byte[] buffer = new byte[seg.length];
+		ByteBuffer byteBuf = ByteBuffer.allocate(seg.length * 2);
 		for (int i = 0; i < seg.length; i++)
-			buffer[i] = (byte) seg.buffer[i];
+			byteBuf.putShort(seg.buffer[i]);
+		byte[] buffer = byteBuf.array();
 		if (seg.isSpeech == 1) {
 			event.setContent(buffer);
 		}
 		parent.addEvent(event);
-		parent.showMessage("event "+ seg.timeStamp+" sent");
+		parent.showMessage("event " + seg.timeStamp + " sent");
 	}
 
-	class streaming extends Thread {
-		public void run() {
-			while (isRecording || !segList.isEmpty()) {
-				if (!segList.isEmpty()) {
-					Segment seg = segList.getLast();
-					try {
-						send(seg);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						continue;
-					}
-					// now segment sent successfully, remove it from buffer
-					segList.removeLast();
-					// deleteList.addFirst(seg);
-
-				}
-			}
-			// message("Streaming thread stop...");
-		}
-
-	}
+	// class streaming extends Thread {
+	// public void run() {
+	// while (isRecording || !segList.isEmpty()) {
+	// if (!segList.isEmpty()) {
+	// Segment seg = segList.getLast();
+	// try {
+	// send(seg);
+	// } catch (IOException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// continue;
+	// }
+	// // now segment sent successfully, remove it from buffer
+	// segList.removeLast();
+	// // deleteList.addFirst(seg);
+	//
+	// }
+	// }
+	// // message("Streaming thread stop...");
+	// }
+	//
+	// }
 }
