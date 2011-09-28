@@ -1,10 +1,12 @@
 package firetalk.db;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,6 +34,18 @@ public class Repository {
 	public static HashMap<String, Team> teamList = new HashMap<String, Team>();
 	public static Vector<String> overallObjs = new Vector<String>();
 	public static HashMap<String, ObjPoint> objPoints = new HashMap<String, ObjPoint>();
+	public static HashMap<String, Vector<File>> audioFiles = new HashMap();
+
+	public static void addAudio(String id, File file) {
+		Vector<File> fileV = audioFiles.get(id);
+		if (fileV != null)
+			fileV.add(file);
+		else {
+			fileV = new Vector<File>();
+			fileV.add(file);
+			audioFiles.put(id, fileV);
+		}
+	}
 
 	public static void addIED(IEDPoint mes) {
 		IEDList.add(mes);
@@ -87,6 +101,7 @@ public class Repository {
 			e.printStackTrace();
 		}
 	}
+
 	public static void readOperations() {
 		try {
 			Scanner scan = new Scanner(new FileReader("db/operations.txt"));
@@ -106,8 +121,8 @@ public class Repository {
 			FileWriter fw = new FileWriter("db/rallyPoints.txt");
 			fw.write("# id lat lon name userId\n");
 			for (RallyPoint cp : Repository.rallyList) {
-				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat,
-						cp.lon, cp.userID));
+				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat, cp.lon,
+						cp.userID));
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -127,8 +142,8 @@ public class Repository {
 					double lat = Double.parseDouble(st.nextToken());
 					double lon = Double.parseDouble(st.nextToken());
 					String userId = st.nextToken();
-					objPoints.put(userId, new ObjPoint(id, userId, "", lat,
-							lon));
+					objPoints.put(userId,
+							new ObjPoint(id, userId, "", lat, lon));
 				}
 			}
 			scan.close();
@@ -170,9 +185,11 @@ public class Repository {
 					String userID = st.nextToken();
 					String isObj = st.nextToken();
 					String isReached = st.nextToken();
-					String deadline=st.nextToken();
-					checkPoints.add(new CheckPoint(id, userID, "", lat, lon,
-							isObj.equals("1"), isReached.equals("1"),deadline));
+					String deadline = st.nextToken();
+					checkPoints
+							.add(new CheckPoint(id, userID, "", lat, lon, isObj
+									.equals("1"), isReached.equals("1"),
+									deadline));
 				}
 			}
 			scan.close();
@@ -183,7 +200,7 @@ public class Repository {
 	}
 
 	public static void printPeople() {
-		for(People p:peopleList.values())
+		for (People p : peopleList.values())
 			System.out.println(p.toString());
 	}
 
@@ -239,8 +256,8 @@ public class Repository {
 			FileWriter fw = new FileWriter("db/objectives.txt");
 			fw.write("# id lat lon name userId\n");
 			for (ObjPoint cp : Repository.objPoints.values()) {
-				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat,
-						cp.lon, cp.userID));
+				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat, cp.lon,
+						cp.userID));
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -258,7 +275,7 @@ public class Repository {
 			for (CheckPoint cp : Repository.checkPoints) {
 				fw.write(String.format("%s$%f$%f$%s$%s$%s$%s\n", cp.id, cp.lat,
 						cp.lon, cp.userID, cp.isObj() ? "1" : "0", cp
-								.isReached() ? "1" : "0",cp.deadline));
+								.isReached() ? "1" : "0", cp.deadline));
 
 			}
 			fw.close();
