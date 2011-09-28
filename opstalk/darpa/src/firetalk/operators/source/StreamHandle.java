@@ -25,6 +25,8 @@ import firetalk.model.ObjPoint;
 import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
+import firetalk.operators.speech.PlaySound;
+import firetalk.operators.speech.PlayWaveException;
 import firetalk.util.NetUtil;
 
 public class StreamHandle extends Thread {
@@ -300,7 +302,6 @@ public class StreamHandle extends Thread {
 							server.updateCheckPoints();
 							break;
 						case Event.AUDIO:
-							System.out.println("audio received");
 							File file = new File("data/audio/" + userId + "_"
 									+ validTime + ".pcm");
 							// Delete any previous recording.
@@ -320,8 +321,9 @@ public class StreamHandle extends Thread {
 								BufferedOutputStream bos = new BufferedOutputStream(
 										os);
 								DataOutputStream dos = new DataOutputStream(bos);
-								dos.write(content);
+								dos.write(content, 0, content.length);
 								dos.close();
+								Repository.addAudio(this.userId, file);
 							} catch (Throwable t) {
 								System.out.println(t.getMessage());
 							}
@@ -435,9 +437,9 @@ public class StreamHandle extends Thread {
 			}
 			receiveContext();
 			for (IEDPoint p : Repository.IEDList) {
-				Event event = new Event(Event.MESSAGE, p.getUserId(),
-						p.getValidTime(), System.currentTimeMillis(),
-						p.getLatitude(), p.getLongitude());
+				Event event = new Event(Event.MESSAGE, p.getUserId(), p
+						.getValidTime(), System.currentTimeMillis(), p
+						.getLatitude(), p.getLongitude());
 				String mes = p.getMes();
 				byte[] content = null;
 				if (mes != null) {
@@ -456,6 +458,7 @@ public class StreamHandle extends Thread {
 			// this.events.addFirst(it.next());
 			// connection is established
 			outputHandle.start();
+			new PlaySound(this.userId,0).start();
 			System.out.println(StreamHandle.this.id
 					+ " Connection is established for <" + userId + "> ");
 			try {
@@ -470,6 +473,9 @@ public class StreamHandle extends Thread {
 			e1.printStackTrace();
 			this.handleConnectionFailure();
 			return;
+		} catch (PlayWaveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		People p = Repository.peopleList.get(userId);
 		if (p == null) {
