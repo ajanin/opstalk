@@ -2,23 +2,16 @@ package combattalk.sr;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
-import java.util.Vector;
 
 import org.apache.http.util.ByteArrayBuffer;
 
 import com.google.android.maps.GeoPoint;
 
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Environment;
 import android.util.Log;
@@ -44,8 +37,6 @@ public class SpeechHandler implements SpeechCommandHandler,
 		SpeechResultsHandler {
 	private DynaSpeakRecognizer recognizer;
 	CombatTalkView parent;
-	private String str;
-	private Vector<String> peoples = new Vector<String>();
 
 	public SpeechHandler(CombatTalkView parent) {
 

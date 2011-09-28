@@ -1,7 +1,9 @@
 package combattalk.sr;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +24,7 @@ public class DynaSpeakRecognizer {
 	private SpeechResultsHandler m_resultsHandler;
     private volatile boolean m_recording;
     private volatile boolean m_busy;
+    private int m_samplingrate;
 	
 	// commandHandler and resultsHandler may either be null.
 	public DynaSpeakRecognizer(SpeechCommandHandler commandHandler, SpeechResultsHandler resultsHandler) {
@@ -32,6 +35,9 @@ public class DynaSpeakRecognizer {
         m_capture = null;
         m_commandHandler = commandHandler;
         m_resultsHandler = resultsHandler;
+        if (m_samplingrate != 16000) {
+        	Log.e("DynaSpeak", "Unexpected sampling rate");
+        }
 	}
 	        
     public void start() {
@@ -47,7 +53,7 @@ public class DynaSpeakRecognizer {
     		m_capture.setListener(null);
     		m_capture = null;
     	}
-    	m_capture = new AudioCapture(m_listener, 16000);
+    	m_capture = new AudioCapture(m_listener, m_samplingrate);
     	m_capture.start();
     }
     
@@ -67,9 +73,11 @@ public class DynaSpeakRecognizer {
     
     private void initializeRecognizer() {
         String outDirectoryString = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String infofile = outDirectoryString + "/dsexample_data/dsexample.info";
 
         try {
-            m_recognizer = new DSRecognizer(outDirectoryString + "/dsexample_data/dsexample.info", "dsexample.info");
+        	// TODO Make directory a preference (to support 16kHz vs. 8kHz)
+            m_recognizer = new DSRecognizer(infofile, "en");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -88,8 +96,32 @@ public class DynaSpeakRecognizer {
             } else {
                 Log.v("test", "DynaSpeak init returned true");
             }
+            // Get the sampling rate from the parameter file.
+            // The parameter file name is stored in the info file.
+            try {
+            	Properties infoprops = new Properties();
+            	infoprops.load(new FileInputStream(infofile));
+            	if (infoprops.containsKey("parameters")) {
+            		String parampath = outDirectoryString + "/dsexample_data/" + infoprops.getProperty("parameters");
+            		Properties paramprops = new Properties();
+            		paramprops.load(new FileInputStream(parampath));
+            		if (paramprops.containsKey("audio.SamplingRate")) {
+            			m_samplingrate = Integer.parseInt(paramprops.getProperty("audio.SamplingRate"));
+            		} else {
+            			Log.e("DynaSpeak", "Couldn't find audio.SamplingRate in parameter file");
+            			m_samplingrate = 8000;
+            		}
+            	} else {
+            		Log.e("DynaSpeak", "Couldn't find parameters in info file");
+            		m_samplingrate = 8000;
+            	}
+            } catch (FileNotFoundException e) {
+            	Log.e("DynaSpeak", "File Not Found trying to read info or parameter file" + e);
+            } catch (IOException e) {
+            	Log.e("DynaSpeak", "IOException trying to read info or parameter file" + e);
+            }
         } else {
-            Log.e("test", "DynaSpeak initialization failed");
+            Log.e("DynaSpeak", "DynaSpeak initialization failed");
         }
     }
     
