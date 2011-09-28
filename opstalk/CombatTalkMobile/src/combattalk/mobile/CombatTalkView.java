@@ -108,7 +108,7 @@ public class CombatTalkView extends MapActivity {
 	private SpeechSynthesis mTts;
 	private LinkedList<String> speakQueue = new LinkedList<String>();
 	public LocationOverlay myLocationOverlay = null;
-	private SpeechCapture speechCap=null;
+	//private SpeechCapture speechCap=null;
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
@@ -272,8 +272,9 @@ public class CombatTalkView extends MapActivity {
 			if (!connectThread.isAlive())
 				connectThread.start();
 			
-			speechCap=new SpeechCapture(this);
-			speechCap.start();
+			// Disabling speech capture since ASR doesn't seem to be working.
+			// speechCap=new SpeechCapture(this);
+			// speechCap.start();
 			// updateMesOverlay();
 			// updateCheckOverlay();
 
