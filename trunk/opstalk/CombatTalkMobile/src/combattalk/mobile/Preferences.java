@@ -1,16 +1,16 @@
 package combattalk.mobile;
 
-import combattalk.mobile.data.Repository;
+import java.io.File;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.view.View;
-import android.widget.ListView;
+
+import combattalk.mobile.data.Repository;
 
 public class Preferences extends PreferenceActivity {
 
@@ -22,6 +22,7 @@ public class Preferences extends PreferenceActivity {
 	public static Context baseContext = null;
 	public static boolean showLocation = true;
 	public static String userId = "";
+	public static String asrModelDirectory = "English-16K-040701-02-g48";
 	public static String helpStr = "hello";
 	public static String serverIP = "";
 	public static String defaultID = null;
@@ -46,6 +47,7 @@ public class Preferences extends PreferenceActivity {
 		Preferences.userId = prefs.getString("idList", "firetalk.t");
 		Preferences.serverIP = prefs.getString("ipPref", "169.234.133.205");
 		Preferences.saveBattery = prefs.getBoolean("batteryPref", true);
+		Preferences.asrModelDirectory = prefs.getString("asrModelDirectory", "English-16K-040701-02-g48");
 	}
 
 	// @Override
@@ -74,6 +76,15 @@ public class Preferences extends PreferenceActivity {
 			listP.setDefaultValue(ids[0]);
 			Preferences.defaultID = ids[0].toString();
 		}
+		
+		ListPreference asrModelP = (ListPreference) findPreference("asrModelDirectory");
+		File modelDirFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/dsexample_data");
+		CharSequence[] models = modelDirFile.list();
+		asrModelP.setEntries(models);
+		asrModelP.setEntryValues(models);
+		asrModelP.setDefaultValue(models[0]);
+		Preferences.asrModelDirectory = models[0].toString();
+				
 		// Get the custom preference
 		// Preference customPref = (Preference) findPreference("customPref");
 		// customPref
