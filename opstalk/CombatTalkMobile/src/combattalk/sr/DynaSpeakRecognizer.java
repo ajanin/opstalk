@@ -14,6 +14,7 @@ import com.sri.dynaspeak.android.audio.AudioCapture;
 import com.sri.dynaspeak.android.audio.AudioCaptureListener;
 import com.sri.dynaspeak.android.recognizer.DSRecognizer;
 import com.sri.dynaspeak.android.recognizer.RecognitionResultListener;
+import combattalk.mobile.Preferences;
 
 public class DynaSpeakRecognizer {
 
@@ -72,8 +73,9 @@ public class DynaSpeakRecognizer {
     }
     
     private void initializeRecognizer() {
-        String outDirectoryString = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String infofile = outDirectoryString + "/dsexample_data/dsexample.info";
+        String modelDirectoryString = Environment.getExternalStorageDirectory().getAbsolutePath() + 
+        	"/dsexample_data/" + Preferences.asrModelDirectory;
+        String infofile = modelDirectoryString + "/dsexample.info";
 
         try {
         	// TODO Make directory a preference (to support 16kHz vs. 8kHz)
@@ -102,7 +104,7 @@ public class DynaSpeakRecognizer {
             	Properties infoprops = new Properties();
             	infoprops.load(new FileInputStream(infofile));
             	if (infoprops.containsKey("parameters")) {
-            		String parampath = outDirectoryString + "/dsexample_data/" + infoprops.getProperty("parameters");
+            		String parampath = modelDirectoryString + "/" + infoprops.getProperty("parameters");
             		Properties paramprops = new Properties();
             		paramprops.load(new FileInputStream(parampath));
             		if (paramprops.containsKey("audio.SamplingRate")) {

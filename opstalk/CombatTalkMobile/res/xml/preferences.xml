@@ -33,4 +33,8 @@
 			android:defaultValue="169.234.133.205" android:title="Enter server ip"
 			android:key="ipPref" />
 	</PreferenceCategory>
+	<PreferenceCategory android:title="Speech Recognition">
+	   <ListPreference android:title="Model Directory"
+	        android:key="asrModelDirectory" />
+	</PreferenceCategory>
 </PreferenceScreen>

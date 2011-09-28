@@ -72,6 +72,7 @@ public class SpeechHandler implements SpeechCommandHandler,
 	// Do the actual download of the file to a local file with the
 	// same name but .new appended.
 	// TODO: Make this more efficient.
+	// TODO: Update this to handle other models. This will require significant changes to the web version.
 
 	private boolean download_grammar_file(String name) {
 		String localdir = Environment.getExternalStorageDirectory()
