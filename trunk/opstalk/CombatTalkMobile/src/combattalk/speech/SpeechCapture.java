@@ -35,6 +35,7 @@ public class SpeechCapture {
 
 	public boolean isRecording = true;
 	public int actOn = 1; // 1 speech act on, 0 speech act off
+
 	int frequency = 8000;
 	int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
@@ -42,6 +43,7 @@ public class SpeechCapture {
 	// int bufferSize = AudioRecord.getMinBufferSize(frequency,
 	// channelConfiguration, audioEncoding);
 	int bufferSize = 30000;
+	private RecordThread rThread = null;
 
 	final String bufferFolder = "/buffer";
 	final String baseName = "seg";
@@ -59,56 +61,62 @@ public class SpeechCapture {
 	}
 
 	public void stop() {
-		isRecording = false;
+		isRecording = false; 
+		if (rThread != null) {
+//			rThread.interrupt();
+//			rThread.stop();
+			rThread.stopRecord();
+		}
 	}
 
 	class RecordThread extends Thread {
-		private String bufferPath = null;
+		AudioRecord audioRecord = null;
 
-		RecordThread(String path) {
-			this.bufferPath = path;
+		private native final void native_stop();
+
+		public void stopRecord() {
+//			if (audioRecord != null) {
+//				try {
+//					if (audioRecord.getRecordingState() == AudioRecord.STATE_INITIALIZED) {
+//						audioRecord.stop();
+//						audioRecord.release();
+//					}
+//				} catch (Exception e) {
+//					native_stop();
+//					e.printStackTrace();
+//				}
+//			}
 		}
 
 		public void run() {
-			AudioRecord audioRecord = null;
+
 			audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
 					frequency, channelConfiguration, audioEncoding, bufferSize);
 			audioRecord.startRecording();
 			while (isRecording) {
 				try {
-					// OutputStream os = new FileOutputStream(file);
-					// BufferedOutputStream bos = new BufferedOutputStream(os);
-					// DataOutputStream dos = new DataOutputStream(bos);
 					short[] buffer = new short[bufferSize];
 					int bufferReadResult = audioRecord.read(buffer, 0,
 							bufferSize);
-					// for (int i = 0; i < bufferReadResult; i++)
-					// dos.writeShort(buffer[i]);
-					// dos.close();
-					int isSpeech = SpeechDetector.detect(currSeg) ? 1 : 0;
+					// int isSpeech = SpeechDetector.detect(currSeg) ? 1 : 0;
 					Location loc = Preferences.saveBattery ? parent.locationHandler
 							.getLocation() : parent.myLocationOverlay
 							.getLastFix();
 					send(new Segment(buffer, bufferReadResult,
 							System.currentTimeMillis(), loc, actOn));
-					// segList.addFirst();
 				} catch (Throwable t) {
 					Log.e("AudioRecord", "Recording Failed");
 				}
 			}
 			audioRecord.stop();
+			audioRecord.release();
 		}
 	}
 
 	public void start() throws IOException {
-		String state = android.os.Environment.getExternalStorageState();
-		if (!state.equals(android.os.Environment.MEDIA_MOUNTED)) {
-			throw new IOException("SD Card is not mounted.  It is " + state
-					+ ".");
-		}
 		isRecording = true;
 		// new streaming().start();
-		new RecordThread(path).start();
+		(rThread = new RecordThread()).start();
 		// message("Recording thread stop...");
 	}
 
