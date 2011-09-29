@@ -194,8 +194,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 							.getLatitude(), loc.getLongitude(),
 							minLoc.latitude, minLoc.longitude));
 					setOutput(String.format(
-							"%s is closest person, %.1f meters %s of you",
-							minPeople.getName(), minDist, dir));
+							"%s is closest person, %s %s of you",
+							minPeople.getName(), DataUtil.dist2Str(minDist), dir));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLoc.latitude * 1E6),
 									(int) (minLoc.longitude * 1E6)));
@@ -237,8 +237,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 									loc.getLongitude(), minLat, minLon));
 					setOutput(String
 							.format(
-									"way point %s is closest way point, %.1f meters %s of you",
-									minCp.id, minDist, dir));
+									"way point %s is closest way point, %s %s of you",
+									minCp.id, DataUtil.dist2Str(minDist), dir));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLat * 1E6),
 									(int) (minLon * 1E6)));
@@ -312,8 +312,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 								+ (timeDiff / 1000) + "seconds ago " : "";
 
 						setOutput(timeWord
-								+ String.format("%s is %.1f meters %s of you",
-										pQuery.getName(), dist, direction));
+								+ String.format("%s is %s %s of you",
+										pQuery.getName(), DataUtil.dist2Str(dist), direction));
 						parent.mapView.getController().animateTo(
 								new GeoPoint((int) (locQuery.latitude * 1E6),
 										(int) (locQuery.longitude * 1E6)));
