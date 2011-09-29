@@ -5,9 +5,9 @@
 		android:icon="@drawable/menu_message"></item>
 	<item android:id="@+id/menu_setting" android:title="Settings"
 		android:icon="@drawable/menu_setting"></item>
-		
-<!--	<item android:id="@+id/menu_query" android:title="Spoken Query"-->
-<!--		android:icon="@drawable/menu_query"></item>-->
+
+	<!-- <item android:id="@+id/menu_query" android:title="Spoken Query" -->
+	<!-- android:icon="@drawable/menu_query"></item> -->
 	<item android:icon="@drawable/menu_myloc" android:title="My Location"
 		android:id="@+id/menu_myloc"></item>
 	<item android:title="Update grammar" android:id="@+id/menu_test"></item>
