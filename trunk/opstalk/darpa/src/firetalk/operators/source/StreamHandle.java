@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import firetalk.db.Repository;
 import firetalk.model.CheckPoint;
+import firetalk.model.Enemy;
 import firetalk.model.Event;
 import firetalk.model.ObjPoint;
 import firetalk.model.People;
@@ -273,7 +274,10 @@ public class StreamHandle extends Thread {
 						case Event.MESSAGE:
 							IEDPoint mes = new IEDPoint(this.user.getId(),
 									new String(content), validTime, lat, lon);
-							Repository.addIED(mes);
+							if(mes.getMes().equals("$enemy$"))
+								Repository.addEnemy(new Enemy(mes.getLatitude(),mes.getLongitude()));
+							else
+								Repository.addIED(mes);
 							server.updateCheckPoints();
 							break;
 						case Event.QUERY:
