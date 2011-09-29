@@ -90,7 +90,7 @@ public class MapPanel extends JPanel {
 	private Image warningImg = null; // @jve:decl-index=0:
 	private Image rallyImg = null;
 	public MainWindow parent = null;
-	private int pRadius=10;
+	private int pRadius=8;
 	public void initializeImages() throws IOException {
 		soldier = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
 		teamLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
@@ -169,20 +169,20 @@ public class MapPanel extends JPanel {
 				if (p.isSelected())
 					g2d.drawOval(x - pRadius*2, y - pRadius*2, pRadius*4, pRadius*4);
 				g2d.setColor(Color.black);
-				g2d.setFont(new Font("times", Font.BOLD, 12));
+				g2d.setFont(new Font("times", Font.BOLD, 9));
 				if (p.getLevel().equalsIgnoreCase("1")) {
-					g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
-					g2d.drawString("PL", x-pRadius, y-pRadius);
+					g2d.drawImage(squadLead, x - pRadius, y - 10*pRadius, null);
+					g2d.drawString("PL "+p.getId(), x-pRadius, y-pRadius);
 				}
 
 				else if (p.getLevel().equalsIgnoreCase("2")) {
 					g2d.drawImage(teamLead, x - pRadius, y - pRadius, null);
-					g2d.drawString("SQ", x-pRadius, y-pRadius);
+					g2d.drawString("SQ "+p.getId(), x-pRadius, y-pRadius);
 				}
 
 				else if (p.getLevel().equalsIgnoreCase("3")) {
 					g2d.drawImage(soldier, x - pRadius, y - pRadius, null);
-					g2d.drawString("FT", x-pRadius, y-pRadius);
+					g2d.drawString("FT "+p.getId(), x-pRadius, y-pRadius);
 				}
 
 				// --- calculate points for drawing arrow
@@ -201,7 +201,7 @@ public class MapPanel extends JPanel {
 						* Math.sin(arrowAngle2)));
 
 				// Trajecotry calculations
-				final int smoothSize = 5;
+				final int smoothSize = 10;
 				final int tolerance=3;  // times 
 				double aveDiffx = Double.MAX_VALUE;
 				double aveDiffy = Double.MAX_VALUE;
@@ -217,7 +217,7 @@ public class MapPanel extends JPanel {
 						Location second = lt.next();
 						double diffy = second.lat - first.lat;
 						double diffx = second.lon - first.lon;
-						if ((diffy != 0 || diffx != 0) && diffy < aveDiffy*tolerance
+						if (diffLat.size()<smoothSize||(diffy != 0 || diffx != 0) && diffy < aveDiffy*tolerance
 								&& diffx < aveDiffx*tolerance) {
 							diffLat.addLast(diffy);
 							diffLon.addLast(diffx);

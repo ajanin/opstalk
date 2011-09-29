@@ -13,6 +13,7 @@ public class People {
 	private String teamID;
 	private LinkedList<Location> history = new LinkedList<Location>();
 	private boolean selected = false;
+	private final static int history_len = 200;
 
 	public boolean isSelected() {
 		return selected;
@@ -41,19 +42,19 @@ public class People {
 		this.name = first + " " + last;
 		this.Level = level;
 		this.teamID = teamID;
-		
+
 	}
 
 	@Override
 	public String toString() {
 		String text = "ID: " + id + "\nTeam Name: "
 				+ Repository.teamList.get(teamID).teamName + "\nRank: "
-				+ this.Level + "\nName: " + name+"\nLocation: ";
-		Location loc=this.getLocation();
-		if(loc==null)
-			text+="not available";
+				+ this.Level + "\nName: " + name + "\nLocation: ";
+		Location loc = this.getLocation();
+		if (loc == null)
+			text += "not available";
 		else
-			text+="<"+loc.lat+","+loc.lon+">";
+			text += "<" + loc.lat + "," + loc.lon + ">";
 
 		return text;
 	}
@@ -81,7 +82,7 @@ public class People {
 			double direction) {
 		Location l = new Location(lat, lon, speed, direction);
 		history.addFirst(l);
-		if (history.size() > 100)
+		if (history.size() > history_len)
 			history.removeLast();
 	}
 
