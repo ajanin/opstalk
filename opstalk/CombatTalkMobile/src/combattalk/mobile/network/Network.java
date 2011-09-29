@@ -12,6 +12,8 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+
+import android.location.Location;
 import combattalk.mobile.CombatTalkView;
 import combattalk.mobile.Preferences;
 import combattalk.mobile.data.CheckPoint;
@@ -247,13 +249,19 @@ public class Network extends Thread {
 			parent.addToSpeak("successfully connected");
 			parent.showTitle("connected");
 			setStatus(Status.CONNECTED);
-			// for (Iterator<Event> it = Repository.events.iterator(); it
-			// .hasNext();) {
-			// this.addEvent(it.next());
-			// }
+			// send leftover to server
 			while (!Repository.events.isEmpty()) {
 				this.addEvent(Repository.events.removeLast());
 			}
+//			Location location = parent.getCurrLocation();
+//			if (location != null) {
+//				Event event = new Event(Event.LOCATION,
+//						System.currentTimeMillis(), location.getLatitude(),
+//						location.getLongitude());
+//				event.setContent(NetUtil.string2bytes(
+//						String.format("%.3f %.3f#", location.getSpeed(), 0), 20));
+//				this.addEvent(event);
+//			}
 			// start sending thread
 			outputHandle = new OutputHandle();
 			outputHandle.start();
@@ -456,7 +464,7 @@ public class Network extends Thread {
 					} else
 						out.write(NetUtil.value2bytes(0, 10));
 				}
-				
+
 				return true; // successfully send location
 			} catch (IOException e) {
 				this.handleConnectFailure();
