@@ -90,11 +90,11 @@ public class MapPanel extends JPanel {
 	private Image warningImg = null; // @jve:decl-index=0:
 	private Image rallyImg = null;
 	public MainWindow parent = null;
-
+	private int pRadius=10;
 	public void initializeImages() throws IOException {
-		soldier = ImageIO.read(new File("img/soldier.png"));
-		teamLead = ImageIO.read(new File("img/teamLead.jpg"));
-		squadLead = ImageIO.read(new File("img/squadLead.jpg"));
+		soldier = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
+		teamLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
+		squadLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
 		this.warningImg = ImageIO.read(new File("img/warning.jpg"));
 		this.rallyImg = ImageIO.read(new File("img/rally.jpg"));
 	}
@@ -167,21 +167,22 @@ public class MapPanel extends JPanel {
 				int y = (int) this.lattoY(loc.lat);
 				g2d.setColor(Color.red);
 				if (p.isSelected())
-					g2d.drawOval(x - 10, y - 10, 20, 20);
-
+					g2d.drawOval(x - pRadius*2, y - pRadius*2, pRadius*4, pRadius*4);
+				g2d.setColor(Color.black);
+				g2d.setFont(new Font("times", Font.BOLD, 12));
 				if (p.getLevel().equalsIgnoreCase("1")) {
-					g2d.setColor(Color.blue);
-					g2d.drawImage(squadLead, x - 5, y - 5, null);
+					g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
+					g2d.drawString("PL", x-pRadius, y-pRadius);
 				}
 
 				else if (p.getLevel().equalsIgnoreCase("2")) {
-					g2d.setColor(Color.green);
-					g2d.drawImage(teamLead, x - 5, y - 5, null);
+					g2d.drawImage(teamLead, x - pRadius, y - pRadius, null);
+					g2d.drawString("SQ", x-pRadius, y-pRadius);
 				}
 
 				else if (p.getLevel().equalsIgnoreCase("3")) {
-					g2d.setColor(Color.white);
-					g2d.drawImage(soldier, x - 5, y - 5, null);
+					g2d.drawImage(soldier, x - pRadius, y - pRadius, null);
+					g2d.drawString("FT", x-pRadius, y-pRadius);
 				}
 
 				// --- calculate points for drawing arrow
