@@ -13,6 +13,12 @@ public class DataUtil {
 		
 		
 	}
+	public static String dist2Str(double dist){
+		if(dist<1000)
+			return dist+" meters";
+		else
+			return String.format("%.1f kilometers",dist/1000);
+	}
 	public static double calAngle(double x1, double y1, double x2, double y2) {
 		float[] locResult=new float[2];
 		Location.distanceBetween(x1, y1, x2, y2,

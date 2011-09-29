@@ -108,7 +108,7 @@ public class CombatTalkView extends MapActivity {
 	private SpeechSynthesis mTts;
 	private LinkedList<String> speakQueue = new LinkedList<String>();
 	public LocationOverlay myLocationOverlay = null;
-	//private SpeechCapture speechCap=null;
+//	private SpeechCapture speechCap=null;
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
@@ -183,6 +183,7 @@ public class CombatTalkView extends MapActivity {
 				@Override
 				public void onClick(View v) {
 					if (speechHandler.canListen()) {
+						//speechCap.stop();
 						speechButton.setText("Listening...");
 						speechButton.setEnabled(false);
 						speechHandler.start();
@@ -269,10 +270,9 @@ public class CombatTalkView extends MapActivity {
 				connectThread.start();
 			
 			// Disabling speech capture since ASR doesn't seem to be working.
-			// speechCap=new SpeechCapture(this);
-			// speechCap.start();
-			// updateMesOverlay();
-			// updateCheckOverlay();
+//			 speechCap=new SpeechCapture(this);
+//			 speechCap.start();
+			
 
 		} catch (Exception e) {
 			this.addToSpeak("exception in " + "onCreate");
@@ -313,7 +313,19 @@ public class CombatTalkView extends MapActivity {
 	private void speak(String mes) {
 		try {
 			if (this.mTts != null && mes != null) {
-				this.mTts.speak(mes);
+				String newMes="";
+				StringTokenizer st=new StringTokenizer(mes," ");
+				while(st.hasMoreTokens()){
+					String tmp=st.nextToken();
+					if(tmp.equalsIgnoreCase("rd")||tmp.equalsIgnoreCase("rd."))
+						tmp="road";
+					else if(tmp.equalsIgnoreCase("st")||tmp.equalsIgnoreCase("st."))
+						tmp="street";
+					else if(tmp.equalsIgnoreCase("ave")||tmp.equalsIgnoreCase("ave."))
+						tmp="avenue";
+					newMes+=tmp+" ";
+				}
+				this.mTts.speak(newMes);
 				this.isSpeaking = true;
 			}
 		} catch (Exception e) {
@@ -513,20 +525,12 @@ public class CombatTalkView extends MapActivity {
 
 	private void exit() {
 		Repository.storeDB();
-		// locationManager.stop();
-		// if (myLocationOverlay.isMyLocationEnabled())
-		// myLocationOverlay.disableMyLocation();
 		if (myLocationOverlay.isCompassEnabled())
 			myLocationOverlay.disableCompass();
 		this.myLocationOverlay.stop();
 		this.locationHandler.stop();
 		if (this.connectThread != null && this.connectThread.isAlive())
 			this.connectThread.stop();
-		// if (this.speakThread != null && this.speakThread.isAlive())
-		// this.speakThread.stop();
-		// debugBool=false;
-		// connectThread.stopThread();
-		// timer.cancel();
 		if (mTts != null)
 			mTts.stop();
 		int pid = android.os.Process.myPid();
@@ -610,44 +614,6 @@ public class CombatTalkView extends MapActivity {
 		}
 		return true;
 	}
-
-//	@Override
-//	protected Dialog onCreateDialog(int id) {
-//		Dialog dialog = null;
-//		switch (id) {
-//		case DIALOG_HELP_ID:
-//			// //--- custom information dialog
-//			// dialog = new Dialog(this.getApplicationContext());
-//			// dialog.setContentView(R.layout.custom_dialog);
-//			// dialog.setTitle("Help");
-//			// ImageView image = (ImageView)
-//			// dialog.findViewById(R.id.dialog_image);
-//			// image.setImageResource(R.drawable.menu_help);
-//			// TextView dialogText = (TextView) dialog
-//			// .findViewById(R.id.dialog_text);
-//			// dialogText.setText(Preferences.helpStr);
-//			AlertDialog.Builder builder;
-//
-//			Context mContext = getApplicationContext();
-//			LayoutInflater inflater = (LayoutInflater) mContext
-//					.getSystemService(LAYOUT_INFLATER_SERVICE);
-//			View layout = inflater.inflate(R.layout.custom_dialog,
-//					(ViewGroup) findViewById(R.id.layout_root));
-//
-//			TextView text = (TextView) layout.findViewById(R.id.dialog_text);
-//			text.setText("Hello, this is a custom dialog!");
-//			ImageView image = (ImageView) layout
-//					.findViewById(R.id.dialog_image);
-//			image.setImageResource(R.drawable.menu_help);
-//
-//			builder = new AlertDialog.Builder(mContext);
-//			builder.setView(layout);
-//			dialog = builder.create();
-//			// dialog.show();
-//			break;
-//		}
-//		return dialog;
-//	}
 
 	/**
 	 * update overlays using data from Repository
