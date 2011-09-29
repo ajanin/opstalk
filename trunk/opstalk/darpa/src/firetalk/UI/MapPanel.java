@@ -48,6 +48,7 @@ import firetalk.db.Repository;
 import firetalk.map.MapLookup;
 import firetalk.map.MapMarker;
 import firetalk.model.CheckPoint;
+import firetalk.model.Enemy;
 import firetalk.model.Location;
 import firetalk.model.ObjPoint;
 import firetalk.model.People;
@@ -87,6 +88,7 @@ public class MapPanel extends JPanel {
 	private Image soldier = null; // @jve:decl-index=0:
 	private Image teamLead = null; // @jve:decl-index=0:
 	private Image squadLead = null; // @jve:decl-index=0:
+	private Image enemyImg=null;
 	private Image warningImg = null; // @jve:decl-index=0:
 	private Image rallyImg = null;
 	public MainWindow parent = null;
@@ -95,6 +97,7 @@ public class MapPanel extends JPanel {
 		soldier = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
 		teamLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
 		squadLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
+		enemyImg=ImageIO.read(new File("img/enemy.png")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
 		this.warningImg = ImageIO.read(new File("img/warning.jpg"));
 		this.rallyImg = ImageIO.read(new File("img/rally.jpg"));
 	}
@@ -156,7 +159,11 @@ public class MapPanel extends JPanel {
 			g2d.setColor(Color.red);
 			g2d.drawRect(x - 5, y - 5, 10, 10);
 		}
-
+		for(Enemy e:Repository.enemyList){
+			int x = (int) this.longtoX(e.getLongitude());
+			int y = (int) this.lattoY(e.getLatitude());
+			g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
+		}
 		for (Iterator<String> it = Repository.peopleList.keySet().iterator(); it
 				.hasNext();) {
 			String user = it.next();
@@ -171,7 +178,7 @@ public class MapPanel extends JPanel {
 				g2d.setColor(Color.black);
 				g2d.setFont(new Font("times", Font.BOLD, 9));
 				if (p.getLevel().equalsIgnoreCase("1")) {
-					g2d.drawImage(squadLead, x - pRadius, y - 10*pRadius, null);
+					g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
 					g2d.drawString("PL "+p.getId(), x-pRadius, y-pRadius);
 				}
 
