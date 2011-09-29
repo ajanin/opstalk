@@ -458,7 +458,6 @@ public class StreamHandle extends Thread {
 			// this.events.addFirst(it.next());
 			// connection is established
 			outputHandle.start();
-			new PlaySound(this.userId,0).start();
 			System.out.println(StreamHandle.this.id
 					+ " Connection is established for <" + userId + "> ");
 			try {
@@ -473,10 +472,7 @@ public class StreamHandle extends Thread {
 			e1.printStackTrace();
 			this.handleConnectionFailure();
 			return;
-		} catch (PlayWaveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		People p = Repository.peopleList.get(userId);
 		if (p == null) {
 			Repository.peopleList.put(userId, new People());

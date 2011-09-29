@@ -17,6 +17,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.DataLine.Info;
+import javax.swing.JSlider;
 
 import firetalk.db.Repository;
 
@@ -34,16 +35,60 @@ public class PlaySound extends Thread {
 	private boolean isPlay = false;
 	private String id = null;//
 	private int startInd = 0;
+	private JSlider slider = null;
 
 	/**
 	 * CONSTRUCTOR
 	 * 
 	 * @throws PlayWaveException
 	 */
-	public PlaySound(String id, int startInd) throws PlayWaveException {
+	public PlaySound(String id, int startInd, JSlider slider) {
+		this.id = id;
+		this.startInd = startInd;
+		this.slider = slider;
+
+	}
+
+	public void setInd(int index) {
+		this.startInd = index;
+	}
+
+	public int getInd() {
+		return this.startInd;
+	}
+
+	public String getUserId() {
+		return this.id;
+	}
+
+	public boolean isPlaying() {
+		return isPlay;
+	}
+
+	// public void play(File file) {
+	// BufferedInputStream inputStream = null;
+	// try {
+	// inputStream = new BufferedInputStream(new FileInputStream(file));
+	// System.out.println(file.getName());
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// }
+	// if (inputStream != null) {
+	//
+	// while (readBytes != -1) {
+	// readBytes = inputStream
+	// .read(audioBuffer, 0, audioBuffer.length);
+	// if (readBytes >= 0) {
+	// dataLine.write(audioBuffer, 0, readBytes);
+	// }
+	// }
+	// inputStream.close();
+	// }
+	// }
+
+	@Override
+	public void run() {
 		// Obtain the information about the AudioInputStream
-		// AudioFormat audioFormat = audioInputStream.getFormat();
-		// Info info = new Info(SourceDataLine.class, audioFormat);
 		AudioFormat audioFormat = new AudioFormat(8000, 16, 1, true, true);
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class,
 				audioFormat);
@@ -52,44 +97,22 @@ public class PlaySound extends Thread {
 			dataLine = (SourceDataLine) AudioSystem.getLine(info);
 			dataLine.open(audioFormat, this.EXTERNAL_BUFFER_SIZE);
 		} catch (LineUnavailableException e1) {
-			throw new PlayWaveException(e1);
+			try {
+				throw new PlayWaveException(e1);
+			} catch (PlayWaveException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		this.id = id;
-		this.startInd = startInd;
-
-	}
-
-//	public void play(File file) {
-//		BufferedInputStream inputStream = null;
-//		try {
-//			inputStream = new BufferedInputStream(new FileInputStream(file));
-//			System.out.println(file.getName());
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//		if (inputStream != null) {
-//
-//			while (readBytes != -1) {
-//				readBytes = inputStream
-//						.read(audioBuffer, 0, audioBuffer.length);
-//				if (readBytes >= 0) {
-//					dataLine.write(audioBuffer, 0, readBytes);
-//				}
-//			}
-//			inputStream.close();
-//		}
-//	}
-
-	@Override
-	public void run() {
-		isPlay = true;
 		// Starts the music :P
+
 		dataLine.start();
+		isPlay = true;
 		try {
 			while (isPlay) {
 				Vector<File> files = Repository.audioFiles.get(id);
 				if (files != null) {
-					while (startInd >= 0 && startInd < files.size()) {
+					while (isPlay && startInd >= 0 && startInd < files.size()) {
 						// opens the inputStream
 						BufferedInputStream inputStream = null;
 						try {
@@ -101,17 +124,20 @@ public class PlaySound extends Thread {
 						}
 						if (inputStream != null) {
 							int readBytes = 0;
-							byte[] audioBuffer = new byte[this.EXTERNAL_BUFFER_SIZE];   
+							byte[] audioBuffer = new byte[this.EXTERNAL_BUFFER_SIZE];
 							while (readBytes != -1) {
 								readBytes = inputStream.read(audioBuffer, 0,
 										audioBuffer.length);
-								System.out.println("read "+readBytes);
+								System.out.println("read " + readBytes);
 								if (readBytes >= 0) {
 									dataLine.write(audioBuffer, 0, readBytes);
 								}
 							}
 							inputStream.close();
 						}
+						slider.setValue(startInd);
+						slider.setMaximum(files.size());
+						slider.setEnabled(true);
 						startInd++;
 						System.out.println("" + startInd + " " + files.size());
 					}
@@ -136,6 +162,7 @@ public class PlaySound extends Thread {
 		// plays what's left and and closes the audioChannel
 		dataLine.drain();
 		dataLine.close();
+		// this.stop();
 
 	}
 }
