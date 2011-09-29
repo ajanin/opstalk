@@ -58,7 +58,8 @@ public class OverallObjPanel extends JPanel {
 	private JList getJList() {
 		if (jList == null) {
 			jList = new JList();
-			jList.setBackground(SystemColor.activeCaption);
+			jList.setBackground(SystemColor.info);
+			jList.setForeground(SystemColor.text);
 			jList.setModel(model);
 			jList.setCellRenderer(new ListRenderer());
 			updateList();
