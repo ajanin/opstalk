@@ -3,6 +3,10 @@ package firetalk.model;
 public class Enemy {
 	private double latitude;
 	private double longitude;
+	public Enemy(double lat, double lon) {
+		this.latitude=lat;
+		this.longitude=lon;
+	}
 	public double getLatitude() {
 		return latitude;
 	}

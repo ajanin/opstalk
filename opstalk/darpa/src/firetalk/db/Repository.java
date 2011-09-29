@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import firetalk.model.CheckPoint;
+import firetalk.model.Enemy;
 import firetalk.model.Event;
 import firetalk.model.ObjPoint;
 import firetalk.model.People;
@@ -35,6 +36,11 @@ public class Repository {
 	public static Vector<String> overallObjs = new Vector<String>();
 	public static HashMap<String, ObjPoint> objPoints = new HashMap<String, ObjPoint>();
 	public static HashMap<String, Vector<File>> audioFiles = new HashMap();
+	public static LinkedList<Enemy> enemyList = new LinkedList<Enemy>();
+
+	public static void addEnemy(Enemy e) {
+		enemyList.add(e);
+	}
 
 	public static void addAudio(String id, File file) {
 		Vector<File> fileV = audioFiles.get(id);
