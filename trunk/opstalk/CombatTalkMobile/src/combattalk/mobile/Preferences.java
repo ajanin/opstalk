@@ -22,13 +22,16 @@ public class Preferences extends PreferenceActivity {
 	public static Context baseContext = null;
 	public static boolean showLocation = true;
 	public static String userId = "";
-	public static String asrModelDirectory = "English-16K-040701-02-g48";
+	public static String asrModelDirectory = "English-16K-040701-02-g48"; // The directory name of the asr model to use
 	public static String helpStr = "hello";
 	public static String serverIP = "";
 	public static String defaultID = null;
 	public static boolean saveBattery = true;
 	public static int reachDist=20;  // distance that stands for reaching (in meter)
 
+	// NOTE: getPrefs() is called when the app starts up. onCreate() isn't called until the settings button is pressed.
+	// The two had better be consistent.
+	
 	public static void getPrefs() {
 		// Get the xml/preferences.xml preferences
 		// Preferences.getPrefs();
@@ -77,14 +80,21 @@ public class Preferences extends PreferenceActivity {
 			Preferences.defaultID = ids[0].toString();
 		}
 		
-		ListPreference asrModelP = (ListPreference) findPreference("asrModelDirectory");
+		// Add an entry to the asrModelDirectory preference for each directory under the
+		// dsexample_data directory. There had better be nothing in dsexample_data except
+		// valid model directories.
+		// TODO Note the hard-coded "/dsexample_data". This should be changed.
+				
+		ListPreference asrModelDirectoryPreference = (ListPreference) findPreference("asrModelDirectory");
 		File modelDirFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/dsexample_data");
 		CharSequence[] models = modelDirFile.list();
-		asrModelP.setEntries(models);
-		asrModelP.setEntryValues(models);
-		asrModelP.setDefaultValue(models[0]);
+		asrModelDirectoryPreference.setEntries(models);
+		asrModelDirectoryPreference.setEntryValues(models);
+		asrModelDirectoryPreference.setDefaultValue(models[0]);
 		Preferences.asrModelDirectory = models[0].toString();
-				
+		
+		//asrModelDirectoryPreference.setOnPreferenceChangeListener();
+						
 		// Get the custom preference
 		// Preference customPref = (Preference) findPreference("customPref");
 		// customPref
