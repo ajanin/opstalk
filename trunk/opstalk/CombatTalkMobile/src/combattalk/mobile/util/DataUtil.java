@@ -15,7 +15,7 @@ public class DataUtil {
 	}
 	public static String dist2Str(double dist){
 		if(dist<1000)
-			return dist+" meters";
+			return String.format("%.1f meters",dist);
 		else
 			return String.format("%.1f kilometers",dist/1000);
 	}
