@@ -108,7 +108,7 @@ public class CombatTalkView extends MapActivity {
 	private SpeechSynthesis mTts;
 	private LinkedList<String> speakQueue = new LinkedList<String>();
 	public LocationOverlay myLocationOverlay = null;
-//	private SpeechCapture speechCap=null;
+	// private SpeechCapture speechCap=null;
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
@@ -183,7 +183,7 @@ public class CombatTalkView extends MapActivity {
 				@Override
 				public void onClick(View v) {
 					if (speechHandler.canListen()) {
-						//speechCap.stop();
+						// speechCap.stop();
 						speechButton.setText("Listening...");
 						speechButton.setEnabled(false);
 						speechHandler.start();
@@ -259,8 +259,7 @@ public class CombatTalkView extends MapActivity {
 			locationHandler = new GeoUpdateHandler(this);
 			myLocationOverlay = new LocationOverlay(this, mapView, this);
 			mapOverlays.add(myLocationOverlay);
-			
-			
+
 			// --- start network finding thread ---
 			cm = (ConnectivityManager) getBaseContext().getSystemService(
 					Context.CONNECTIVITY_SERVICE);
@@ -268,16 +267,24 @@ public class CombatTalkView extends MapActivity {
 			connectThread = new ConnectThread();
 			if (!connectThread.isAlive())
 				connectThread.start();
-			
+
 			// Disabling speech capture since ASR doesn't seem to be working.
-//			 speechCap=new SpeechCapture(this);
-//			 speechCap.start();
-			
+			// speechCap=new SpeechCapture(this);
+			// speechCap.start();
 
 		} catch (Exception e) {
 			this.addToSpeak("exception in " + "onCreate");
 		}
 
+	}
+
+	public Location getCurrLocation() {
+		if (Preferences.saveBattery) {
+			if (locationHandler != null)
+				return locationHandler.getLocation();
+		} else if (myLocationOverlay != null)
+			return myLocationOverlay.getLastFix();
+		return null;
 	}
 
 	// check whether status of network connectivity is connected
@@ -313,17 +320,20 @@ public class CombatTalkView extends MapActivity {
 	private void speak(String mes) {
 		try {
 			if (this.mTts != null && mes != null) {
-				String newMes="";
-				StringTokenizer st=new StringTokenizer(mes," ");
-				while(st.hasMoreTokens()){
-					String tmp=st.nextToken();
-					if(tmp.equalsIgnoreCase("rd")||tmp.equalsIgnoreCase("rd."))
-						tmp="road";
-					else if(tmp.equalsIgnoreCase("st")||tmp.equalsIgnoreCase("st."))
-						tmp="street";
-					else if(tmp.equalsIgnoreCase("ave")||tmp.equalsIgnoreCase("ave."))
-						tmp="avenue";
-					newMes+=tmp+" ";
+				String newMes = "";
+				StringTokenizer st = new StringTokenizer(mes, " ");
+				while (st.hasMoreTokens()) {
+					String tmp = st.nextToken();
+					if (tmp.equalsIgnoreCase("rd")
+							|| tmp.equalsIgnoreCase("rd."))
+						tmp = "road";
+					else if (tmp.equalsIgnoreCase("st")
+							|| tmp.equalsIgnoreCase("st."))
+						tmp = "street";
+					else if (tmp.equalsIgnoreCase("ave")
+							|| tmp.equalsIgnoreCase("ave."))
+						tmp = "avenue";
+					newMes += tmp + " ";
 				}
 				this.mTts.speak(newMes);
 				this.isSpeaking = true;
@@ -362,24 +372,32 @@ public class CombatTalkView extends MapActivity {
 
 			ArrayList<String> matches = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			Location loc = Preferences.saveBattery ? locationHandler
-					.getLocation() : myLocationOverlay.getLastFix();
+			Location loc = this.getCurrLocation();
 			if (loc == null)
 				addToSpeak("Your location is not available");
 			else {
+
+				/* test sending enemy found event */
+				Event enemyEvent = new Event(Event.MESSAGE,
+						System.currentTimeMillis(), loc.getLatitude(),
+						loc.getLongitude());
+				enemyEvent.setContent(new String("$enemy$").getBytes());
+				this.addEvent(enemyEvent);
+				/*---------------------------------*/
+
 				String result = matches.get(0);
 				if (result != null) {
 					if (this.isSpokenQuery) { // it is a spoken query
 
 					} else if (loc != null) { // if it is a spoken message
-						Message mes = new Message(this.account, result, System
-								.currentTimeMillis(), loc.getLatitude(), loc
-								.getLongitude());
+						Message mes = new Message(this.account, result,
+								System.currentTimeMillis(), loc.getLatitude(),
+								loc.getLongitude());
 						Repository.messages.add(mes);
 						updateMesOverlay();
-						Event mesEvent = new Event(Event.MESSAGE, System
-								.currentTimeMillis(), mes.getLatitude(), mes
-								.getLongitude());
+						Event mesEvent = new Event(Event.MESSAGE,
+								System.currentTimeMillis(), mes.getLatitude(),
+								mes.getLongitude());
 						mesEvent.setContent(result.getBytes());
 						this.addEvent(mesEvent);
 					}
@@ -441,18 +459,17 @@ public class CombatTalkView extends MapActivity {
 								&& network.getStatus() == Status.LOST
 								&& network.isStopped()) {
 							// speak("try connecting");
-//							if (!network.isAllKilled())
-//								addToSpeak("network not killed");
-//							else {
-								network = null;
-								netId++;
-								// currentNet=1-currentNet;
-								network = new Network(
-										CombatTalkView.this.account,
-										CombatTalkView.this, netId);
-								network.start();
-								// showTitle("network thread ok");
-//							}
+							// if (!network.isAllKilled())
+							// addToSpeak("network not killed");
+							// else {
+							network = null;
+							netId++;
+							// currentNet=1-currentNet;
+							network = new Network(CombatTalkView.this.account,
+									CombatTalkView.this, netId);
+							network.start();
+							// showTitle("network thread ok");
+							// }
 						}
 
 						setRunning(false);
@@ -507,8 +524,7 @@ public class CombatTalkView extends MapActivity {
 				}
 
 				if (!this.account.equals(Preferences.userId)) {
-					this
-							.setTitle("Use ID changed, please restart the application");
+					this.setTitle("Use ID changed, please restart the application");
 				}
 			}
 		} catch (Exception e) {
@@ -587,10 +603,6 @@ public class CombatTalkView extends MapActivity {
 			this.isSpokenQuery = false;
 			startVoiceRecognitionActivity();
 			break;
-		// case R.id.menu_query:
-		// this.isSpokenQuery = true;
-		// startVoiceRecognitionActivity();
-		// break;
 		case R.id.menu_myloc:
 			GeoPoint loc = Preferences.saveBattery ? locationHandler
 					.getGeoLocation() : myLocationOverlay.getMyLocation();
