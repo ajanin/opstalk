@@ -75,20 +75,6 @@ public class SpeechCapture {
 					frequency, channelConfiguration, audioEncoding, bufferSize);
 			audioRecord.startRecording();
 			while (isRecording) {
-				// currSeg = bufferPath + "/" + baseName + "_"
-				// + System.currentTimeMillis() + ".pcm";
-				// File file = new File(currSeg);
-				// // Delete any previous recording.
-				// if (file.exists())
-				// file.delete();
-				//
-				// // Create the new file.
-				// try {
-				// file.createNewFile();
-				// } catch (IOException e) {
-				// throw new IllegalStateException("Failed to create "
-				// + file.toString());
-				// }
 				try {
 					// OutputStream os = new FileOutputStream(file);
 					// BufferedOutputStream bos = new BufferedOutputStream(os);
@@ -115,17 +101,6 @@ public class SpeechCapture {
 	}
 
 	public void start() throws IOException {
-		// TextView text = (TextView) this.findViewById(R.id.TextView01);
-		// Location loc = locListener.getLocation();
-		// if (loc != null)
-		// text.setText("Provider: " + loc.getProvider() + "\nLoc: ("
-		// + loc.getLongitude() + ", " + loc.getLatitude() + ")");
-		// else
-		// text.setText("GPS location not available");
-		// text.setText("Connect to server...");
-		// network.connect();
-		// text.setText("Connect successfully");
-		// message("Start recording...");
 		String state = android.os.Environment.getExternalStorageState();
 		if (!state.equals(android.os.Environment.MEDIA_MOUNTED)) {
 			throw new IOException("SD Card is not mounted.  It is " + state
@@ -154,27 +129,4 @@ public class SpeechCapture {
 		parent.addEvent(event);
 		parent.showMessage("event " + seg.timeStamp + " sent");
 	}
-
-	// class streaming extends Thread {
-	// public void run() {
-	// while (isRecording || !segList.isEmpty()) {
-	// if (!segList.isEmpty()) {
-	// Segment seg = segList.getLast();
-	// try {
-	// send(seg);
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// continue;
-	// }
-	// // now segment sent successfully, remove it from buffer
-	// segList.removeLast();
-	// // deleteList.addFirst(seg);
-	//
-	// }
-	// }
-	// // message("Streaming thread stop...");
-	// }
-	//
-	// }
 }
