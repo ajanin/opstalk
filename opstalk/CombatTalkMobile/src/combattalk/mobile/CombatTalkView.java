@@ -112,10 +112,6 @@ public class CombatTalkView extends MapActivity {
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
-	// public LocationOverlay getMyLocationOverlay() {
-	// // return myLocationOverlay;
-	// }
-
 	public void setMyLocationOverlay(LocationOverlay myLocationOverlay) {
 		// this.myLocationOverlay = myLocationOverlay;
 	}
@@ -610,49 +606,48 @@ public class CombatTalkView extends MapActivity {
 			Repository.checkPoints.clear();
 			this.updateMesOverlay();
 			this.updateCheckOverlay();
-			// this.showDialog(this.DIALOG_HELP_ID);
 			break;
 		}
 		return true;
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		Dialog dialog = null;
-		switch (id) {
-		case DIALOG_HELP_ID:
-			// //--- custom information dialog
-			// dialog = new Dialog(this.getApplicationContext());
-			// dialog.setContentView(R.layout.custom_dialog);
-			// dialog.setTitle("Help");
-			// ImageView image = (ImageView)
-			// dialog.findViewById(R.id.dialog_image);
-			// image.setImageResource(R.drawable.menu_help);
-			// TextView dialogText = (TextView) dialog
-			// .findViewById(R.id.dialog_text);
-			// dialogText.setText(Preferences.helpStr);
-			AlertDialog.Builder builder;
-
-			Context mContext = getApplicationContext();
-			LayoutInflater inflater = (LayoutInflater) mContext
-					.getSystemService(LAYOUT_INFLATER_SERVICE);
-			View layout = inflater.inflate(R.layout.custom_dialog,
-					(ViewGroup) findViewById(R.id.layout_root));
-
-			TextView text = (TextView) layout.findViewById(R.id.dialog_text);
-			text.setText("Hello, this is a custom dialog!");
-			ImageView image = (ImageView) layout
-					.findViewById(R.id.dialog_image);
-			image.setImageResource(R.drawable.menu_help);
-
-			builder = new AlertDialog.Builder(mContext);
-			builder.setView(layout);
-			dialog = builder.create();
-			// dialog.show();
-			break;
-		}
-		return dialog;
-	}
+//	@Override
+//	protected Dialog onCreateDialog(int id) {
+//		Dialog dialog = null;
+//		switch (id) {
+//		case DIALOG_HELP_ID:
+//			// //--- custom information dialog
+//			// dialog = new Dialog(this.getApplicationContext());
+//			// dialog.setContentView(R.layout.custom_dialog);
+//			// dialog.setTitle("Help");
+//			// ImageView image = (ImageView)
+//			// dialog.findViewById(R.id.dialog_image);
+//			// image.setImageResource(R.drawable.menu_help);
+//			// TextView dialogText = (TextView) dialog
+//			// .findViewById(R.id.dialog_text);
+//			// dialogText.setText(Preferences.helpStr);
+//			AlertDialog.Builder builder;
+//
+//			Context mContext = getApplicationContext();
+//			LayoutInflater inflater = (LayoutInflater) mContext
+//					.getSystemService(LAYOUT_INFLATER_SERVICE);
+//			View layout = inflater.inflate(R.layout.custom_dialog,
+//					(ViewGroup) findViewById(R.id.layout_root));
+//
+//			TextView text = (TextView) layout.findViewById(R.id.dialog_text);
+//			text.setText("Hello, this is a custom dialog!");
+//			ImageView image = (ImageView) layout
+//					.findViewById(R.id.dialog_image);
+//			image.setImageResource(R.drawable.menu_help);
+//
+//			builder = new AlertDialog.Builder(mContext);
+//			builder.setView(layout);
+//			dialog = builder.create();
+//			// dialog.show();
+//			break;
+//		}
+//		return dialog;
+//	}
 
 	/**
 	 * update overlays using data from Repository
@@ -732,29 +727,4 @@ public class CombatTalkView extends MapActivity {
 		connectThread.addEvent(event);
 
 	}
-	//
-	// public class SpeakThread extends Thread {
-	// @Override
-	// public void run() {
-	// while (true) {
-	// while (!speakQueue.isEmpty()) {
-	// if (!isSpeaking)
-	// speak(speakQueue.removeLast());
-	// else
-	// try {
-	// sleep(500);
-	// } catch (InterruptedException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-	// try {
-	// Thread.sleep(1000);
-	// } catch (InterruptedException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-	// }
 }
