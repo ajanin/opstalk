@@ -13,6 +13,10 @@ import javax.swing.JSlider;
 
 import firetalk.db.Repository;
 import firetalk.operators.speech.PlaySound;
+import com.sun.java.swing.plaf.windows.WindowsButtonUI;
+import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
+import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.plaf.metal.MetalButtonUI;
 
 public class AudioPanel extends JPanel {
 
@@ -51,6 +55,7 @@ public class AudioPanel extends JPanel {
 	private JComboBox getJComboBox() {
 		if (jComboBox == null) {
 			jComboBox = new JComboBox();
+			jComboBox.setUI(new WindowsComboBoxUI());
 			DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
 			jComboBox.setModel(comboModel);
 			jComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -94,6 +99,7 @@ public class AudioPanel extends JPanel {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setText(">");
+			jButton.setUI(new MetalButtonUI());
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if (jButton.getText().equals("||")) {

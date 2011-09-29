@@ -182,6 +182,7 @@ public class MainWindow extends JFrame {
 			jSplitPane1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPane1.setDividerLocation(65);
 			jSplitPane1.setUI(new WindowsSplitPaneUI());
+			jSplitPane1.setEnabled(false);
 			jSplitPane1.setTopComponent(getInfoPanel());
 			jSplitPane1.setBottomComponent(getJScrollPane1());
 			jSplitPane1.setDividerSize(4);
@@ -341,6 +342,8 @@ public class MainWindow extends JFrame {
 		if (overallObjPanel == null) {
 			overallObjPanel = new OverallObjPanel();
 			overallObjPanel.setBorder(BorderFactory.createTitledBorder(null, "OpsTalk Mission Progress", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD | Font.ITALIC, 14), new Color(51, 51, 51)));
+			overallObjPanel.setBackground(SystemColor.controlHighlight);
+			overallObjPanel.setForeground(SystemColor.text);
 		}
 		return overallObjPanel;
 	}
