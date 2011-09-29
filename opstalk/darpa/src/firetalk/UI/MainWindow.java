@@ -64,6 +64,7 @@ public class MainWindow extends JFrame {
 	private IEDPanel IEDPanel = null;
 	private JPanel jPanel2 = null;
 	private OpsClock opsClock = null;
+	private AudioPanel audioPanel = null;
 
 	/**
 	 * This is the default constructor
@@ -179,7 +180,7 @@ public class MainWindow extends JFrame {
 		if (jSplitPane1 == null) {
 			jSplitPane1 = new JSplitPane();
 			jSplitPane1.setOrientation(JSplitPane.VERTICAL_SPLIT);
-			jSplitPane1.setDividerLocation(0);
+			jSplitPane1.setDividerLocation(65);
 			jSplitPane1.setUI(new WindowsSplitPaneUI());
 			jSplitPane1.setTopComponent(getInfoPanel());
 			jSplitPane1.setBottomComponent(getJScrollPane1());
@@ -209,6 +210,7 @@ public class MainWindow extends JFrame {
 			infoPanel.setLayout(new BorderLayout());
 			infoPanel.setBorder(BorderFactory
 					.createEtchedBorder(EtchedBorder.RAISED));
+			infoPanel.add(getAudioPanel(), BorderLayout.NORTH);
 		}
 		return infoPanel;
 	}
@@ -462,6 +464,19 @@ public class MainWindow extends JFrame {
 			opsClock = new OpsClock();
 		}
 		return opsClock;
+	}
+
+	/**
+	 * This method initializes audioPanel	
+	 * 	
+	 * @return firetalk.UI.AudioPanel	
+	 */
+	private AudioPanel getAudioPanel() {
+		if (audioPanel == null) {
+			audioPanel = new AudioPanel();
+			audioPanel.setBorder(BorderFactory.createTitledBorder(null, "Speech Monitor", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+		}
+		return audioPanel;
 	}
 
 	/**
