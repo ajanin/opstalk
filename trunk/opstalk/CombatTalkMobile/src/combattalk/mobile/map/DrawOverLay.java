@@ -23,12 +23,26 @@ public class DrawOverLay extends Overlay {
 	// int color;
 	// double direction = 0; // [0,360), angle from +x axis
 	CombatTalkView parent;
-	Bitmap bmp = null;
+	Bitmap pImg = null;
+	Bitmap wayImg = null;
+	Bitmap objImg = null;
+	Bitmap wayImg2 = null;
+	Bitmap objImg2 = null;
 	People people = null;
 
 	public DrawOverLay(CombatTalkView parent, People people) {
 		this.parent = parent;
 		this.people = people;
+		pImg = BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.friend);
+		wayImg = BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.waypoint);
+		objImg = BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.objpoint);
+		wayImg2 = BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.waypoint2);
+		objImg2 = BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.objpoint2);
 		// bmp = BitmapFactory.decodeResource(parent.getResources(), bmpId);
 	}
 
@@ -66,13 +80,18 @@ public class DrawOverLay extends Overlay {
 
 				// ---add the marker---
 				int markerSize = 10;
-				bmp = BitmapFactory.decodeResource(parent.getResources(),
-						people.getIconId());
-				canvas.drawBitmap(bmp, null, new RectF(
-						screenPts.x - markerSize, screenPts.y - markerSize,
-						screenPts.x + markerSize, screenPts.y + markerSize),
-						null);
-
+				// pImg = BitmapFactory.decodeResource(parent.getResources(),
+				// people.getIconId());
+				canvas.drawBitmap(
+						pImg,
+						null,
+						new RectF(screenPts.x - markerSize, screenPts.y
+								- markerSize * pImg.getHeight()
+								/ pImg.getWidth(), screenPts.x + markerSize,
+								screenPts.y + markerSize * pImg.getHeight()
+										/ pImg.getWidth()), null);
+				canvas.drawText(people.getRankName(), screenPts.x, screenPts.y,
+						drawPaint);
 				// --- calculate points for drawing arrow
 				float arrowLength = 17;
 				float topx = (int) (screenPts.x + arrowLength
@@ -99,10 +118,36 @@ public class DrawOverLay extends Overlay {
 					GeoPoint gp = new GeoPoint((int) (cp.lat * 1E6),
 							(int) (cp.lon * 1E6));
 					parent.mapView.getProjection().toPixels(gp, screenPts);
-					canvas.drawRect(screenPts.x - 10, screenPts.y - 4,
-							screenPts.x + 10, screenPts.y + 4,
-							cp.isReached() ?  greenPaint:yellowPaint);
-
+					// canvas.drawRect(screenPts.x - 10, screenPts.y - 4,
+					// screenPts.x + 10, screenPts.y + 4,
+					// cp.isReached() ? greenPaint : yellowPaint);
+					if (cp.isObj()) {
+						if (cp.isReached())
+							canvas.drawBitmap(objImg2, null, new RectF(
+									screenPts.x - markerSize, screenPts.y
+											- markerSize, screenPts.x
+											+ markerSize, screenPts.y
+											+ markerSize), null);
+						else
+							canvas.drawBitmap(objImg, null, new RectF(
+									screenPts.x - markerSize, screenPts.y
+											- markerSize, screenPts.x
+											+ markerSize, screenPts.y
+											+ markerSize), null);
+					} else {
+						if (cp.isReached())
+							canvas.drawBitmap(wayImg2, null, new RectF(
+									screenPts.x - markerSize, screenPts.y
+											- markerSize, screenPts.x
+											+ markerSize, screenPts.y
+											+ markerSize), null);
+						else
+							canvas.drawBitmap(wayImg, null, new RectF(
+									screenPts.x - markerSize, screenPts.y
+											- markerSize, screenPts.x
+											+ markerSize, screenPts.y
+											+ markerSize), null);
+					}
 				}
 				return true;
 			} else
