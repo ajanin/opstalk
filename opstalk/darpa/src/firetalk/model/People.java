@@ -15,6 +15,16 @@ public class People {
 	private boolean selected = false;
 	private final static int history_len = 200;
 
+	public String getRandName() {
+		if (Level.equalsIgnoreCase("1"))
+			return "PL " + id;
+		else if (Level.equalsIgnoreCase("2"))
+			return "SQ " + id;
+		else
+			return "FT " + id;
+
+	}
+
 	public boolean isSelected() {
 		return selected;
 	}
