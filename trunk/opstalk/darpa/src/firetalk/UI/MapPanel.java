@@ -85,21 +85,53 @@ public class MapPanel extends JPanel {
 	private CheckPoint selectedSensor = null; // @jve:decl-index=0:
 	private IEDPoint selectedMes = null;
 	private String mapType = "roadMap"; // @jve:decl-index=0:
-	private Image soldier = null; // @jve:decl-index=0:
-	private Image teamLead = null; // @jve:decl-index=0:
-	private Image squadLead = null; // @jve:decl-index=0:
-	private Image enemyImg=null;
+	// private Image soldier = null; // @jve:decl-index=0:
+	// private Image teamLead = null; // @jve:decl-index=0:
+	// private Image squadLead = null; // @jve:decl-index=0:
+	private Image enemyImg = null;
+	private Image friendImg = null;
 	private Image warningImg = null; // @jve:decl-index=0:
 	private Image rallyImg = null;
+	private Image objImg = null;
+	private Image objImg2 = null;
+	private Image wayImg = null;
+	private Image wayImg2 = null;
 	public MainWindow parent = null;
-	private int pRadius=8;
+	private int pRadius = 8;
+
 	public void initializeImages() throws IOException {
-		soldier = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
-		teamLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
-		squadLead = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
-		enemyImg=ImageIO.read(new File("img/enemy.png")).getScaledInstance(pRadius*2, pRadius*2, Image.SCALE_DEFAULT);
-		this.warningImg = ImageIO.read(new File("img/warning.jpg"));
-		this.rallyImg = ImageIO.read(new File("img/rally.jpg"));
+		// soldier = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(
+		// pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+		// teamLead = ImageIO.read(new
+		// File("img/friend.jpg")).getScaledInstance(
+		// pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+		// squadLead = ImageIO.read(new
+		// File("img/friend.jpg")).getScaledInstance(
+		// pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+		friendImg = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(
+				pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+
+		enemyImg = ImageIO.read(new File("img/enemy.jpg")).getScaledInstance(
+				pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+		this.warningImg = ImageIO.read(new File("img/warning.jpg"))
+				.getScaledInstance(pRadius * 2, pRadius * 2,
+						Image.SCALE_DEFAULT);
+		this.rallyImg = ImageIO.read(new File("img/rallyPoint.jpg"))
+				.getScaledInstance(pRadius * 2, pRadius * 2,
+						Image.SCALE_DEFAULT);
+		this.wayImg = ImageIO.read(new File("img/waypoint.jpg"))
+				.getScaledInstance(pRadius * 2, pRadius * 2,
+						Image.SCALE_DEFAULT);
+		this.wayImg2 = ImageIO.read(new File("img/waypoint2.jpg"))
+				.getScaledInstance(pRadius * 2, pRadius * 2,
+						Image.SCALE_DEFAULT);
+		this.objImg = ImageIO.read(new File("img/objpoint.jpg"))
+				.getScaledInstance(pRadius * 2, pRadius * 2,
+						Image.SCALE_DEFAULT);
+		this.objImg2 = ImageIO.read(new File("img/objpoint2.jpg"))
+				.getScaledInstance(pRadius * 2, pRadius * 2,
+						Image.SCALE_DEFAULT);
+
 	}
 
 	/**
@@ -109,25 +141,49 @@ public class MapPanel extends JPanel {
 		Graphics g2d = _baseMap.getGraphics();
 		g2d.drawImage(_bufMap, 0, 0, null); // draw base map
 		// draw way points
+		// for (CheckPoint cp : Repository.checkPoints) {
+		// int x = (int) this.longtoX(cp.lon);
+		// int y = (int) this.lattoY(cp.lat);
+		// g2d.setColor(cp.isReached() ? Color.GREEN : Color.yellow);
+		// int height = 12;
+		// int width = 19;
+		// int[] xPoints = new int[] { x, x - 4, x - width, x - width,
+		// x + width, x + width, x };
+		// int[] yPoints = new int[] { y, (int) (y - height * 0.6),
+		// (int) (y - height * 0.6), y - height * 2, y - height * 2,
+		// (int) (y - height * 0.6), (int) (y - height * 0.6) };
+		// g2d.fillPolygon(xPoints, yPoints, xPoints.length);
+		// g2d.setColor(Color.BLACK);
+		// g2d.drawPolygon(xPoints, yPoints, xPoints.length);
+		// if (cp.isObj())
+		// g2d.drawString("O" + cp.userID, x - width + 2,
+		// (int) (y - height));
+		// else
+		// g2d.drawString("w" + cp.id, x - width + 2, (int) (y - height));
+		//
+		// }
+		g2d.setColor(Color.blue);
+		g2d.setFont(new Font("times", Font.BOLD, 9));
 		for (CheckPoint cp : Repository.checkPoints) {
 			int x = (int) this.longtoX(cp.lon);
 			int y = (int) this.lattoY(cp.lat);
-			g2d.setColor(cp.isReached() ? Color.GREEN : Color.yellow);
-			int height = 12;
-			int width = 19;
-			int[] xPoints = new int[] { x, x - 4, x - width, x - width,
-					x + width, x + width, x };
-			int[] yPoints = new int[] { y, (int) (y - height * 0.6),
-					(int) (y - height * 0.6), y - height * 2, y - height * 2,
-					(int) (y - height * 0.6), (int) (y - height * 0.6) };
-			g2d.fillPolygon(xPoints, yPoints, xPoints.length);
-			g2d.setColor(Color.BLACK);
-			g2d.drawPolygon(xPoints, yPoints, xPoints.length);
+			if (cp.isObj()) {
+				if (cp.isReached())
+					g2d.drawImage(objImg2, x - pRadius, y - pRadius, null);
+				else
+					g2d.drawImage(objImg, x - pRadius, y - pRadius, null);
+			} else {
+				if (cp.isReached())
+					g2d.drawImage(wayImg2, x - pRadius, y - pRadius, null);
+				else
+					g2d.drawImage(wayImg, x - pRadius, y - pRadius, null);
+			}
 			if (cp.isObj())
-				g2d.drawString("O" + cp.userID, x - width + 2,
-						(int) (y - height));
+				g2d.drawString("O" + cp.userID, x - pRadius + 2,
+						(int) (y - pRadius));
 			else
-				g2d.drawString("w" + cp.id, x - width + 2, (int) (y - height));
+				g2d.drawString("w" + cp.id, x - pRadius + 2,
+						(int) (y - pRadius));
 
 		}
 		// draw rally points
@@ -159,10 +215,10 @@ public class MapPanel extends JPanel {
 			g2d.setColor(Color.red);
 			g2d.drawRect(x - 5, y - 5, 10, 10);
 		}
-		for(Enemy e:Repository.enemyList){
+		for (Enemy e : Repository.enemyList) {
 			int x = (int) this.longtoX(e.getLongitude());
 			int y = (int) this.lattoY(e.getLatitude());
-			g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
+			g2d.drawImage(enemyImg, x - pRadius, y - pRadius, null);
 		}
 		for (Iterator<String> it = Repository.peopleList.keySet().iterator(); it
 				.hasNext();) {
@@ -174,23 +230,27 @@ public class MapPanel extends JPanel {
 				int y = (int) this.lattoY(loc.lat);
 				g2d.setColor(Color.red);
 				if (p.isSelected())
-					g2d.drawOval(x - pRadius*2, y - pRadius*2, pRadius*4, pRadius*4);
+					g2d.drawOval(x - pRadius * 2, y - pRadius * 2, pRadius * 4,
+							pRadius * 4);
 				g2d.setColor(Color.black);
 				g2d.setFont(new Font("times", Font.BOLD, 9));
-				if (p.getLevel().equalsIgnoreCase("1")) {
-					g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
-					g2d.drawString("PL "+p.getId(), x-pRadius, y-pRadius);
-				}
-
-				else if (p.getLevel().equalsIgnoreCase("2")) {
-					g2d.drawImage(teamLead, x - pRadius, y - pRadius, null);
-					g2d.drawString("SQ "+p.getId(), x-pRadius, y-pRadius);
-				}
-
-				else if (p.getLevel().equalsIgnoreCase("3")) {
-					g2d.drawImage(soldier, x - pRadius, y - pRadius, null);
-					g2d.drawString("FT "+p.getId(), x-pRadius, y-pRadius);
-				}
+				g2d.drawImage(friendImg, x - pRadius, y - pRadius, null);
+				g2d.drawString(p.getName(), x - pRadius, y - pRadius);
+				//
+				// if (p.getLevel().equalsIgnoreCase("1")) {
+				// g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
+				// g2d.drawString("PL " + p.getId(), x - pRadius, y - pRadius);
+				// }
+				//
+				// else if (p.getLevel().equalsIgnoreCase("2")) {
+				// g2d.drawImage(teamLead, x - pRadius, y - pRadius, null);
+				// g2d.drawString("SQ " + p.getId(), x - pRadius, y - pRadius);
+				// }
+				//
+				// else if (p.getLevel().equalsIgnoreCase("3")) {
+				// g2d.drawImage(soldier, x - pRadius, y - pRadius, null);
+				// g2d.drawString("FT " + p.getId(), x - pRadius, y - pRadius);
+				// }
 
 				// --- calculate points for drawing arrow
 				g2d.setColor(Color.black);
@@ -200,16 +260,16 @@ public class MapPanel extends JPanel {
 				float arrowAngle1 = (float) (loc.direction + Math.PI * 3 / 4);
 				float arrowAngle2 = (float) (loc.direction - Math.PI * 3 / 4);
 				g2d.drawLine(x, y, topx, topy);
-				g2d.drawLine(topx, topy, (int) (topx + arrowLength / 2
-						* Math.cos(arrowAngle1)), (int) (topy - arrowLength / 2
-						* Math.sin(arrowAngle1)));
-				g2d.drawLine(topx, topy, (int) (topx + arrowLength / 2
-						* Math.cos(arrowAngle2)), (int) (topy - arrowLength / 2
-						* Math.sin(arrowAngle2)));
+				g2d.drawLine(topx, topy,
+						(int) (topx + arrowLength / 2 * Math.cos(arrowAngle1)),
+						(int) (topy - arrowLength / 2 * Math.sin(arrowAngle1)));
+				g2d.drawLine(topx, topy,
+						(int) (topx + arrowLength / 2 * Math.cos(arrowAngle2)),
+						(int) (topy - arrowLength / 2 * Math.sin(arrowAngle2)));
 
 				// Trajecotry calculations
 				final int smoothSize = 10;
-				final int tolerance=3;  // times 
+				final int tolerance = 3; // times
 				double aveDiffx = Double.MAX_VALUE;
 				double aveDiffy = Double.MAX_VALUE;
 				LinkedList<Location> locates = p.getHistory();
@@ -224,24 +284,26 @@ public class MapPanel extends JPanel {
 						Location second = lt.next();
 						double diffy = second.lat - first.lat;
 						double diffx = second.lon - first.lon;
-						if (diffLat.size()<smoothSize||(diffy != 0 || diffx != 0) && diffy < aveDiffy*tolerance
-								&& diffx < aveDiffx*tolerance) {
+						if (diffLat.size() < smoothSize
+								|| (diffy != 0 || diffx != 0)
+								&& diffy < aveDiffy * tolerance
+								&& diffx < aveDiffx * tolerance) {
 							diffLat.addLast(diffy);
 							diffLon.addLast(diffx);
-							if(diffLat.size()>smoothSize){
+							if (diffLat.size() > smoothSize) {
 								diffLat.removeFirst();
 								diffLon.removeFirst();
 							}
-							if(diffLat.size()>=smoothSize){
+							if (diffLat.size() >= smoothSize) {
 								// cal average diff
-								aveDiffx=0;
-								aveDiffy=0;
-								for(Double v :diffLat)
-									aveDiffy+=v;
-								for(Double v :diffLon)
-									aveDiffx+=v;
-								aveDiffx/=diffLon.size();
-								aveDiffy/=diffLat.size();
+								aveDiffx = 0;
+								aveDiffy = 0;
+								for (Double v : diffLat)
+									aveDiffy += v;
+								for (Double v : diffLon)
+									aveDiffx += v;
+								aveDiffx /= diffLon.size();
+								aveDiffy /= diffLat.size();
 							}
 							int x1 = (int) this.longtoX(first.lon);
 							int y1 = (int) this.lattoY(first.lat);
@@ -250,7 +312,7 @@ public class MapPanel extends JPanel {
 							g2d.drawLine(x1, y1, x2, y2);
 							first = second;
 						}
-						
+
 					}
 				}
 			}
@@ -298,9 +360,9 @@ public class MapPanel extends JPanel {
 	 * move image pixels by (diffx, diffy)
 	 */
 	public void moveImage(int diffx, int diffy) {
-		BufferedImage img = _baseMap.getSubimage(-Math.min(diffx, 0), -Math
-				.min(diffy, 0), _sizeX - Math.abs(diffx), _sizeY
-				- Math.abs(diffy));
+		BufferedImage img = _baseMap.getSubimage(-Math.min(diffx, 0),
+				-Math.min(diffy, 0), _sizeX - Math.abs(diffx),
+				_sizeY - Math.abs(diffy));
 		Graphics g = _baseMap.getGraphics();
 		g.setColor(Color.white);
 		g.drawRect(0, 0, _sizeX, _sizeY);
@@ -466,8 +528,7 @@ public class MapPanel extends JPanel {
 				// + (value == null ? "null" : value.toString()));
 				if (_baseMap != null) {
 					setToolTipText(MessageFormat
-							.format(
-									"<html>Image downloaded from URI<br>size: w={0}, h={1}</html>",
+							.format("<html>Image downloaded from URI<br>size: w={0}, h={1}</html>",
 									_baseMap.getWidth(), _baseMap.getHeight()));
 					updateMap();
 				} else
@@ -555,12 +616,11 @@ public class MapPanel extends JPanel {
 
 		hook.addRecieveStatusListener(listener);
 		hook.addSendStatusListener(listener);
-		hook
-				.addUnderlyingIOStreamInterruptedOrClosed(new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						// sout(evt.getPropertyName() + " fired!!!");
-					}
-				});
+		hook.addUnderlyingIOStreamInterruptedOrClosed(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				// sout(evt.getPropertyName() + " fired!!!");
+			}
+		});
 
 		return hook;
 	}
@@ -625,8 +685,8 @@ public class MapPanel extends JPanel {
 			jButton.setPreferredSize(new Dimension(15, 15));
 			ImageIcon icon = new ImageIcon("data/icon/minus.png");
 			jButton.setIcon(icon);
-			Dimension maximumSize = new Dimension(icon.getIconWidth(), icon
-					.getIconHeight());
+			Dimension maximumSize = new Dimension(icon.getIconWidth(),
+					icon.getIconHeight());
 			jButton.setMaximumSize(maximumSize);
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -649,8 +709,8 @@ public class MapPanel extends JPanel {
 			jButton1.setUI(new WindowsButtonUI());
 			ImageIcon icon = new ImageIcon("data/icon/plus.png");
 			jButton1.setIcon(icon);
-			Dimension maximumSize = new Dimension(icon.getIconWidth(), icon
-					.getIconHeight());
+			Dimension maximumSize = new Dimension(icon.getIconWidth(),
+					icon.getIconHeight());
 			jButton1.setMaximumSize(maximumSize);
 			jButton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
