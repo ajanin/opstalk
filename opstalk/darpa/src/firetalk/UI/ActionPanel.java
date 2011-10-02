@@ -107,7 +107,7 @@ public class ActionPanel extends JPanel {
 			model = new DefaultListModel();
 			jList.setModel(model);
 			jList.setCellRenderer(new ListRenderer());
-			jList.setBackground(SystemColor.info);
+			jList.setBackground(Color.orange);
 			jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			jList.addListSelectionListener(new ListSelectionListener() {
 
