@@ -32,6 +32,15 @@ public class People {
 			this.iconId = R.drawable.soldier;
 	}
 
+	public String getRankName() {
+		if (rank.equals("1"))
+			return "PL "+id;
+		else if (rank.equals("2"))
+			return "SQ "+id;
+		else 
+			return "FT "+id;
+	}
+
 	public People(String id, String lastName, String firstName, int iconId) {
 		this.id = id;
 		this.firstName = firstName;
