@@ -242,8 +242,8 @@ public class Network extends Thread {
 						false, isReached.equals("1")));
 			}
 			Repository.storeRallyPoints();
-			parent.updateCheckOverlay();
-			parent.updateRallyOverlay();
+//			parent.updateCheckOverlay();
+//			parent.updateRallyOverlay();
 			// send context to server
 			// at this point connection is established,
 			parent.addToSpeak("successfully connected");
