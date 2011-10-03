@@ -510,10 +510,13 @@ public class CombatTalkView extends MapActivity {
 
 	private void exit() {
 		Repository.storeDB();
-		if (myLocationOverlay.isCompassEnabled())
-			myLocationOverlay.disableCompass();
-		this.myLocationOverlay.stop();
-		this.locationHandler.stop();
+		if (myLocationOverlay != null) {
+			if (myLocationOverlay.isCompassEnabled())
+				myLocationOverlay.disableCompass();
+			this.myLocationOverlay.stop();
+		}
+		if (locationHandler != null)
+			this.locationHandler.stop();
 		if (this.connectThread != null && this.connectThread.isAlive())
 			this.connectThread.stop();
 		if (mTts != null)
