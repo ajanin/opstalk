@@ -28,6 +28,7 @@ public class Repository {
 	public static Vector<RallyPoint> rallyList = new Vector<RallyPoint>();
 	public static HashMap<String, Long> transTime = new HashMap();
 	public static Vector<CheckPoint> checkPoints = new Vector<CheckPoint>();
+	public static Vector<Enemy> enemyList = new Vector<Enemy>();
 	// public final static String rootPath = Environment
 	// .getExternalStorageDirectory().getAbsolutePath();
 	public final static String rootPath = "/sdcard";
@@ -36,20 +37,23 @@ public class Repository {
 	// public final static
 
 	public static void initDB() {
-		try{
-//		Repository.readMessage();
-		Repository.readPeople();
-		Repository.readTransTime();
-		Repository.readCheckPoints();
-		Repository.readRallyPoints();
-		}
-		catch(Exception e){
-			
+		try {
+			// Repository.readMessage();
+			Repository.readPeople();
+			Repository.readTransTime();
+			Repository.readCheckPoints();
+			Repository.readRallyPoints();
+		} catch (Exception e) {
+
 		}
 	}
 
+	public static void addEnemy(Enemy e) {
+		enemyList.add(e);
+	}
+
 	public static void storeDB() {
-//		Repository.storeMessage();
+		// Repository.storeMessage();
 		Repository.storeTransTime();
 		Repository.storeCheckPoints();
 		Repository.storeTransTime();
@@ -126,9 +130,9 @@ public class Repository {
 					+ "/database/checkpoints.txt");
 			fw.write("# id lat lon name\n");
 			for (CheckPoint point : checkPoints) {
-				fw.write(String.format("%s$%f$%f$%s$%s\n", point.id,
-						point.lat, point.lon, point.isObj() ? "1"
-								: "0", point.isReached() ? "1" : "0"));
+				fw.write(String.format("%s$%f$%f$%s$%s\n", point.id, point.lat,
+						point.lon, point.isObj() ? "1" : "0",
+						point.isReached() ? "1" : "0"));
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -227,9 +231,9 @@ public class Repository {
 			FileWriter fw = new FileWriter(rootPath + "/database/messages.txt");
 			fw.write("# userID lat lon validtime mes\n");
 			for (Message mes : messages) {
-				fw.write(String.format("%s$%f$%f$%s$%s\n", mes.getUserId(), mes
-						.getLatitude(), mes.getLongitude(), ""
-						+ mes.getValidTime(), mes.getMes()));
+				fw.write(String.format("%s$%f$%f$%s$%s\n", mes.getUserId(),
+						mes.getLatitude(), mes.getLongitude(),
+						"" + mes.getValidTime(), mes.getMes()));
 			}
 			fw.close();
 		} catch (IOException e) {

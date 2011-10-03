@@ -353,23 +353,23 @@ public class CombatTalkView extends MapActivity {
 				this.addEvent(enemyEvent);
 				/*---------------------------------*/
 
-				String result = matches.get(0);
-				if (result != null) {
-					if (this.isSpokenQuery) { // it is a spoken query
-
-					} else if (loc != null) { // if it is a spoken message
-						Message mes = new Message(this.account, result,
-								System.currentTimeMillis(), loc.getLatitude(),
-								loc.getLongitude());
-						Repository.messages.add(mes);
-						updateMesOverlay();
-						Event mesEvent = new Event(Event.MESSAGE,
-								System.currentTimeMillis(), mes.getLatitude(),
-								mes.getLongitude());
-						mesEvent.setContent(result.getBytes());
-						this.addEvent(mesEvent);
-					}
-				}
+//				String result = matches.get(0);
+//				if (result != null) {
+//					if (this.isSpokenQuery) { // it is a spoken query
+//
+//					} else if (loc != null) { // if it is a spoken message
+//						Message mes = new Message(this.account, result,
+//								System.currentTimeMillis(), loc.getLatitude(),
+//								loc.getLongitude());
+//						Repository.messages.add(mes);
+//						updateMesOverlay();
+//						Event mesEvent = new Event(Event.MESSAGE,
+//								System.currentTimeMillis(), mes.getLatitude(),
+//								mes.getLongitude());
+//						mesEvent.setContent(result.getBytes());
+//						this.addEvent(mesEvent);
+//					}
+//				}
 			}
 		}
 		if (requestCode == MY_DATA_CHECK_CODE) {

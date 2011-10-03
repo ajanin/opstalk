@@ -15,6 +15,7 @@ import com.google.android.maps.Overlay;
 import combattalk.mobile.CombatTalkView;
 import combattalk.mobile.R;
 import combattalk.mobile.data.CheckPoint;
+import combattalk.mobile.data.Enemy;
 import combattalk.mobile.data.People;
 import combattalk.mobile.data.RallyPoint;
 import combattalk.mobile.data.Repository;
@@ -26,12 +27,14 @@ public class DrawOverLay extends Overlay {
 	Bitmap objImg = null;
 	Bitmap wayImg2 = null;
 	Bitmap objImg2 = null;
-	Bitmap rallyImg=null;
-//	People people = null;
+	Bitmap rallyImg = null;
+	Bitmap enemyImg = null;
+
+	// People people = null;
 
 	public DrawOverLay(CombatTalkView parent) {
 		this.parent = parent;
-//		this.people = people;
+		// this.people = people;
 		pImg = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.friend);
 		wayImg = BitmapFactory.decodeResource(parent.getResources(),
@@ -44,6 +47,8 @@ public class DrawOverLay extends Overlay {
 				R.drawable.objpoint2);
 		rallyImg = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.rallypoint);
+		enemyImg = BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.enemy);
 		// bmp = BitmapFactory.decodeResource(parent.getResources(), bmpId);
 	}
 
@@ -148,16 +153,24 @@ public class DrawOverLay extends Overlay {
 										+ markerSize), null);
 				}
 			}
-			//draw rally point
-			for(RallyPoint rp:Repository.rallyList){
+			// draw rally point
+			for (RallyPoint rp : Repository.rallyList) {
 				GeoPoint gp = new GeoPoint((int) (rp.lat * 1E6),
 						(int) (rp.lon * 1E6));
 				parent.mapView.getProjection().toPixels(gp, screenPts);
 				canvas.drawBitmap(rallyImg, null, new RectF(screenPts.x
-						- markerSize, screenPts.y - markerSize,
-						screenPts.x + markerSize, screenPts.y
-								+ markerSize), null);
-				
+						- markerSize, screenPts.y - markerSize, screenPts.x
+						+ markerSize, screenPts.y + markerSize), null);
+
+			}
+			// draw enemy
+			for (Enemy e : Repository.enemyList) {
+				GeoPoint gp = new GeoPoint((int) (e.getLatitude() * 1E6),
+						(int) (e.getLongitude() * 1E6));
+				parent.mapView.getProjection().toPixels(gp, screenPts);
+				canvas.drawBitmap(enemyImg, null, new RectF(screenPts.x
+						- markerSize, screenPts.y - markerSize, screenPts.x
+						+ markerSize, screenPts.y + markerSize), null);
 			}
 			return true;
 		} catch (Exception e) {
