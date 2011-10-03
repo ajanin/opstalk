@@ -85,7 +85,7 @@ public class CombatTalkView extends MapActivity {
 		// this.myLocationOverlay = myLocationOverlay;
 	}
 
-	private HashMap<String, DrawOverLay> drawOverlays = new HashMap();
+	//private HashMap<String, DrawOverLay> drawOverlays = new HashMap();
 	private boolean isSpokenQuery = false;
 	public MapView mapView;
 	private ConnectThread connectThread = null;
@@ -212,19 +212,18 @@ public class CombatTalkView extends MapActivity {
 			if (this.checkOverlay.size() != 0)
 				mapOverlays.add(this.checkOverlay);
 			this.rallyOverlay = new RallyPointOverlay(this.getResources()
-					.getDrawable(R.drawable.rally));
+					.getDrawable(R.drawable.rallypoint));
 			if (this.rallyOverlay.size() != 0)
 				mapOverlays.add(this.rallyOverlay);
-			for (Iterator<String> it = Repository.peopleList.keySet()
-					.iterator(); it.hasNext();) {
-				String id = it.next();
+//			for (Iterator<String> it = Repository.peopleList.keySet()
+//					.iterator(); it.hasNext();) {
+//				String id = it.next();
 				// if (!id.equalsIgnoreCase(this.account)) {
-				DrawOverLay overlay = new DrawOverLay(this,
-						Repository.peopleList.get(id));
-				drawOverlays.put(id, overlay);
+				DrawOverLay overlay = new DrawOverLay(this);
+			//	drawOverlays.put(id, overlay);
 				mapOverlays.add(overlay);
-				// }
-			}
+//				// }
+//			}
 			locationHandler = new GeoUpdateHandler(this);
 			myLocationOverlay = new LocationOverlay(this, mapView, this);
 			mapOverlays.add(myLocationOverlay);

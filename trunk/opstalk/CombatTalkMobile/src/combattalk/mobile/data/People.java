@@ -2,6 +2,8 @@ package combattalk.mobile.data;
 
 import java.util.LinkedList;
 
+import com.google.android.maps.GeoPoint;
+
 import combattalk.mobile.R;
 
 public class People {
@@ -32,13 +34,23 @@ public class People {
 			this.iconId = R.drawable.soldier;
 	}
 
+	public GeoPoint getGeoLocation() {
+		People.LocationInfo loc = this.getLocation();
+		if (loc != null) {
+			double lat = loc.latitude;
+			double lon = loc.longitude;
+			return new GeoPoint((int) (lat * 1E6), (int) (lon * 1E6));
+		}
+		return null;
+	}
+
 	public String getRankName() {
 		if (rank.equals("1"))
-			return "PL "+id;
+			return "PL " + id;
 		else if (rank.equals("2"))
-			return "SQ "+id;
-		else 
-			return "FT "+id;
+			return "SQ " + id;
+		else
+			return "FT " + id;
 	}
 
 	public People(String id, String lastName, String firstName, int iconId) {
