@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import combattalk.mobile.CombatTalkView;
+import combattalk.mobile.Preferences;
 import combattalk.mobile.data.CheckPoint;
 import combattalk.mobile.data.People;
 import combattalk.mobile.data.RallyPoint;
@@ -72,15 +73,16 @@ public class SpeechHandler implements SpeechCommandHandler,
 	// Do the actual download of the file to a local file with the
 	// same name but .new appended.
 	// TODO: Make this more efficient.
-	// TODO: Update this to handle other models. This will require significant changes to the web version.
+	// Note: This only updates the model currently being used.
 
 	private boolean download_grammar_file(String name) {
 		String localdir = Environment.getExternalStorageDirectory()
 				.getAbsolutePath()
-				+ "/dsexample_data";
+				+ "/dsexample_data/" + Preferences.asrModelDirectory;
 
 		try {
 			URL url = new URL("http://www3.icsi.berkeley.edu/~janin/opstalk/"
+					+ Preferences.asrModelDirectory + "/"
 					+ name);
 			File file = new File(localdir, name + ".new");
 			URLConnection con = url.openConnection();
@@ -106,7 +108,7 @@ public class SpeechHandler implements SpeechCommandHandler,
 	private void update_grammar_file(String name) {
 		String localdir = Environment.getExternalStorageDirectory()
 				.getAbsolutePath()
-				+ "/dsexample_data";
+				+ "/dsexample_data/" + Preferences.asrModelDirectory;
 		File origfile = new File(localdir, name + ".new");
 		if (!origfile.exists()) {
 			setOutput("Updating grammar failed unexpectedly.");
