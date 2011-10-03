@@ -255,9 +255,16 @@ public class SpeechHandler implements SpeechCommandHandler,
 
 	@Override
 	public void voiceNoteCommand() {
+		setOutput("Voice Note Command Not Yet Implemented");
 
 		parent.resetButton();
 
+	}
+	
+	@Override
+	public void enemySpottedCommand() {
+		setOutput("Enemy Spotted Command Not Yet Implemented");
+		parent.resetButton();
 	}
 
 	@Override
