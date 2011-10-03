@@ -99,7 +99,7 @@ public class SpeechCapture {
 					int bufferReadResult = audioRecord.read(buffer, 0,
 							bufferSize);
 					// int isSpeech = SpeechDetector.detect(currSeg) ? 1 : 0;
-					Location loc = parent.getCurrLocation(); 
+					Location loc = parent.getMyLocation(); 
 					send(new Segment(buffer, bufferReadResult,
 							System.currentTimeMillis(), loc, actOn));
 				} catch (Throwable t) {
