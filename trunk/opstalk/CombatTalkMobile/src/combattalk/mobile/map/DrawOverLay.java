@@ -75,7 +75,9 @@ public class DrawOverLay extends Overlay {
 					Paint arrowPaint = new Paint();
 					arrowPaint.setColor(Color.BLUE);
 					arrowPaint.setStrokeWidth(2);
-
+					Paint textPaint = new Paint();
+					textPaint.setColor(Color.BLACK);
+					textPaint.setStyle(Style.FILL);
 					// ---add the marker---
 					// pImg =
 					// BitmapFactory.decodeResource(parent.getResources(),
@@ -89,8 +91,11 @@ public class DrawOverLay extends Overlay {
 									screenPts.x + markerSize, screenPts.y
 											+ markerSize * pImg.getHeight()
 											/ pImg.getWidth()), null);
-					canvas.drawText(people.getRankName(), screenPts.x,
-							screenPts.y, drawPaint);
+					canvas.drawText(
+							people.getRankName(),
+							screenPts.x - markerSize,
+							screenPts.y - markerSize * pImg.getHeight()
+									/ pImg.getWidth(), textPaint);
 					// --- calculate points for drawing arrow
 					float arrowLength = 17;
 					float topx = (int) (screenPts.x + arrowLength
@@ -168,9 +173,15 @@ public class DrawOverLay extends Overlay {
 				GeoPoint gp = new GeoPoint((int) (e.getLatitude() * 1E6),
 						(int) (e.getLongitude() * 1E6));
 				parent.mapView.getProjection().toPixels(gp, screenPts);
-				canvas.drawBitmap(enemyImg, null, new RectF(screenPts.x
-						- markerSize, screenPts.y - markerSize, screenPts.x
-						+ markerSize, screenPts.y + markerSize), null);
+				canvas.drawBitmap(
+						enemyImg,
+						null,
+						new RectF(screenPts.x - markerSize
+								* enemyImg.getWidth() / enemyImg.getHeight(),
+								screenPts.y - markerSize, screenPts.x
+										+ markerSize * enemyImg.getWidth()
+										/ enemyImg.getHeight(), screenPts.y
+										+ markerSize), null);
 			}
 			return true;
 		} catch (Exception e) {
