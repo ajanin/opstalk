@@ -99,14 +99,15 @@ public class ObjPanelRender extends JPanel implements TreeCellRenderer {
 			}
 		}
 		if (reach) {
-			jTextField.setBackground(Color.green);
+			jTextField.setBackground(Color.yellow);
 			// jLabel.setForeground(Color.green);
 		} else {
 			if (type != null) {
-				if (type.equals("objPoint"))
-					jTextField.setBackground(Color.ORANGE);
-				else
-					jTextField.setBackground(Color.yellow);
+				jTextField.setBackground(Color.green);
+//				if (type.equals("objPoint"))
+//					jTextField.setBackground(Color.ORANGE);
+//				else
+//					jTextField.setBackground(Color.yellow);
 			}
 			else
 				jTextField.setBackground(Color.gray);
