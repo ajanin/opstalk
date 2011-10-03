@@ -246,15 +246,6 @@ public class CombatTalkView extends MapActivity {
 
 	}
 
-	public Location getCurrLocation() {
-		if (Preferences.saveBattery) {
-			if (locationHandler != null)
-				return locationHandler.getLocation();
-		} else if (myLocationOverlay != null)
-			return myLocationOverlay.getLastFix();
-		return null;
-	}
-
 	// check whether status of network connectivity is connected
 	public boolean isConnected() {
 		try {
@@ -340,36 +331,29 @@ public class CombatTalkView extends MapActivity {
 
 			ArrayList<String> matches = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			Location loc = this.getCurrLocation();
+			Location loc = this.getMyLocation();
 			if (loc == null)
 				addToSpeak("Your location is not available");
 			else {
 
-				/* test sending enemy found event */
-				Event enemyEvent = new Event(Event.MESSAGE,
-						System.currentTimeMillis(), loc.getLatitude(),
-						loc.getLongitude());
-				enemyEvent.setContent(new String("$enemy$").getBytes());
-				this.addEvent(enemyEvent);
-				/*---------------------------------*/
 
-//				String result = matches.get(0);
-//				if (result != null) {
-//					if (this.isSpokenQuery) { // it is a spoken query
-//
-//					} else if (loc != null) { // if it is a spoken message
-//						Message mes = new Message(this.account, result,
-//								System.currentTimeMillis(), loc.getLatitude(),
-//								loc.getLongitude());
-//						Repository.messages.add(mes);
-//						updateMesOverlay();
-//						Event mesEvent = new Event(Event.MESSAGE,
-//								System.currentTimeMillis(), mes.getLatitude(),
-//								mes.getLongitude());
-//						mesEvent.setContent(result.getBytes());
-//						this.addEvent(mesEvent);
-//					}
-//				}
+				String result = matches.get(0);
+				if (result != null) {
+					if (this.isSpokenQuery) { // it is a spoken query
+
+					} else if (loc != null) { // if it is a spoken message
+						Message mes = new Message(this.account, result,
+								System.currentTimeMillis(), loc.getLatitude(),
+								loc.getLongitude());
+						Repository.messages.add(mes);
+						updateMesOverlay();
+						Event mesEvent = new Event(Event.MESSAGE,
+								System.currentTimeMillis(), mes.getLatitude(),
+								mes.getLongitude());
+						mesEvent.setContent(result.getBytes());
+						this.addEvent(mesEvent);
+					}
+				}
 			}
 		}
 		if (requestCode == MY_DATA_CHECK_CODE) {
