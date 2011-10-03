@@ -109,10 +109,10 @@ public class MapPanel extends JPanel {
 		// File("img/friend.jpg")).getScaledInstance(
 		// pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
 		friendImg = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(
-				pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+				pRadius *2, pRadius , Image.SCALE_DEFAULT);
 
 		enemyImg = ImageIO.read(new File("img/enemy.jpg")).getScaledInstance(
-				pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+				pRadius, pRadius * 2, Image.SCALE_DEFAULT);
 		this.warningImg = ImageIO.read(new File("img/warning.jpg"))
 				.getScaledInstance(pRadius * 2, pRadius * 2,
 						Image.SCALE_DEFAULT);
