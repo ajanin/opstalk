@@ -60,8 +60,8 @@ import combattalk.sr.SpeechHandler;
 public class CombatTalkView extends MapActivity {
 	private EventHandleOverlay eventHandleOverlay;
 	private MessageOverlay mesOverlay;
-	private CheckPointOverlay checkOverlay;
-	private RallyPointOverlay rallyOverlay;
+//	private CheckPointOverlay checkOverlay;
+//	private RallyPointOverlay rallyOverlay;
 	// MyMapView mapView;
 	private List<Overlay> mapOverlays;
 	private BaloonLayout noteBaloon;
@@ -207,14 +207,14 @@ public class CombatTalkView extends MapActivity {
 					.getDrawable(R.drawable.warning_small));
 			if (this.mesOverlay.size() != 0)
 				mapOverlays.add(this.mesOverlay);
-			this.checkOverlay = new CheckPointOverlay(this.getResources()
-					.getDrawable(R.drawable.checkpoint));
-			if (this.checkOverlay.size() != 0)
-				mapOverlays.add(this.checkOverlay);
-			this.rallyOverlay = new RallyPointOverlay(this.getResources()
-					.getDrawable(R.drawable.rallypoint));
-			if (this.rallyOverlay.size() != 0)
-				mapOverlays.add(this.rallyOverlay);
+//			this.checkOverlay = new CheckPointOverlay(this.getResources()
+//					.getDrawable(R.drawable.checkpoint));
+//			if (this.checkOverlay.size() != 0)
+//				mapOverlays.add(this.checkOverlay);
+//			this.rallyOverlay = new RallyPointOverlay(this.getResources()
+//					.getDrawable(R.drawable.rallypoint));
+//			if (this.rallyOverlay.size() != 0)
+//				mapOverlays.add(this.rallyOverlay);
 //			for (Iterator<String> it = Repository.peopleList.keySet()
 //					.iterator(); it.hasNext();) {
 //				String id = it.next();
@@ -592,7 +592,7 @@ public class CombatTalkView extends MapActivity {
 			Repository.messages.clear();
 			Repository.checkPoints.clear();
 			this.updateMesOverlay();
-			this.updateCheckOverlay();
+		//	this.updateCheckOverlay();
 			break;
 		}
 		return true;
@@ -605,13 +605,13 @@ public class CombatTalkView extends MapActivity {
 		this.mesOverlay.updateInfo();
 	}
 
-	public void updateCheckOverlay() {
-		this.checkOverlay.updateInfo();
-	}
-
-	public void updateRallyOverlay() {
-		this.rallyOverlay.updateInfo();
-	}
+//	public void updateCheckOverlay() {
+//		this.checkOverlay.updateInfo();
+//	}
+//
+//	public void updateRallyOverlay() {
+//		this.rallyOverlay.updateInfo();
+//	}
 
 	/**
 	 * @param location
