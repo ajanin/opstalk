@@ -284,6 +284,7 @@ public class MapPanel extends JPanel {
 						Location second = lt.next();
 						double diffy = second.lat - first.lat;
 						double diffx = second.lon - first.lon;
+						System.out.print("<"+diffx+","+diffy+">");
 						if (diffLat.size() < smoothSize
 								|| (diffy != 0 || diffx != 0)
 								&& diffy < aveDiffy * tolerance
@@ -311,6 +312,10 @@ public class MapPanel extends JPanel {
 							int y2 = (int) this.lattoY(second.lat);
 							g2d.drawLine(x1, y1, x2, y2);
 							first = second;
+							System.out.println(" ");
+						}
+						else{
+							System.out.println(" x");
 						}
 
 					}
