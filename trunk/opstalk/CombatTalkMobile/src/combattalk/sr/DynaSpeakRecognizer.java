@@ -153,6 +153,7 @@ public class DynaSpeakRecognizer {
     	private static final int WHERE_AM_I = 15;
     	private static final int SAY_AGAIN = 16;
     	private static final int VOICE_NOTE = 17;
+    	private static final int ENEMY_SPOTTED = 18;
 
     	private final CommandPattern m_commands[] = {
     			new CommandPattern(WHERE_IS_PERSON, Pattern.compile("\\{Person_([0-9]+)\\}.*\\{WhereIs\\}"), 1),
@@ -174,7 +175,8 @@ public class DynaSpeakRecognizer {
 
     			new CommandPattern(WHERE_AM_I, Pattern.compile("\\{WhereAmI\\}"), 0),
     			new CommandPattern(SAY_AGAIN, Pattern.compile("\\{Repeat\\}"), 0),
-    			new CommandPattern(VOICE_NOTE, Pattern.compile("\\{VoiceNote\\}"), 0)
+    			new CommandPattern(VOICE_NOTE, Pattern.compile("\\{VoiceNote\\}"), 0),
+    			new CommandPattern(ENEMY_SPOTTED, Pattern.compile("\\{EnemySpotted\\}"), 0)
     	};
     	
     	private void dispatchCommand(int command, int arg) {
@@ -199,6 +201,8 @@ public class DynaSpeakRecognizer {
     		case WHERE_AM_I:			  m_commandHandler.whereAmICommand();				break;
     		case SAY_AGAIN:				  m_commandHandler.sayAgainCommand();				break;
     		case VOICE_NOTE:			  m_commandHandler.voiceNoteCommand();				break;
+    		
+    		case ENEMY_SPOTTED:			  m_commandHandler.enemySpottedCommand();			break;
     		default: m_commandHandler.parserError("Got a bad command index. This shouldn't happen.");
     		}
     	}

@@ -23,6 +23,7 @@ public interface SpeechCommandHandler {
 	public void whereAmICommand();
 	public void sayAgainCommand();
 	public void voiceNoteCommand();
+	public void enemySpottedCommand();
 	
 	public void parserError(String msg);
 }
