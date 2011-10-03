@@ -19,6 +19,8 @@ import android.util.Log;
 import combattalk.mobile.CombatTalkView;
 import combattalk.mobile.Preferences;
 import combattalk.mobile.data.CheckPoint;
+import combattalk.mobile.data.Enemy;
+import combattalk.mobile.data.Event;
 import combattalk.mobile.data.People;
 import combattalk.mobile.data.RallyPoint;
 import combattalk.mobile.data.Repository;
@@ -265,7 +267,19 @@ public class SpeechHandler implements SpeechCommandHandler,
 	
 	@Override
 	public void enemySpottedCommand() {
-		setOutput("Enemy Spotted Command Not Yet Implemented");
+		Location loc = parent.getMyLocation();
+		if (loc != null) {
+			/* send enemy spotted event */
+			Event enemyEvent = new Event(Event.MESSAGE,
+					System.currentTimeMillis(), loc.getLatitude(),
+					loc.getLongitude());
+			enemyEvent.setContent(new String("$enemy$").getBytes());
+			parent.addEvent(enemyEvent);
+			/*---------------------------------*/
+			Repository
+					.addEnemy(new Enemy(loc.getLatitude(), loc.getLongitude()));
+		} else
+			setOutput("Your location is not available");
 		parent.resetButton();
 	}
 
