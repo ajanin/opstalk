@@ -103,7 +103,10 @@ public class MapPanel extends JPanel {
 
 	synchronized public void scheduleExecute() {
 		System.out.println(_task.getState());
-		if (_task != null && !isExecuting) {
+		if (_task != null
+				&& (_task.getState() == null || _task.getState() != AbstractTask.State.Started)
+				&& !isExecuting) {
+			// {
 			try {
 				isExecuting = true;
 				_task.execute();
