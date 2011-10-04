@@ -98,6 +98,32 @@ public class MapPanel extends JPanel {
 	private Image wayImg2 = null;
 	public MainWindow parent = null;
 	private int pRadius = 8;
+	private boolean isExecuting = false;
+	private boolean hasExeRequest = false;
+
+	synchronized public void scheduleExecute() {
+		System.out.println(_task.getState());
+		if (_task != null && !isExecuting) {
+			try {
+				isExecuting = true;
+				_task.execute();
+				hasExeRequest = false;
+
+			} catch (TaskException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			hasExeRequest = true;
+		}
+
+	}
+
+	private void executeTaskIfAny() {
+		isExecuting = false;
+		if (hasExeRequest)
+			scheduleExecute();
+	}
 
 	public void initializeImages() throws IOException {
 		// soldier = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(
@@ -109,10 +135,10 @@ public class MapPanel extends JPanel {
 		// File("img/friend.jpg")).getScaledInstance(
 		// pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
 		friendImg = ImageIO.read(new File("img/friend.jpg")).getScaledInstance(
-				pRadius *2, pRadius , Image.SCALE_DEFAULT);
+				pRadius * 2, pRadius, Image.SCALE_DEFAULT);
 
 		enemyImg = ImageIO.read(new File("img/enemy.jpg")).getScaledInstance(
-				pRadius*2, pRadius * 2, Image.SCALE_DEFAULT);
+				pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
 		this.warningImg = ImageIO.read(new File("img/warning.jpg"))
 				.getScaledInstance(pRadius * 2, pRadius * 2,
 						Image.SCALE_DEFAULT);
@@ -137,7 +163,11 @@ public class MapPanel extends JPanel {
 	/**
 	 * 
 	 */
-	public void drawLocations() {
+	private void drawLocations() {
+		if (_baseMap == null) {
+			System.out.println("base map is not avabile");
+			return;
+		}
 		Graphics g2d = _baseMap.getGraphics();
 		g2d.drawImage(_bufMap, 0, 0, null); // draw base map
 		// draw way points
@@ -235,7 +265,7 @@ public class MapPanel extends JPanel {
 				g2d.setColor(Color.black);
 				g2d.setFont(new Font("times", Font.BOLD, 9));
 				g2d.drawImage(friendImg, x - pRadius, y - pRadius, null);
-				g2d.drawString(p.getName(), x - pRadius, y - pRadius);
+				g2d.drawString(p.getRandName(), x - pRadius, y - pRadius);
 				//
 				// if (p.getLevel().equalsIgnoreCase("1")) {
 				// g2d.drawImage(squadLead, x - pRadius, y - pRadius, null);
@@ -284,7 +314,7 @@ public class MapPanel extends JPanel {
 						Location second = lt.next();
 						double diffy = second.lat - first.lat;
 						double diffx = second.lon - first.lon;
-						System.out.print("<"+diffx+","+diffy+">");
+						System.out.print("<" + diffx + "," + diffy + ">");
 						if (diffLat.size() < smoothSize
 								|| (diffy != 0 || diffx != 0)
 								&& diffy < aveDiffy * tolerance
@@ -313,8 +343,7 @@ public class MapPanel extends JPanel {
 							g2d.drawLine(x1, y1, x2, y2);
 							first = second;
 							System.out.println(" ");
-						}
-						else{
+						} else {
 							System.out.println(" x");
 						}
 
@@ -365,6 +394,10 @@ public class MapPanel extends JPanel {
 	 * move image pixels by (diffx, diffy)
 	 */
 	public void moveImage(int diffx, int diffy) {
+		if (_baseMap == null) {
+			System.out.println("base map is not avabile");
+			return;
+		}
 		BufferedImage img = _baseMap.getSubimage(-Math.min(diffx, 0),
 				-Math.min(diffy, 0), _sizeX - Math.abs(diffx),
 				_sizeY - Math.abs(diffy));
@@ -480,7 +513,6 @@ public class MapPanel extends JPanel {
 							.getInputStream()));
 					_bufMap = ImageUtils.toCompatibleImage(ImageIO.read(data
 							.getInputStream()));
-					MapPanel.this.drawExtraInfo();
 					sout("converted downloaded data to image...");
 				} catch (Exception e) {
 					_baseMap = null;
@@ -515,16 +547,13 @@ public class MapPanel extends JPanel {
 			 */
 			@Override
 			public void stopped(long time, AbstractTask task) {
-				// sout(":: taskHandler [" + task.getName() + "]- stopped");
-				// sout(":: time = " + time / 1000f + "sec");
 				task.getUIHook().clearAllStatusListeners();
+				executeTaskIfAny();
 			}
 
 			@Override
 			public void interrupted(Throwable e, AbstractTask task) {
-				// sout(":: taskHandler [" + task.getName() +
-				// "]- interrupted - "
-				// + e.toString());
+				executeTaskIfAny();
 			}
 
 			@Override
@@ -535,21 +564,22 @@ public class MapPanel extends JPanel {
 					setToolTipText(MessageFormat
 							.format("<html>Image downloaded from URI<br>size: w={0}, h={1}</html>",
 									_baseMap.getWidth(), _baseMap.getHeight()));
+					MapPanel.this.drawExtraInfo();
 					updateMap();
-				} else
-					;// _displayRespStrInFrame();
 
+				} else
+					System.out.println("base map is not avabile");// _displayRespStrInFrame();
+				executeTaskIfAny();
 			}
 
 			@Override
 			public void error(Throwable e, long time, AbstractTask task) {
-				// sout(":: taskHandler [" + task.getName() + "]- error - "
-				// + e.toString());
+				executeTaskIfAny();
 			}
 
 			@Override
 			public void cancelled(long time, AbstractTask task) {
-				// sout(" :: taskHandler [" + task.getName() + "]- cancelled");
+				executeTaskIfAny();
 			}
 		});
 	}
@@ -558,12 +588,7 @@ public class MapPanel extends JPanel {
 		if (_zoom < 21) {
 			_zoom++;
 			jSlider.setValue(_zoom);
-			try {
-				_task.execute();
-			} catch (TaskException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.scheduleExecute();
 		}
 	}
 
@@ -571,12 +596,7 @@ public class MapPanel extends JPanel {
 		if (_zoom > 0) {
 			_zoom--;
 			jSlider.setValue(_zoom);
-			try {
-				_task.execute();
-			} catch (TaskException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.scheduleExecute();
 		}
 	}
 
@@ -587,12 +607,7 @@ public class MapPanel extends JPanel {
 	}
 
 	public void reloadMap() {
-		try {
-			this._task.execute();
-		} catch (TaskException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.scheduleExecute();
 	}
 
 	private void updateMap() {
@@ -638,12 +653,7 @@ public class MapPanel extends JPanel {
 		this._sizeX = sizeX;
 		this._sizeY = sizeY;
 		this.jSlider.setValue(_zoom);
-		try {
-			_task.execute();
-		} catch (TaskException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.scheduleExecute();
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -782,12 +792,7 @@ public class MapPanel extends JPanel {
 			jSlider.addChangeListener(new javax.swing.event.ChangeListener() {
 				public void stateChanged(javax.swing.event.ChangeEvent e) {
 					_zoom = jSlider.getValue();
-					try {
-						_task.execute();
-					} catch (TaskException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					scheduleExecute();
 				}
 			});
 		}
@@ -806,12 +811,7 @@ public class MapPanel extends JPanel {
 			jComboBox.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					mapType = e.getItem().toString();
-					try {
-						_task.execute();
-					} catch (TaskException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					scheduleExecute();
 				}
 			});
 			jComboBox.addItem("roadMap");

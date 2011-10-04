@@ -9,7 +9,7 @@ public class People {
 	private String name;
 	private String first;
 	private String last;
-	private String Level;
+	private String Level="3";  //default level is lowest level
 	private String teamID;
 	private LinkedList<Location> history = new LinkedList<Location>();
 	private boolean selected = false;

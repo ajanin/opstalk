@@ -82,7 +82,8 @@ public class MainWindow extends JFrame {
 	public void addEventResponse(String str) {
 		this.actionPanel.addEvent(str);
 	}
-	public void addEvent2UI(Event event){
+
+	public void addEvent2UI(Event event) {
 		// make UI to reflect new event
 		this.actionPanel.addEvent(event);
 		this.overallObjPanel.addEvent(event);
@@ -121,7 +122,7 @@ public class MainWindow extends JFrame {
 	}
 
 	private void doInit() {
-		GUIUtils.setAppIcon(this, "img/systemIcon.png");
+		// GUIUtils.setAppIcon(this, "img/systemIcon.png");
 		try {
 			this.setIconImage(ImageIO.read(new File("img/systemIcon.png")));
 		} catch (IOException e) {
@@ -237,7 +238,10 @@ public class MainWindow extends JFrame {
 	private MapPanel getMapPanel() {
 		if (mapPanel == null) {
 			mapPanel = new MapPanel();
-			mapPanel.setBorder(BorderFactory.createTitledBorder(null, "Map", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD | Font.ITALIC, 14), new Color(51, 51, 51)));
+			mapPanel.setBorder(BorderFactory.createTitledBorder(null, "Map",
+					TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD
+							| Font.ITALIC, 14), new Color(51, 51, 51)));
 			mapPanel.setParent(this);
 		}
 		return mapPanel;
@@ -341,7 +345,11 @@ public class MainWindow extends JFrame {
 	private OverallObjPanel getOverallObjPanel() {
 		if (overallObjPanel == null) {
 			overallObjPanel = new OverallObjPanel();
-			overallObjPanel.setBorder(BorderFactory.createTitledBorder(null, "OpsTalk Mission Progress", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD | Font.ITALIC, 14), new Color(51, 51, 51)));
+			overallObjPanel.setBorder(BorderFactory.createTitledBorder(null,
+					"OpsTalk Mission Progress",
+					TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD
+							| Font.ITALIC, 14), new Color(51, 51, 51)));
 			overallObjPanel.setBackground(SystemColor.controlHighlight);
 			overallObjPanel.setForeground(SystemColor.text);
 		}
@@ -375,7 +383,10 @@ public class MainWindow extends JFrame {
 		if (actionPanel == null) {
 			actionPanel = new ActionPanel();
 			actionPanel.setParent(this);
-			actionPanel.setBorder(BorderFactory.createTitledBorder(null, "Event/Response", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD | Font.ITALIC, 14), new Color(51, 51, 51)));
+			actionPanel.setBorder(BorderFactory.createTitledBorder(null,
+					"Event/Response", TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD
+							| Font.ITALIC, 14), new Color(51, 51, 51)));
 		}
 		return actionPanel;
 	}
@@ -393,7 +404,10 @@ public class MainWindow extends JFrame {
 			gridBagConstraints.weightx = 1.0;
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
-			jPanel.setBorder(BorderFactory.createTitledBorder(null, "Information", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD | Font.ITALIC, 14), new Color(51, 51, 51)));
+			jPanel.setBorder(BorderFactory.createTitledBorder(null,
+					"Information", TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD
+							| Font.ITALIC, 14), new Color(51, 51, 51)));
 			jPanel.setPreferredSize(new Dimension(10, 200));
 			jPanel.add(getJTextArea(), gridBagConstraints);
 		}
@@ -443,9 +457,9 @@ public class MainWindow extends JFrame {
 	}
 
 	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel2
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
@@ -458,9 +472,9 @@ public class MainWindow extends JFrame {
 	}
 
 	/**
-	 * This method initializes opsClock	
-	 * 	
-	 * @return firetalk.UI.OpsClock	
+	 * This method initializes opsClock
+	 * 
+	 * @return firetalk.UI.OpsClock
 	 */
 	private OpsClock getOpsClock() {
 		if (opsClock == null) {
@@ -470,14 +484,17 @@ public class MainWindow extends JFrame {
 	}
 
 	/**
-	 * This method initializes audioPanel	
-	 * 	
-	 * @return firetalk.UI.AudioPanel	
+	 * This method initializes audioPanel
+	 * 
+	 * @return firetalk.UI.AudioPanel
 	 */
 	private AudioPanel getAudioPanel() {
 		if (audioPanel == null) {
 			audioPanel = new AudioPanel();
-			audioPanel.setBorder(BorderFactory.createTitledBorder(null, "Speech Monitor", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			audioPanel.setBorder(BorderFactory.createTitledBorder(null,
+					"Speech Monitor", TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+							Font.BOLD, 12), new Color(51, 51, 51)));
 		}
 		return audioPanel;
 	}
@@ -523,4 +540,4 @@ public class MainWindow extends JFrame {
 		return jContentPane;
 	}
 
-}  //  @jve:decl-index=0:visual-constraint="28,10"
+} // @jve:decl-index=0:visual-constraint="28,10"

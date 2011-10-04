@@ -15,7 +15,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import firetalk.db.Repository;
-import firetalk.db.Testdb;
 import firetalk.model.Location;
 import firetalk.model.People;
 import firetalk.model.Team;
@@ -99,7 +98,7 @@ public class EntityPanel extends JPanel {
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Teams");
 		createNodes(top);
 		jTree = new JTree(top);
-		//jTree.setCellRenderer(new EntityRenderer());
+		// jTree.setCellRenderer(new EntityRenderer());
 		jTree.setBackground(SystemColor.info);
 		jTree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -153,5 +152,5 @@ public class EntityPanel extends JPanel {
 		}
 		Repository.printPeople();
 	}
-	
+
 }
