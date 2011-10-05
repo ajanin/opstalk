@@ -22,7 +22,10 @@ public class Event {
 					content);
 			break;
 		case Event.MESSAGE:
-			mes = " New IED point: " + content;
+			if (content.equalsIgnoreCase("$enemy$"))
+				mes = "Enemy spotted";
+			else
+				mes = " New IED point: " + content;
 			break;
 		}
 		return mes;
