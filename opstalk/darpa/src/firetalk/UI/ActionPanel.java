@@ -1,29 +1,23 @@
 package firetalk.UI;
 
-import java.awt.GridBagLayout;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JPanel;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
-import java.awt.Font;
 import java.awt.Color;
-import javax.swing.JScrollPane;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Date;
 import java.util.LinkedList;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
-
-import firetalk.db.Repository;
-import firetalk.model.Event;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.border.EtchedBorder;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.ImageIcon;
-import javax.swing.ListSelectionModel;
-import java.awt.SystemColor;
+
+import firetalk.model.Event;
 
 public class ActionPanel extends JPanel {
 

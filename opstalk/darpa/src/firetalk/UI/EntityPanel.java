@@ -14,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.model.Location;
 import firetalk.model.People;
 import firetalk.model.Team;
@@ -109,11 +109,11 @@ public class EntityPanel extends JPanel {
 
 		DefaultMutableTreeNode team = null;
 		DefaultMutableTreeNode members = null;
-		for (Team t : Repository.teamList.values()) {
+		for (Team t : UIRepository.teamList.values()) {
 			team = new DefaultMutableTreeNode(t.teamID + ": " + t.teamName);
 			top.add(team);
-			for (String id : Repository.peopleList.keySet()) {
-				People p = Repository.peopleList.get(id);
+			for (String id : UIRepository.peopleList.keySet()) {
+				People p = UIRepository.peopleList.get(id);
 				if (p != null) {
 					if (p.getTeamID().equals(t.teamID)) {
 						members = new DefaultMutableTreeNode(p.getId() + ": "
@@ -132,15 +132,15 @@ public class EntityPanel extends JPanel {
 		switch (path.getPathCount()) {
 		case 2:
 			// team
-			parent.setInfoPanel(Repository.teamList.get(id).toString());
+			parent.setInfoPanel(UIRepository.teamList.get(id).toString());
 			break;
 		case 3:
 			// people
-			parent.setInfoPanel(Repository.peopleList.get(id).toString());
+			parent.setInfoPanel(UIRepository.peopleList.get(id).toString());
 
-			for (People ap : Repository.peopleList.values())
+			for (People ap : UIRepository.peopleList.values())
 				ap.setSelected(false);
-			People people = Repository.peopleList.get(id);
+			People people = UIRepository.peopleList.get(id);
 			if (people != null) {
 				people.setSelected(true);
 				Location loc = people.getLocation();
@@ -150,7 +150,7 @@ public class EntityPanel extends JPanel {
 			}
 			break;
 		}
-		Repository.printPeople();
+		UIRepository.printPeople();
 	}
 
 }

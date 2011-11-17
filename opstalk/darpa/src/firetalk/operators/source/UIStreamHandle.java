@@ -7,31 +7,23 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
-import java.nio.channels.Channels;
-import java.nio.channels.SocketChannel;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import firetalk.db.Repository;
 import firetalk.model.CheckPoint;
 import firetalk.model.Enemy;
 import firetalk.model.Event;
-import firetalk.model.ObjPoint;
-import firetalk.model.People;
 import firetalk.model.IEDPoint;
+import firetalk.model.People;
 import firetalk.model.RallyPoint;
-import firetalk.operators.speech.PlaySound;
-import firetalk.operators.speech.PlayWaveException;
 import firetalk.util.NetUtil;
 
-public class StreamHandle extends Thread {
-	private Server server = null;
+public class UIStreamHandle extends Thread {
+	private UIServer server = null;
 	private Socket conn = null;
 	// private SocketChannel sc = null;
 	private InputStream is = null;
@@ -75,7 +67,7 @@ public class StreamHandle extends Thread {
 					}
 					while (!events.isEmpty() && status == Status.CONNECT) {
 						Event event = events.removeLast();
-						StreamHandle.this.sendEvent(event);
+						UIStreamHandle.this.sendEvent(event);
 					}
 					Thread.sleep(1000);
 				}
@@ -84,7 +76,7 @@ public class StreamHandle extends Thread {
 				e.printStackTrace();
 				handleConnectionFailure();
 			}
-			System.out.println(StreamHandle.this.id + " < OutputHandle end > ");
+			System.out.println(UIStreamHandle.this.id + " < OutputHandle end > ");
 
 		}
 	}
@@ -103,11 +95,11 @@ public class StreamHandle extends Thread {
 					status = Status.LOST;
 					isHandling = false;
 					try {
-						StreamHandle.this.stopThread();
+						UIStreamHandle.this.stopThread();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					server.removeHandle(StreamHandle.this);
+					server.removeHandle(UIStreamHandle.this);
 					isStopped = true;
 					break;
 				}
@@ -118,7 +110,7 @@ public class StreamHandle extends Thread {
 					e.printStackTrace();
 				}
 			}
-			System.out.println(StreamHandle.this.id
+			System.out.println(UIStreamHandle.this.id
 					+ " < HandleConnectFail end >");
 		}
 
@@ -156,7 +148,7 @@ public class StreamHandle extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(StreamHandle.this.id
+			System.out.println(UIStreamHandle.this.id
 					+ " < Check conectivity end >");
 		}
 	}
@@ -176,12 +168,11 @@ public class StreamHandle extends Thread {
 		return this.id;
 	}
 
-	public StreamHandle(Server server, Socket con, int id) {
+	public UIStreamHandle(UIServer server, Socket con) {
 		this.server = server;
 		// this.sc = con;
 		this.conn = con;
 		this.status = Status.CONNECT;
-		this.id = id;
 		checkHandle.start();
 		failHandle.start();
 
@@ -337,7 +328,7 @@ public class StreamHandle extends Thread {
 					Event event = new Event(eventType, this.user.getId(),
 							validTime, transTime, lat, lon);
 					event.setContent(content);
-					server.updateEvent(event);
+//					server.updateEvent(event);
 					Repository.transTime.put(this.userId, transTime);
 				}
 			}
@@ -456,14 +447,17 @@ public class StreamHandle extends Thread {
 				this.addEvent(event);
 
 			}
-
+			// // send dynamic info, including IED points
+			// for (Iterator<Event> it = Repository.events.iterator(); it
+			// .hasNext();)
+			// this.events.addFirst(it.next());
 			// connection is established
 			outputHandle.start();
-			System.out.println(StreamHandle.this.id
+			System.out.println(UIStreamHandle.this.id
 					+ " Connection is established for <" + userId + "> ");
 			try {
 				FileWriter fw = new FileWriter(new File("log.txt"), true);
-				fw.write(StreamHandle.this.id
+				fw.write(UIStreamHandle.this.id
 						+ " Connection is established for <" + userId + "> \n");
 			} catch (Exception e) {
 
@@ -493,7 +487,7 @@ public class StreamHandle extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(StreamHandle.this.id + "< StreamHandle end >");
+		System.out.println(UIStreamHandle.this.id + "< StreamHandle end >");
 		// handle pool
 
 	}

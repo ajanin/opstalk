@@ -11,7 +11,7 @@ import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JList;
 
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.model.Event;
 
 import java.awt.GridBagConstraints;
@@ -70,8 +70,8 @@ public class OverallObjPanel extends JPanel {
 
 	public void updateList(){
 		model.clear();
-		for (int i = 0; i < Repository.overallObjs.size(); i++)
-			model.addElement(Repository.overallObjs.get(i));
+		for (int i = 0; i < UIRepository.overallObjs.size(); i++)
+			model.addElement(UIRepository.overallObjs.get(i));
 		this.jList.repaint();
 	}
 	public void addEvent(Event event) {
@@ -83,7 +83,7 @@ public class OverallObjPanel extends JPanel {
 				content += (char) event.getContent()[i];
 			String mes = String.format("Team %s reached point %s at %s", event.getId(),
 					content,date.toString());
-			Repository.overallObjs.add(mes);
+			UIRepository.overallObjs.add(mes);
 			this.updateList();
 		}
 	}

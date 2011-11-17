@@ -2,21 +2,16 @@ package firetalk.UI;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
 
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
-import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
+import firetalk.db.UIRepository;
 import firetalk.model.IEDPoint;
-
-import java.awt.SystemColor;
 
 public class IEDRenderer extends JPanel implements ListCellRenderer {
 
@@ -55,7 +50,7 @@ public class IEDRenderer extends JPanel implements ListCellRenderer {
 		if (isSelected)
 			this.setBackground(Color.gray);
 		setFont(list.getFont());
-		IEDPoint cp = Repository.IEDList.get(index);
+		IEDPoint cp = UIRepository.IEDList.get(index);
 		jTextField.setBackground(Color.red);
 
 		jLabel.setText(cp.getUserId() + ": <" + cp.getLatitude() + ","

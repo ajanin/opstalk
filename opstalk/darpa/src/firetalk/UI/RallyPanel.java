@@ -1,45 +1,36 @@
 package firetalk.UI;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import java.awt.GridBagConstraints;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import javax.swing.JList;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
-import firetalk.model.IEDPoint;
-import firetalk.model.RallyPoint;
-
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.BorderFactory;
-import java.awt.SystemColor;
-import java.awt.Dimension;
-import javax.swing.JComboBox;
-import javax.swing.border.TitledBorder;
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
-import com.sun.java.swing.plaf.windows.WindowsLabelUI;
-import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import com.sun.java.swing.plaf.windows.WindowsButtonUI;
+import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
+import com.sun.java.swing.plaf.windows.WindowsLabelUI;
+
+import firetalk.db.UIRepository;
+import firetalk.model.CheckPoint;
+import firetalk.model.RallyPoint;
 
 public class RallyPanel extends JPanel {
 
@@ -83,9 +74,9 @@ public class RallyPanel extends JPanel {
 
 	public void updateList() {
 		model.clear();
-		for (int i = 0; i < Repository.rallyList.size(); i++)
+		for (int i = 0; i < UIRepository.rallyList.size(); i++)
 			model.addElement("" + i);
-		Repository.storeRallyPoints();
+		UIRepository.storeRallyPoints();
 		this.jList.repaint();
 	}
 
@@ -132,7 +123,7 @@ public class RallyPanel extends JPanel {
 				public void valueChanged(ListSelectionEvent e) {
 					int[] inds=jList.getSelectedIndices();
 					if(inds.length==1){
-						CheckPoint cp=Repository.rallyList.get(inds[0]);
+						CheckPoint cp=UIRepository.rallyList.get(inds[0]);
 						parent.setInfoPanel(cp.toString());
 						parent.mapPanel.resetMap(cp.lon, cp.lat);
 					}
@@ -194,12 +185,12 @@ public class RallyPanel extends JPanel {
 			addButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					String name = nameField.getText();
-					String id = "" + Repository.rallyList.size();
+					String id = "" + UIRepository.rallyList.size();
 					double lat = Double.parseDouble(latField.getText());
 					double lon = Double.parseDouble(lonField.getText());
 					String userID = (String) jComboBox.getSelectedItem();
 					userID = userID.substring(0, userID.indexOf(':'));
-					Repository.rallyList.add(new RallyPoint(id, userID, name,
+					UIRepository.rallyList.add(new RallyPoint(id, userID, name,
 							lat, lon));
 					updateList();
 					parent.updateMarkers();
@@ -222,7 +213,7 @@ public class RallyPanel extends JPanel {
 			deleteAllButton
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							Repository.rallyList.clear();
+							UIRepository.rallyList.clear();
 							updateList();
 							parent.updateMarkers();
 						}
@@ -248,7 +239,7 @@ public class RallyPanel extends JPanel {
 							LinkedList<RallyPoint> temp = new LinkedList<RallyPoint>();
 							int i = 0;
 							int j = 0;
-							for (RallyPoint p : Repository.rallyList) {
+							for (RallyPoint p : UIRepository.rallyList) {
 								if (j>=inds.length||i != inds[j])
 									temp.add(p);
 								else
@@ -256,7 +247,7 @@ public class RallyPanel extends JPanel {
 								i++;
 							}
 
-							Repository.rallyList = temp;
+							UIRepository.rallyList = temp;
 
 							updateList();
 							parent.updateMarkers();
@@ -421,10 +412,10 @@ public class RallyPanel extends JPanel {
 	 */
 	private JComboBox getJComboBox() {
 		if (jComboBox == null) {
-			String[] ids = new String[Repository.peopleList.size()];
+			String[] ids = new String[UIRepository.peopleList.size()];
 			int i = 0;
-			for (String id : Repository.peopleList.keySet()) {
-				ids[i++] = id + ": " + Repository.peopleList.get(id).getName();
+			for (String id : UIRepository.peopleList.keySet()) {
+				ids[i++] = id + ": " + UIRepository.peopleList.get(id).getName();
 			}
 			jComboBox = new JComboBox(ids);
 			jComboBox.setUI(new WindowsComboBoxUI());

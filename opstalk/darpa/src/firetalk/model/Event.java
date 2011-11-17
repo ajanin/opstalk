@@ -1,7 +1,5 @@
 package firetalk.model;
 
-import java.util.Date;
-
 public class Event {
 	private long validTime;
 	private long transTime;

@@ -1,13 +1,10 @@
 package firetalk.UI;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
+import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.SoftBevelBorder;
 

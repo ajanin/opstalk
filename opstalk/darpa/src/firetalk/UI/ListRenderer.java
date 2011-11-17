@@ -2,22 +2,13 @@ package firetalk.UI;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-
-import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
-import firetalk.model.RallyPoint;
-
-import java.awt.SystemColor;
 
 public class ListRenderer extends JPanel implements ListCellRenderer {
 

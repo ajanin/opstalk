@@ -1,20 +1,15 @@
 package firetalk.UI;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import java.awt.CardLayout;
-import java.awt.GridLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 public class ContentPanel extends JPanel{

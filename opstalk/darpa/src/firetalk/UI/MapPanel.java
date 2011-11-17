@@ -44,13 +44,12 @@ import Task.ProgressMonitor.SwingUIHookAdapter;
 import Task.Support.CoreSupport.ByteBuffer;
 import Task.Support.CoreSupport.HttpUtils;
 import Task.Support.GUISupport.ImageUtils;
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.map.MapLookup;
 import firetalk.map.MapMarker;
 import firetalk.model.CheckPoint;
 import firetalk.model.Enemy;
 import firetalk.model.Location;
-import firetalk.model.ObjPoint;
 import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
@@ -61,7 +60,6 @@ import javax.swing.BorderFactory;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.Font;
-import java.awt.SystemColor;
 import com.sun.java.swing.plaf.windows.WindowsButtonUI;
 import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
 import com.sun.java.swing.plaf.windows.WindowsProgressBarUI;
@@ -197,7 +195,7 @@ public class MapPanel extends JPanel {
 		// }
 		g2d.setColor(Color.blue);
 		g2d.setFont(new Font("times", Font.BOLD, 9));
-		for (CheckPoint cp : Repository.checkPoints) {
+		for (CheckPoint cp : UIRepository.checkPoints) {
 			int x = (int) this.longtoX(cp.lon);
 			int y = (int) this.lattoY(cp.lat);
 			if (cp.isObj()) {
@@ -220,13 +218,13 @@ public class MapPanel extends JPanel {
 
 		}
 		// draw rally points
-		for (RallyPoint p : Repository.rallyList) {
+		for (RallyPoint p : UIRepository.rallyList) {
 			int x = (int) this.longtoX(p.lon);
 			int y = (int) this.lattoY(p.lat);
 			g2d.drawImage(rallyImg, x - 10, y - 10, 20, 20, null);
 		}
 		// draw IED POINTS
-		for (IEDPoint p : Repository.IEDList) {
+		for (IEDPoint p : UIRepository.IEDList) {
 			int x = (int) this.longtoX(p.getLongitude());
 			int y = (int) this.lattoY(p.getLatitude());
 			g2d.drawImage(warningImg, x - 10, y - 10, 20, 20, null);
@@ -248,15 +246,15 @@ public class MapPanel extends JPanel {
 			g2d.setColor(Color.red);
 			g2d.drawRect(x - 5, y - 5, 10, 10);
 		}
-		for (Enemy e : Repository.enemyList) {
+		for (Enemy e : UIRepository.enemyList) {
 			int x = (int) this.longtoX(e.getLongitude());
 			int y = (int) this.lattoY(e.getLatitude());
 			g2d.drawImage(enemyImg, x - pRadius, y - pRadius, null);
 		}
-		for (Iterator<String> it = Repository.peopleList.keySet().iterator(); it
+		for (Iterator<String> it = UIRepository.peopleList.keySet().iterator(); it
 				.hasNext();) {
 			String user = it.next();
-			People p = Repository.peopleList.get(user);
+			People p = UIRepository.peopleList.get(user);
 			Location loc = p.getLocation();
 			if (loc != null) {
 				int x = (int) this.longtoX(loc.lon);
