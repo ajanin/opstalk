@@ -1,28 +1,19 @@
 package firetalk.UI;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
-import firetalk.model.People;
 import firetalk.model.IEDPoint;
-import firetalk.replay.CameraPlayer;
-import firetalk.replay.MessagePlayer;
 
 /**
  * @author jeffrey MapContainer Class: deal with interactivity between user and
@@ -122,8 +113,8 @@ public class MapContainer extends JLabel {
 				double rlat = parent.ytoLat(y);
 				setToolTipText("(longitude, latitude): (" + rlon + ", " + rlat
 						+ ")");
-				CheckPoint sensor = sensorSelected(x, y, Repository.checkPoints);
-				IEDPoint mes = mesSelected(x, y, Repository.IEDList);
+				CheckPoint sensor = sensorSelected(x, y, UIRepository.checkPoints);
+				IEDPoint mes = mesSelected(x, y, UIRepository.IEDList);
 				parent.setSelectedSensor(sensor);
 				parent.setSelectedMes(mes);
 				if (sensor != null && mes != null) {
@@ -184,8 +175,8 @@ public class MapContainer extends JLabel {
 				if (e.getClickCount() == 1) {
 					CheckPoint s = parent.getSelectedSensor();
 					if (s != null)
-						for (int i = 0; i < Repository.checkPoints.size(); i++) {
-							if (Repository.checkPoints.get(i).equals(s)) {
+						for (int i = 0; i < UIRepository.checkPoints.size(); i++) {
+							if (UIRepository.checkPoints.get(i).equals(s)) {
 								parent.parent.selectListItem(i);
 							}
 						}
@@ -201,7 +192,7 @@ public class MapContainer extends JLabel {
 					CheckPoint s = parent.getSelectedSensor();
 					if (s != null) {
 						int i = 0;
-						for (CheckPoint cp : Repository.checkPoints) {
+						for (CheckPoint cp : UIRepository.checkPoints) {
 							if (cp.equals(s)) {
 								parent.parent.selectListItem(i);
 							}

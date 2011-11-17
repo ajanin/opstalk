@@ -10,8 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
-
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.model.Event;
 import firetalk.operators.source.Server;
 
@@ -73,7 +72,8 @@ public class MainWindow extends JFrame {
 		super();
 		initialize();
 		this.doInit();
-		new Server(this).start();
+		new UIClient(this).start();
+		//new Server(this).start();
 		Timer timer = new Timer();
 		timer.schedule(new ReadLocation(), 1000, 1000);
 
@@ -503,7 +503,7 @@ public class MainWindow extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Repository.init(); // initialize database
+		UIRepository.init(); // initialize database
 		System.out.println(Long.MAX_VALUE);
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
@@ -538,6 +538,12 @@ public class MainWindow extends JFrame {
 			jContentPane.add(getJSplitPane(), BorderLayout.CENTER);
 		}
 		return jContentPane;
+	}
+
+	public void updateCheckPoints() {
+		this.updateMarkers();
+		this.updateList();
+		
 	}
 
 } // @jve:decl-index=0:visual-constraint="28,10"

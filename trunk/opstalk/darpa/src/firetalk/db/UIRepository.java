@@ -22,9 +22,8 @@ import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
 import firetalk.model.Team;
-import firetalk.operators.source.UIStreamHandle;
 
-public class Repository {
+public class UIRepository {
 	public static LinkedList<Event> events = new LinkedList<Event>(); // events
 	// to
 	public static HashMap<String, People> peopleList = new HashMap<String, People>();
@@ -38,7 +37,6 @@ public class Repository {
 	public static HashMap<String, ObjPoint> objPoints = new HashMap<String, ObjPoint>();
 	public static HashMap<String, Vector<File>> audioFiles = new HashMap();
 	public static LinkedList<Enemy> enemyList = new LinkedList<Enemy>();
-	public static HashMap<String, UIStreamHandle> handles = new HashMap();
 
 	public static void addEnemy(Enemy e) {
 		enemyList.add(e);
@@ -99,7 +97,7 @@ public class Repository {
 					double lat = Double.parseDouble(st.nextToken());
 					double lon = Double.parseDouble(st.nextToken());
 					String userID = st.nextToken();
-					Repository.rallyList.add(new RallyPoint(id, userID, "",
+					UIRepository.rallyList.add(new RallyPoint(id, userID, "",
 							lat, lon));
 				}
 			}
@@ -115,7 +113,7 @@ public class Repository {
 			Scanner scan = new Scanner(new FileReader("db/operations.txt"));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
-				Repository.overallObjs.add(line);
+				UIRepository.overallObjs.add(line);
 			}
 			scan.close();
 		} catch (FileNotFoundException e) {
@@ -128,7 +126,7 @@ public class Repository {
 		try {
 			FileWriter fw = new FileWriter("db/rallyPoints.txt");
 			fw.write("# id lat lon name userId\n");
-			for (RallyPoint cp : Repository.rallyList) {
+			for (RallyPoint cp : UIRepository.rallyList) {
 				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat, cp.lon,
 						cp.userID));
 			}
@@ -263,7 +261,7 @@ public class Repository {
 		try {
 			FileWriter fw = new FileWriter("db/objectives.txt");
 			fw.write("# id lat lon name userId\n");
-			for (ObjPoint cp : Repository.objPoints.values()) {
+			for (ObjPoint cp : UIRepository.objPoints.values()) {
 				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat, cp.lon,
 						cp.userID));
 			}
@@ -280,7 +278,7 @@ public class Repository {
 		try {
 			FileWriter fw = new FileWriter("db/checkPoints.txt");
 			fw.write("# id lat lon name userId\n");
-			for (CheckPoint cp : Repository.checkPoints) {
+			for (CheckPoint cp : UIRepository.checkPoints) {
 				fw.write(String.format("%s$%f$%f$%s$%s$%s$%s\n", cp.id, cp.lat,
 						cp.lon, cp.userID, cp.isObj() ? "1" : "0", cp
 								.isReached() ? "1" : "0", cp.deadline));
@@ -298,7 +296,7 @@ public class Repository {
 		try {
 			FileWriter fw = new FileWriter("db/IEDPoints.txt");
 			fw.write("#lat lon userId mes\n");
-			for (IEDPoint cp : Repository.IEDList) {
+			for (IEDPoint cp : UIRepository.IEDList) {
 				fw.write(String.format("%f$%f$%s$%s$%d\n", cp.getLatitude(), cp
 						.getLongitude(), cp.getUserId(), cp.getMes(), cp
 						.getValidTime()));
@@ -311,13 +309,13 @@ public class Repository {
 	}
 
 	public static void removeObjPoint(String userId) {
-		Repository.objPoints.remove(userId);
+		UIRepository.objPoints.remove(userId);
 		LinkedList<CheckPoint> cps = new LinkedList<CheckPoint>();
-		for (CheckPoint cp : Repository.checkPoints) {
+		for (CheckPoint cp : UIRepository.checkPoints) {
 			if (!cp.userID.equals(userId))
 				cps.add(cp);
 		}
-		Repository.checkPoints = cps;
+		UIRepository.checkPoints = cps;
 	}
 
 	/**

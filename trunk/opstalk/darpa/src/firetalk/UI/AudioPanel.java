@@ -11,7 +11,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.operators.speech.PlaySound;
 import com.sun.java.swing.plaf.windows.WindowsButtonUI;
 import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
@@ -63,9 +63,9 @@ public class AudioPanel extends JPanel {
 					updateSlider();
 				}
 			});
-			for (String id : Repository.peopleList.keySet()) {
+			for (String id : UIRepository.peopleList.keySet()) {
 				comboModel.addElement(id + ": "
-						+ Repository.peopleList.get(id).getName());
+						+ UIRepository.peopleList.get(id).getName());
 			}
 
 		}
@@ -80,7 +80,7 @@ public class AudioPanel extends JPanel {
 				player.stopPlay();
 			player = new PlaySound(id, 0,this.jSlider);
 			jButton.setText(">");
-			Vector<File> files = Repository.audioFiles.get(id);
+			Vector<File> files = UIRepository.audioFiles.get(id);
 			if (files != null && files.size() != 0) {
 				this.jSlider.setMaximum(files.size());
 				this.jSlider.setValue(0);

@@ -2,33 +2,23 @@ package firetalk.operators.source;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import firetalk.UI.MainWindow;
 import firetalk.db.Repository;
 import firetalk.model.Event;
-import firetalk.model.People;
 
-public class Server extends Thread {
+public class UIServer extends Thread {
 	final int maxConnection = 100;
-
-	HashMap<String, StreamHandle> handles = new HashMap();
 
 //	public MainWindow parent;
 
 	// ContextManager contextManager = new ContextManager();
-//	public Server(MainWindow parent) {
+//	public UIServer(MainWindow parent) {
 //		this.parent = parent;
 //	}
 
@@ -48,12 +38,12 @@ public class Server extends Thread {
 					.newFixedThreadPool(maxConnection);
 			int id = 0;
 			// service.execute(contextManager);
-			ServerSocket ss = new ServerSocket(8989);
+			ServerSocket ss = new ServerSocket(9001);
 			while (true) {
 				// SocketChannel sChannel = ssChannel1.accept();
 				Socket s = ss.accept();
 				// System.out.println("new connection: " + sChannel);
-				StreamHandle handle = new StreamHandle(this, s, id);
+				UIStreamHandle handle = new UIStreamHandle(this, s);
 				id++;
 				// contextManager.addStreamHandle(handle); // add stream handle
 				// to
@@ -65,26 +55,26 @@ public class Server extends Thread {
 		}
 	}
 
-	public void removeHandle(StreamHandle handle) {
+	public void removeHandle(UIStreamHandle handle) {
 		System.out.println("<Connection Lost>: " + handle.getPeopleId());
 		// contextManager.removeStreamHandle(handle);
 		// handle.stopAll();
 		String id = handle.getUserId();
-		if (id != null && handles.containsValue(handle)) {
-			handles.remove(id);
+		if (id != null && Repository.handles.containsValue(handle)) {
+			Repository.handles.remove(id);
 		}
 	}
 
-	public synchronized void addStreamHandle(StreamHandle handle) {
-		int prevN = handles.size();
+	public synchronized void addStreamHandle(UIStreamHandle handle) {
+		int prevN = Repository.handles.size();
 		String id = handle.getUserId();
-		StreamHandle h = null;
+		UIStreamHandle h = null;
 		if (id != null) {
-			h = handles.get(id);
+			h = Repository.handles.get(id);
 			if (h != null) {
 				System.out.println("Thread " + h.getHandleId() + "is to end");
 				h.stopThread();
-				handles.remove(id);
+				Repository.handles.remove(id);
 			}
 
 			try {
@@ -94,17 +84,17 @@ public class Server extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (handles.get(id) != null)
+			if (Repository.handles.get(id) != null)
 				System.out.println("<Replace happens>");
-			handles.put(id, handle);
+			Repository.handles.put(id, handle);
 			System.out.println(handle.getHandleId() + " < Add " + id
-					+ " to handles > ");
+					+ " to Repository.handles > ");
 		}
 		if (h != null) {
-			if (prevN != handles.size())
+			if (prevN != Repository.handles.size())
 				System.out
-						.println("\n*******************\nhandles error: Prev: "
-								+ prevN + "after: " + handles.size()
+						.println("\n*******************\nRepository.handles error: Prev: "
+								+ prevN + "after: " + Repository.handles.size()
 								+ "\n***************");
 			if (!h.isAllKilled())
 				System.out.println("<<<<<Not all killed>>>>");
@@ -116,23 +106,17 @@ public class Server extends Thread {
 	 *            : people whose information is updated notify other devices
 	 *            that this people is updated
 	 */
-	public void updateEvent(Event event) {
-//		if (event.getEventType() == Event.MESSAGE)
-//			Repository.events.addFirst(event);
-		System.out.print("<notifyAll>: " + event);
-		for (StreamHandle handle : handles.values()) {
-			if (handle != null)
-				handle.addEvent(event);
-		}
-		for(UIStreamHandle handle:Repository.handles.values()){
-			if(handle!=null)
-				handle.addEvent(event);
-		}
-		//parent.addEvent2UI(event);
-
-	}
-	public static void main(String[] args){
-		new Server().start();
-		new UIServer().start();
-	}
+//	public void updateEvent(Event event) {
+////		if (event.getEventType() == Event.MESSAGE)
+////			Repository.events.addFirst(event);
+//		System.out.print("<notifyAll>: " + event);
+//		for (Iterator<UIStreamHandle> it = Repository.handles.values().iterator(); it
+//				.hasNext();) {
+//			UIStreamHandle handle = it.next();
+//			if (handle != null)
+//				handle.addEvent(event);
+//		}
+//		parent.addEvent2UI(event);
+//
+//	}
 }

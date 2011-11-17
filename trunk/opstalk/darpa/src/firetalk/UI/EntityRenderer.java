@@ -2,29 +2,21 @@ package firetalk.UI;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagLayout;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.ListCellRenderer;
-
 import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.tree.TreeCellRenderer;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
-import firetalk.model.People;
-import firetalk.util.DataUtil;
-
-import java.awt.SystemColor;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.TreeCellRenderer;
+
+import firetalk.db.UIRepository;
+import firetalk.model.People;
+import firetalk.util.DataUtil;
 
 public class EntityRenderer extends JPanel implements TreeCellRenderer {
 
@@ -72,7 +64,7 @@ public class EntityRenderer extends JPanel implements TreeCellRenderer {
 		if (text.indexOf(':') != -1&&text.length() > 10) {
 				String id = text.substring(0, text.indexOf(':'));
 
-				People people = Repository.peopleList.get(id);
+				People people = UIRepository.peopleList.get(id);
 				if (people != null) {
 					if (people.getLevel().equals("1"))
 						iconLabel.setIcon(new ImageIcon("img/squadLead.jpg"));

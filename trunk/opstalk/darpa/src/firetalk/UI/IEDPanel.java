@@ -1,45 +1,32 @@
 package firetalk.UI;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import java.awt.GridBagConstraints;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import javax.swing.JList;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
-import firetalk.model.IEDPoint;
-
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.BorderFactory;
-import java.awt.SystemColor;
-import java.awt.Dimension;
-import javax.swing.JComboBox;
-import javax.swing.border.TitledBorder;
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
-import com.sun.java.swing.plaf.windows.WindowsLabelUI;
-import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import com.sun.java.swing.plaf.windows.WindowsButtonUI;
-import javax.swing.SwingConstants;
+
+import firetalk.db.UIRepository;
+import firetalk.model.IEDPoint;
 
 public class IEDPanel extends JPanel {
 
@@ -81,9 +68,9 @@ public class IEDPanel extends JPanel {
 
 	public void updateList() {
 		model.clear();
-		for (int i = 0; i < Repository.IEDList.size(); i++)
+		for (int i = 0; i < UIRepository.IEDList.size(); i++)
 			model.addElement("" + i);
-		Repository.storeIEDPoints();
+		UIRepository.storeIEDPoints();
 		this.jList.repaint();
 	}
 
@@ -134,7 +121,7 @@ public class IEDPanel extends JPanel {
 				public void valueChanged(ListSelectionEvent e) {
 					int[] inds = jList.getSelectedIndices();
 					if (inds.length == 1) {
-						IEDPoint cp = Repository.IEDList.get(inds[0]);
+						IEDPoint cp = UIRepository.IEDList.get(inds[0]);
 						parent.setInfoPanel(cp.toString());
 						parent.mapPanel.resetMap(cp.getLongitude(), cp
 								.getLatitude());
@@ -183,7 +170,7 @@ public class IEDPanel extends JPanel {
 					String mes = mesField.getText();
 					double lat = Double.parseDouble(latField.getText());
 					double lon = Double.parseDouble(lonField.getText());
-					Repository.IEDList.add(new IEDPoint("server", mes, System
+					UIRepository.IEDList.add(new IEDPoint("server", mes, System
 							.currentTimeMillis(), lat, lon));
 					updateList();
 					parent.updateMarkers();
@@ -206,7 +193,7 @@ public class IEDPanel extends JPanel {
 			deleteAllButton
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							Repository.IEDList.clear();
+							UIRepository.IEDList.clear();
 							updateList();
 							parent.updateMarkers();
 						}
@@ -232,7 +219,7 @@ public class IEDPanel extends JPanel {
 							LinkedList<IEDPoint> temp = new LinkedList<IEDPoint>();
 							int i = 0;
 							int j = 0;
-							for (IEDPoint p : Repository.IEDList) {
+							for (IEDPoint p : UIRepository.IEDList) {
 								if (j>=inds.length||i != inds[j])
 									temp.add(p);
 								else
@@ -240,7 +227,7 @@ public class IEDPanel extends JPanel {
 								i++;
 							}
 
-							Repository.IEDList = temp;
+							UIRepository.IEDList = temp;
 
 							updateList();
 							parent.updateMarkers();

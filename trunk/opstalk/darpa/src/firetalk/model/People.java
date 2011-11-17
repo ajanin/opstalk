@@ -2,7 +2,7 @@ package firetalk.model;
 
 import java.util.LinkedList;
 
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 
 public class People {
 	private String id; // soldier id;
@@ -58,7 +58,7 @@ public class People {
 	@Override
 	public String toString() {
 		String text = "ID: " + id + "\nTeam Name: "
-				+ Repository.teamList.get(teamID).teamName + "\nRank: "
+				+ UIRepository.teamList.get(teamID).teamName + "\nRank: "
 				+ this.Level + "\nName: " + name + "\nLocation: ";
 		Location loc = this.getLocation();
 		if (loc == null)

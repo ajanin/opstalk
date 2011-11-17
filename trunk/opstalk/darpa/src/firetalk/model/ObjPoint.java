@@ -1,6 +1,7 @@
 package firetalk.model;
 
-import firetalk.db.Repository;
+
+import firetalk.db.UIRepository;
 
 public class ObjPoint extends CheckPoint {
 
@@ -12,7 +13,7 @@ public class ObjPoint extends CheckPoint {
 
 	public String toString() {
 		return String.format("Objective point for %s\nLocation: <%f,%f>",
-				Repository.peopleList.get(userID).getName(), lat, lon);
+				UIRepository.peopleList.get(userID).getName(), lat, lon);
 	}
 
 }

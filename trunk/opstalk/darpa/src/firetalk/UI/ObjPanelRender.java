@@ -2,22 +2,16 @@ package firetalk.UI;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagLayout;
-
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.ListCellRenderer;
-
 import java.awt.FlowLayout;
+
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
-import firetalk.db.Repository;
+import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
-
-import java.awt.SystemColor;
 
 public class ObjPanelRender extends JPanel implements TreeCellRenderer {
 
@@ -83,14 +77,14 @@ public class ObjPanelRender extends JPanel implements TreeCellRenderer {
 			String id = line.substring(spacePos + 1, comPos);
 			reach = true;
 			if (type.equals("objPoint")) {
-				for (CheckPoint cp : Repository.checkPoints) {
+				for (CheckPoint cp : UIRepository.checkPoints) {
 					if (cp.userID.equals(id) && !cp.isReached()) {
 						reach = false;
 						break;
 					}
 				}
 			} else {
-				for (CheckPoint cp : Repository.checkPoints) {
+				for (CheckPoint cp : UIRepository.checkPoints) {
 					if (cp.id.equals(id)) {
 						reach = cp.isReached();
 						break;

@@ -2,21 +2,16 @@ package firetalk.UI;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
 
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
-import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
+import firetalk.db.UIRepository;
 import firetalk.model.RallyPoint;
-
-import java.awt.SystemColor;
 
 public class RallyRenderer extends JPanel implements ListCellRenderer {
 
@@ -55,7 +50,7 @@ public class RallyRenderer extends JPanel implements ListCellRenderer {
 		if (isSelected)
 			this.setBackground(Color.gray);
 		setFont(list.getFont());
-		RallyPoint cp = Repository.rallyList.get(index);
+		RallyPoint cp = UIRepository.rallyList.get(index);
 		if (cp.isReached()) {
 			jTextField.setBackground(Color.green);
 			jLabel.setForeground(Color.green);

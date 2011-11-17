@@ -1,55 +1,40 @@
 package firetalk.UI;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import java.awt.GridBagConstraints;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import javax.swing.JList;
-
-import firetalk.db.Repository;
-import firetalk.model.CheckPoint;
-import firetalk.model.ObjPoint;
-import firetalk.model.People;
-import firetalk.model.Team;
-
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.BorderFactory;
-import java.awt.SystemColor;
-import java.awt.Dimension;
-import javax.swing.JComboBox;
-import javax.swing.border.TitledBorder;
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
+import java.util.Iterator;
 
-import com.sun.java.swing.plaf.windows.WindowsLabelUI;
-import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
-import com.sun.java.swing.plaf.windows.WindowsButtonUI;
-import javax.swing.JTree;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.border.TitledBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import com.sun.java.swing.plaf.windows.WindowsButtonUI;
+import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
 import com.sun.java.swing.plaf.windows.WindowsTreeUI;
+
+import firetalk.db.UIRepository;
+import firetalk.model.CheckPoint;
+import firetalk.model.ObjPoint;
 
 public class ObjPointPanel extends JPanel {
 
@@ -103,8 +88,8 @@ public class ObjPointPanel extends JPanel {
 
 	public void updateTree() {
 		this.createNodes();
-		Repository.storeObjPoints();
-		Repository.storeCheckPoints();
+		UIRepository.storeObjPoints();
+		UIRepository.storeCheckPoints();
 		this.repaint();
 	}
 
@@ -167,7 +152,7 @@ public class ObjPointPanel extends JPanel {
 			addButton.setUI(new WindowsButtonUI());
 			addButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String id = "" + Repository.checkPoints.size();
+					String id = "" + UIRepository.checkPoints.size();
 					double lat = Double.parseDouble(latField.getText());
 					double lon = Double.parseDouble(lonField.getText());
 					String userID = (String) jComboBox.getSelectedItem();
@@ -177,20 +162,20 @@ public class ObjPointPanel extends JPanel {
 							+ secondCombo.getSelectedItem() + " "
 							+ ampmCombo.getSelectedItem();
 					if (jCheckBox.isSelected()) {
-						Repository.objPoints.put(userID, new ObjPoint(id,
+						UIRepository.objPoints.put(userID, new ObjPoint(id,
 								userID, "", lat, lon));
 
 						CheckPoint cp = new CheckPoint(userID + "-1", userID,
 								"", lat, lon, true, false, deadline);
-						Repository.checkPoints.add(cp);
+						UIRepository.checkPoints.add(cp);
 
 					} else {
 						int count = 0;
-						for (CheckPoint cp : Repository.checkPoints) {
+						for (CheckPoint cp : UIRepository.checkPoints) {
 							if (cp.userID.equals(userID))
 								count++;
 						}
-						Repository.checkPoints.add(new CheckPoint(userID + "-"
+						UIRepository.checkPoints.add(new CheckPoint(userID + "-"
 								+ (count + 1), userID, "", lat, lon, false,
 								false, deadline));
 					}
@@ -216,8 +201,8 @@ public class ObjPointPanel extends JPanel {
 			deleteAllButton
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							Repository.checkPoints.clear();
-							Repository.objPoints.clear();
+							UIRepository.checkPoints.clear();
+							UIRepository.objPoints.clear();
 							updateTree();
 							updateCombo();
 							parent.updateMarkers();
@@ -252,11 +237,11 @@ public class ObjPointPanel extends JPanel {
 							switch (path.getPathCount()) {
 							case 2:
 								// obj points
-								Repository.removeObjPoint(id);
+								UIRepository.removeObjPoint(id);
 								break;
 							case 3:
 								// way points
-								for (Iterator<CheckPoint> it = Repository.checkPoints
+								for (Iterator<CheckPoint> it = UIRepository.checkPoints
 										.iterator(); it.hasNext();) {
 									if (it.next().id.equals(id)) {
 										it.remove();
@@ -473,10 +458,10 @@ public class ObjPointPanel extends JPanel {
 		top.removeAllChildren();
 		DefaultMutableTreeNode objs = null;
 		DefaultMutableTreeNode waypoints = null;
-		for (ObjPoint obj : Repository.objPoints.values()) {
+		for (ObjPoint obj : UIRepository.objPoints.values()) {
 			objs = new DefaultMutableTreeNode("objPoint " + obj.userID + ": "
-					+ Repository.peopleList.get(obj.userID).getName());
-			for (CheckPoint cp : Repository.checkPoints) {
+					+ UIRepository.peopleList.get(obj.userID).getName());
+			for (CheckPoint cp : UIRepository.checkPoints) {
 				if (cp.userID.equals(obj.userID)) {
 					waypoints = new DefaultMutableTreeNode("wayPoint"
 							+ (cp.isObj() ? "(obj) " : " ") + cp.id + ": "
@@ -529,11 +514,11 @@ public class ObjPointPanel extends JPanel {
 
 	private void createComboModel() {
 		this.comboModel.removeAllElements();
-		for (String id : Repository.peopleList.keySet()) {
-			if ((Repository.objPoints.get(id) == null) == jCheckBox
+		for (String id : UIRepository.peopleList.keySet()) {
+			if ((UIRepository.objPoints.get(id) == null) == jCheckBox
 					.isSelected())
 				comboModel.addElement(id + ": "
-						+ Repository.peopleList.get(id).getName());
+						+ UIRepository.peopleList.get(id).getName());
 		}
 	}
 
@@ -552,7 +537,7 @@ public class ObjPointPanel extends JPanel {
 			switch (path.getPathCount()) {
 			case 2:
 				// obj points
-				ObjPoint objP = Repository.objPoints.get(id);
+				ObjPoint objP = UIRepository.objPoints.get(id);
 				this.jCheckBox.setSelected(true);
 				this.latField.setText("" + objP.lat);
 				this.lonField.setText("" + objP.lon);
@@ -562,7 +547,7 @@ public class ObjPointPanel extends JPanel {
 				break;
 			case 3:
 				// way points
-				for (CheckPoint cp : Repository.checkPoints) {
+				for (CheckPoint cp : UIRepository.checkPoints) {
 					if (cp.id.equals(id)) {
 						userId = cp.userID;
 						this.jCheckBox.setSelected(false);
