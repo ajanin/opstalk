@@ -42,6 +42,7 @@ public class UIStreamHandle extends Thread {
 	private volatile Thread blinkerThread;
 	private int id;
 	private long transTime = 0;
+	public String remoteAddress = "";
 
 	class OutputHandle extends Thread {
 		private volatile Thread blinker = null;
@@ -76,7 +77,8 @@ public class UIStreamHandle extends Thread {
 				e.printStackTrace();
 				handleConnectionFailure();
 			}
-			System.out.println(UIStreamHandle.this.id + " < OutputHandle end > ");
+			System.out.println(UIStreamHandle.this.id
+					+ " < OutputHandle end > ");
 
 		}
 	}
@@ -172,6 +174,7 @@ public class UIStreamHandle extends Thread {
 		this.server = server;
 		// this.sc = con;
 		this.conn = con;
+		this.remoteAddress=con.getInetAddress().getHostName();
 		this.status = Status.CONNECT;
 		checkHandle.start();
 		failHandle.start();
@@ -265,11 +268,12 @@ public class UIStreamHandle extends Thread {
 						case Event.MESSAGE:
 							IEDPoint mes = new IEDPoint(this.user.getId(),
 									new String(content), validTime, lat, lon);
-							if(mes.getMes().equals("$enemy$"))
-								Repository.addEnemy(new Enemy(mes.getLatitude(),mes.getLongitude()));
+							if (mes.getMes().equals("$enemy$"))
+								Repository.addEnemy(new Enemy(
+										mes.getLatitude(), mes.getLongitude()));
 							else
 								Repository.addIED(mes);
-//							server.updateCheckPoints();
+							// server.updateCheckPoints();
 							break;
 						case Event.QUERY:
 						case Event.LOCATION:
@@ -294,7 +298,7 @@ public class UIStreamHandle extends Thread {
 								if (cp.id.equals(cpID))
 									cp.setReached(true);
 							}
-//							server.updateCheckPoints();
+							// server.updateCheckPoints();
 							break;
 						case Event.AUDIO:
 							File file = new File("data/audio/" + userId + "_"
@@ -328,7 +332,7 @@ public class UIStreamHandle extends Thread {
 					Event event = new Event(eventType, this.user.getId(),
 							validTime, transTime, lat, lon);
 					event.setContent(content);
-//					server.updateEvent(event);
+					// server.updateEvent(event);
 					Repository.transTime.put(this.userId, transTime);
 				}
 			}
@@ -390,91 +394,19 @@ public class UIStreamHandle extends Thread {
 			this.events.clear();
 			// is = Channels.newInputStream(sc);
 			is = conn.getInputStream();
-			userId = NetUtil.readString(is, 20); // get id of the device
+//			userId = NetUtil.readString(is, 20); // get id of the device
 			server.addStreamHandle(this);
 			// out = Channels.newOutputStream(sc);
 			out = conn.getOutputStream();
-			// out = conn.getOutputStream();
-			Long transTime = Repository.transTime.get(userId);
-			out.write(NetUtil
-					.value2bytes(transTime == null ? 0 : transTime, 20));
-			this.transTime = (long) NetUtil.readValue(is, 20);
-
-			// send fixed points, including obj, way, rally point
-			Vector<CheckPoint> cpForUser = new Vector<CheckPoint>();
-			for (CheckPoint cp : Repository.checkPoints) {
-				if (cp.userID.equals(this.userId)) {
-					cpForUser.add(cp);
-				}
-			}
-			out.write(NetUtil.value2bytes(cpForUser.size(), 10));
-			for (CheckPoint cp : cpForUser) {
-				out.write(NetUtil.string2bytes(cp.id, 10));
-				out.write(NetUtil.string2bytes("random", 10));
-				out.write(NetUtil.value2bytes(cp.lat, 20));
-				out.write(NetUtil.value2bytes(cp.lon, 20));
-				out.write(NetUtil.string2bytes(cp.isObj() ? "1" : "0", 2));
-				out.write(NetUtil.string2bytes(cp.isReached() ? "1" : "0", 2));
-			}
-			Vector<RallyPoint> rallyForUser = new Vector<RallyPoint>();
-			for (RallyPoint cp : Repository.rallyList) {
-				if (cp.userID.equals(this.userId)) {
-					rallyForUser.add(cp);
-				}
-			}
-			out.write(NetUtil.value2bytes(rallyForUser.size(), 10));
-			for (RallyPoint cp : rallyForUser) {
-				out.write(NetUtil.string2bytes(cp.id, 10));
-				out.write(NetUtil.string2bytes("random", 10));
-				out.write(NetUtil.value2bytes(cp.lat, 20));
-				out.write(NetUtil.value2bytes(cp.lon, 20));
-				out.write(NetUtil.string2bytes(cp.isReached() ? "1" : "0", 2));
-			}
-			receiveContext();
-			for (IEDPoint p : Repository.IEDList) {
-				Event event = new Event(Event.MESSAGE, p.getUserId(), p
-						.getValidTime(), System.currentTimeMillis(), p
-						.getLatitude(), p.getLongitude());
-				String mes = p.getMes();
-				byte[] content = null;
-				if (mes != null) {
-					content = new byte[mes.length()];
-					for (int i = 0; i < mes.length(); i++) {
-						content[i] = (byte) mes.charAt(i);
-					}
-				}
-				event.setContent(content);
-				this.addEvent(event);
-
-			}
-			// // send dynamic info, including IED points
-			// for (Iterator<Event> it = Repository.events.iterator(); it
-			// .hasNext();)
-			// this.events.addFirst(it.next());
-			// connection is established
 			outputHandle.start();
 			System.out.println(UIStreamHandle.this.id
-					+ " Connection is established for <" + userId + "> ");
-			try {
-				FileWriter fw = new FileWriter(new File("log.txt"), true);
-				fw.write(UIStreamHandle.this.id
-						+ " Connection is established for <" + userId + "> \n");
-			} catch (Exception e) {
-
-			}
+					+ " Connection is established for <" + this.remoteAddress + "> ");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			this.handleConnectionFailure();
 			return;
-		} 
-		People p = Repository.peopleList.get(userId);
-		if (p == null) {
-			Repository.peopleList.put(userId, new People());
-			p = Repository.peopleList.get(userId);
-			p.setId(userId);
 		}
-		this.user = p;
 		try {
 			while (blinkerThread == handleThread && status == Status.CONNECT) {
 				Thread.yield();
