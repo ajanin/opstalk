@@ -22,7 +22,7 @@ import firetalk.model.People;
 
 public class Server extends Thread {
 	final int maxConnection = 100;
-
+	ServerManagerUI parent=null;
 	HashMap<String, StreamHandle> handles = new HashMap();
 
 //	public MainWindow parent;
@@ -36,6 +36,10 @@ public class Server extends Thread {
 //		parent.updateMarkers();
 //		parent.updateList();
 //	}
+
+	public Server(ServerManagerUI parent) {
+		this.parent=parent;
+	}
 
 	@Override
 	public void run() {
@@ -97,6 +101,7 @@ public class Server extends Thread {
 			if (handles.get(id) != null)
 				System.out.println("<Replace happens>");
 			handles.put(id, handle);
+			parent.updateAndroidList();
 			System.out.println(handle.getHandleId() + " < Add " + id
 					+ " to handles > ");
 		}
@@ -130,9 +135,5 @@ public class Server extends Thread {
 		}
 		//parent.addEvent2UI(event);
 
-	}
-	public static void main(String[] args){
-		new Server().start();
-		new UIServer().start();
 	}
 }
