@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
+
 import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
 import firetalk.model.Enemy;
@@ -64,7 +65,7 @@ public class UIClient extends Thread {
 	private LinkedList<Event> events = new LinkedList<Event>();
 
 	private OutputHandle outputHandle = null;
-	private CheckConnectivity checkConnectThread = null;
+//	private CheckConnectivity checkConnectThread = null;
 	private HandleConnectFail handleFailThread;
 	private int netId;
 
@@ -91,46 +92,46 @@ public class UIClient extends Thread {
 		}
 	}
 
-	class CheckConnectivity extends Thread {
-		private volatile Thread blinker = null;
-
-		public void stopThread() {
-			Thread tmpBlinker = blinker;
-			blinker = null;
-			if (tmpBlinker != null) {
-				tmpBlinker.interrupt();
-			}
-		}
-
-		@Override
-		public void run() {
-			Thread checkThread = Thread.currentThread();
-			blinker = checkThread;
-			try {
-				while (blinker == checkThread && !isStopped()) {
-					Thread.yield();
-					if (Thread.currentThread().isInterrupted()) {
-						throw new InterruptedException(
-								"Stopped by ifInterruptedStop()");
-					}
-					if (events.isEmpty())
-						events.addFirst(new Event(Event.DUMMY));
-					if (getStatus() == Status.CONNECTED) {
-						// parent.speak("network strength is poor");
-						handleConnectFailure();
-					}
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			} catch (InterruptedException e) {
-				// parent.speak("check interrupted");
-			}
-		}
-	}
+//	class CheckConnectivity extends Thread {
+//		private volatile Thread blinker = null;
+//
+//		public void stopThread() {
+//			Thread tmpBlinker = blinker;
+//			blinker = null;
+//			if (tmpBlinker != null) {
+//				tmpBlinker.interrupt();
+//			}
+//		}
+//
+//		@Override
+//		public void run() {
+//			Thread checkThread = Thread.currentThread();
+//			blinker = checkThread;
+//			try {
+//				while (blinker == checkThread && !isStopped()) {
+//					Thread.yield();
+//					if (Thread.currentThread().isInterrupted()) {
+//						throw new InterruptedException(
+//								"Stopped by ifInterruptedStop()");
+//					}
+//					if (events.isEmpty())
+//						events.addFirst(new Event(Event.DUMMY));
+//					if (getStatus() == Status.CONNECTED) {
+//						// parent.speak("network strength is poor");
+//						handleConnectFailure();
+//					}
+//					try {
+//						Thread.sleep(5000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//			} catch (InterruptedException e) {
+//				// parent.speak("check interrupted");
+//			}
+//		}
+//	}
 
 	class OutputHandle extends Thread {
 		private volatile Thread blinker = null;
@@ -184,7 +185,7 @@ public class UIClient extends Thread {
 		setStopped(false);
 		this.setStatus(Status.LOST);
 		(handleFailThread = new HandleConnectFail()).start();
-		(checkConnectThread = new CheckConnectivity()).start();
+//		(checkConnectThread = new CheckConnectivity()).start();
 		Thread connectThread = Thread.currentThread();
 		blinkerThread = connectThread;
 		// String ip = "128.195.53.240";
@@ -199,6 +200,7 @@ public class UIClient extends Thread {
 			input = s.getInputStream();
 			outputHandle = new OutputHandle();
 			outputHandle.start();
+			this.setStatus(Status.CONNECTED);
 			// start the receiving thread
 			while (blinkerThread == connectThread
 					&& getStatus() == Status.CONNECTED) {
@@ -229,8 +231,8 @@ public class UIClient extends Thread {
 			// handleConnectFailure();
 			setStopped(true); // indicate the network component is stopped
 			this.setStatus(Status.LOST);
-			if (checkConnectThread != null)
-				checkConnectThread.stopThread();
+//			if (checkConnectThread != null)
+//				checkConnectThread.stopThread();
 			if (outputHandle != null)
 				outputHandle.stopThread();
 			Thread tmpBlinker = blinkerThread;
@@ -251,8 +253,8 @@ public class UIClient extends Thread {
 				input.close();
 				input = null;
 			}
-			if (checkConnectThread != null && checkConnectThread.isAlive())
-				checkConnectThread.stop();
+//			if (checkConnectThread != null && checkConnectThread.isAlive())
+//				checkConnectThread.stop();
 			if (outputHandle != null && outputHandle.isAlive())
 				outputHandle.stop();
 			this.stop();
@@ -270,8 +272,7 @@ public class UIClient extends Thread {
 	public boolean isAllKilled() {
 		return !(this.isAlive() || outputHandle != null
 				&& outputHandle.isAlive() || this.handleFailThread != null
-				&& this.handleFailThread.isAlive() || this.checkConnectThread != null
-				&& this.checkConnectThread.isAlive());
+				&& this.handleFailThread.isAlive() );
 	}
 
 	class HandleConnectFail extends Thread {
