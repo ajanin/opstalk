@@ -204,9 +204,7 @@ public class UIStreamHandle extends Thread {
 	 */
 	public boolean sendEvent(Event event) {
 		try {
-			if (out != null && status == Status.CONNECT
-					&& this.getPeopleId() != null
-					&& !this.getPeopleId().equals(event.getId())) {
+			if (out != null && status == Status.CONNECT) {
 				if (event.getEventType() == Event.DUMMY)
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
 				else if (event.getTransTime() > transTime) {
