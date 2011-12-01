@@ -279,22 +279,7 @@ public class CombatTalkView extends MapActivity {
 	private void speak(String mes) {
 		try {
 			if (this.mTts != null && mes != null) {
-				String newMes = "";
-				StringTokenizer st = new StringTokenizer(mes, " ");
-				while (st.hasMoreTokens()) {
-					String tmp = st.nextToken();
-					if (tmp.equalsIgnoreCase("rd")
-							|| tmp.equalsIgnoreCase("rd."))
-						tmp = "road";
-					else if (tmp.equalsIgnoreCase("st")
-							|| tmp.equalsIgnoreCase("st."))
-						tmp = "street";
-					else if (tmp.equalsIgnoreCase("ave")
-							|| tmp.equalsIgnoreCase("ave."))
-						tmp = "avenue";
-					newMes += tmp + " ";
-				}
-				this.mTts.speak(newMes);
+				this.mTts.speak(mes);
 				this.isSpeaking = true;
 			}
 		} catch (Exception e) {
