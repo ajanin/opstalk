@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.StringTokenizer;
 
 import org.apache.http.util.ByteArrayBuffer;
 
@@ -80,12 +81,12 @@ public class SpeechHandler implements SpeechCommandHandler,
 	private boolean download_grammar_file(String name) {
 		String localdir = Environment.getExternalStorageDirectory()
 				.getAbsolutePath()
-				+ "/dsexample_data/" + Preferences.asrModelDirectory;
+				+ "/dsexample_data/"
+				+ Preferences.asrModelDirectory;
 
 		try {
 			URL url = new URL("http://www3.icsi.berkeley.edu/~janin/opstalk/"
-					+ Preferences.asrModelDirectory + "/"
-					+ name);
+					+ Preferences.asrModelDirectory + "/" + name);
 			File file = new File(localdir, name + ".new");
 			URLConnection con = url.openConnection();
 			InputStream is = con.getInputStream();
@@ -110,7 +111,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 	private void update_grammar_file(String name) {
 		String localdir = Environment.getExternalStorageDirectory()
 				.getAbsolutePath()
-				+ "/dsexample_data/" + Preferences.asrModelDirectory;
+				+ "/dsexample_data/"
+				+ Preferences.asrModelDirectory;
 		File origfile = new File(localdir, name + ".new");
 		if (!origfile.exists()) {
 			setOutput("Updating grammar failed unexpectedly.");
@@ -182,8 +184,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 					if (!ap.getId().equals(parent.account)) {
 						LocationInfo aloc = ap.getLocation();
 						if (aloc != null) {
-							double dist = DataUtil.calDistance(loc
-									.getLatitude(), loc.getLongitude(),
+							double dist = DataUtil.calDistance(
+									loc.getLatitude(), loc.getLongitude(),
 									aloc.latitude, aloc.longitude);
 							if (dist < minDist) {
 								minDist = dist;
@@ -194,12 +196,13 @@ public class SpeechHandler implements SpeechCommandHandler,
 					}
 				}
 				if (minPeople != null) {
-					String dir = DataUtil.angle2String(DataUtil.calAngle(loc
-							.getLatitude(), loc.getLongitude(),
+					String dir = DataUtil.angle2String(DataUtil.calAngle(
+							loc.getLatitude(), loc.getLongitude(),
 							minLoc.latitude, minLoc.longitude));
 					setOutput(String.format(
 							"%s is closest person, %s %s of you",
-							minPeople.getName(), DataUtil.dist2Str(minDist), dir));
+							minPeople.getName(), DataUtil.dist2Str(minDist),
+							dir));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLoc.latitude * 1E6),
 									(int) (minLoc.longitude * 1E6)));
@@ -225,8 +228,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 			if (loc != null) {
 				for (CheckPoint ap : Repository.checkPoints) {
 
-					double dist = DataUtil.calDistance(loc.getLatitude(), loc
-							.getLongitude(), ap.lat, ap.lon);
+					double dist = DataUtil.calDistance(loc.getLatitude(),
+							loc.getLongitude(), ap.lat, ap.lon);
 					if (dist < minDist) {
 						minDist = dist;
 						minCp = ap;
@@ -236,13 +239,12 @@ public class SpeechHandler implements SpeechCommandHandler,
 				}
 
 				if (minCp != null) {
-					String dir = DataUtil
-							.angle2String(DataUtil.calAngle(loc.getLatitude(),
-									loc.getLongitude(), minLat, minLon));
-					setOutput(String
-							.format(
-									"way point %s is closest way point, %s %s of you",
-									minCp.id, DataUtil.dist2Str(minDist), dir));
+					String dir = DataUtil.angle2String(DataUtil.calAngle(
+							loc.getLatitude(), loc.getLongitude(), minLat,
+							minLon));
+					setOutput(String.format(
+							"way point %s is closest way point, %s %s of you",
+							minCp.id, DataUtil.dist2Str(minDist), dir));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLat * 1E6),
 									(int) (minLon * 1E6)));
@@ -264,12 +266,14 @@ public class SpeechHandler implements SpeechCommandHandler,
 		parent.resetButton();
 
 	}
-	
+
 	@Override
-	public void enemySpottedCommand(double distanceInMeters, double bearingDegreesEastofNorth) {
+	public void enemySpottedCommand(double distanceInMeters,
+			double bearingDegreesEastofNorth) {
 		Location myloc = parent.getMyLocation();
 		if (myloc != null) {
-			Location loc = ParseNum.addBearingDistance(myloc, distanceInMeters, bearingDegreesEastofNorth);
+			Location loc = ParseNum.addBearingDistance(myloc, distanceInMeters,
+					bearingDegreesEastofNorth);
 			/* send enemy spotted event */
 			Event enemyEvent = new Event(Event.MESSAGE,
 					System.currentTimeMillis(), loc.getLatitude(),
@@ -284,6 +288,23 @@ public class SpeechHandler implements SpeechCommandHandler,
 		parent.resetButton();
 	}
 
+	public String parseAddress(String add) {
+		String newMes = "";
+		StringTokenizer st = new StringTokenizer(add, " ");
+		while (st.hasMoreTokens()) {
+			String tmp = st.nextToken();
+			if (tmp.equalsIgnoreCase("rd") || tmp.equalsIgnoreCase("rd."))
+				tmp = "road";
+			else if (tmp.equalsIgnoreCase("st") || tmp.equalsIgnoreCase("st."))
+				tmp = "street";
+			else if (tmp.equalsIgnoreCase("ave")
+					|| tmp.equalsIgnoreCase("ave."))
+				tmp = "avenue";
+			newMes += tmp + " ";
+		}
+		return newMes;
+	}
+
 	@Override
 	public void whereAmICommand() {
 		try {
@@ -291,7 +312,7 @@ public class SpeechHandler implements SpeechCommandHandler,
 			if (loc != null) {
 				String address = parent.getAddress(loc);
 				if (address != null) {
-					setOutput("Your location is " + address);
+					setOutput("Your location is " + parseAddress(address));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (loc.getLatitude() * 1E6),
 									(int) (loc.getLongitude() * 1E6)));
@@ -337,7 +358,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 
 						setOutput(timeWord
 								+ String.format("%s is %s %s of you",
-										pQuery.getName(), DataUtil.dist2Str(dist), direction));
+										pQuery.getName(),
+										DataUtil.dist2Str(dist), direction));
 						parent.mapView.getController().animateTo(
 								new GeoPoint((int) (locQuery.latitude * 1E6),
 										(int) (locQuery.longitude * 1E6)));
@@ -379,12 +401,13 @@ public class SpeechHandler implements SpeechCommandHandler,
 
 						setOutput(timeWord
 								+ String.format("Team %d is %s %s of you",
-										(person+1),  DataUtil.dist2Str(dist), direction));
+										(person + 1), DataUtil.dist2Str(dist),
+										direction));
 						parent.mapView.getController().animateTo(
 								new GeoPoint((int) (locQuery.latitude * 1E6),
 										(int) (locQuery.longitude * 1E6)));
 					} else
-						setOutput("location of team" + (person+1)
+						setOutput("location of team" + (person + 1)
 								+ " is not available");
 				} else
 					setOutput("can not get team " + (person + 1));
@@ -403,14 +426,13 @@ public class SpeechHandler implements SpeechCommandHandler,
 			if (loc != null) {
 				if (waypoint >= 0 && waypoint < Repository.checkPoints.size()) {
 					CheckPoint cp = Repository.checkPoints.get(waypoint);
-					double dist = DataUtil.calDistance(loc.getLatitude(), loc
-							.getLongitude(), cp.lat, cp.lon);
+					double dist = DataUtil.calDistance(loc.getLatitude(),
+							loc.getLongitude(), cp.lat, cp.lon);
 					String direction = DataUtil.angle2String(DataUtil.calAngle(
 							loc.getLatitude(), loc.getLongitude(), cp.lat,
 							cp.lon));
-					setOutput(String.format(
-							"way point %d is %s %s of you",
-							waypoint + 1,  DataUtil.dist2Str(dist), direction));
+					setOutput(String.format("way point %d is %s %s of you",
+							waypoint + 1, DataUtil.dist2Str(dist), direction));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (cp.lat * 1E6),
 									(int) (cp.lon * 1E6)));
@@ -455,8 +477,9 @@ public class SpeechHandler implements SpeechCommandHandler,
 								loc.latitude, loc.longitude, minLoc.latitude,
 								minLoc.longitude));
 						setOutput(String.format("%s is %s %s of %s",
-								minPeople.getName(),  DataUtil.dist2Str(minDist), dir, queryP
-										.getName()));
+								minPeople.getName(),
+								DataUtil.dist2Str(minDist), dir,
+								queryP.getName()));
 						parent.mapView.getController().animateTo(
 								new GeoPoint((int) (minLoc.latitude * 1E6),
 										(int) (minLoc.longitude * 1E6)));
@@ -505,14 +528,15 @@ public class SpeechHandler implements SpeechCommandHandler,
 								loc.latitude, loc.longitude, minLoc.latitude,
 								minLoc.longitude));
 						setOutput(String.format("%s is %s %s of team %d",
-								minPeople.getName(),  DataUtil.dist2Str(minDist), dir, (person+1)));
+								minPeople.getName(),
+								DataUtil.dist2Str(minDist), dir, (person + 1)));
 						parent.mapView.getController().animateTo(
 								new GeoPoint((int) (minLoc.latitude * 1E6),
 										(int) (minLoc.longitude * 1E6)));
 					} else
-						setOutput("no one is near team " + (person+1));
+						setOutput("no one is near team " + (person + 1));
 				} else
-					setOutput("location of team " + (person+1)
+					setOutput("location of team " + (person + 1)
 							+ " is not available");
 			} else
 				setOutput(String.format("Can not get team %d", person + 1));
@@ -548,9 +572,9 @@ public class SpeechHandler implements SpeechCommandHandler,
 				if (minPeople != null) {
 					String dir = DataUtil.angle2String(DataUtil.calAngle(
 							cp.lat, cp.lon, minLoc.latitude, minLoc.longitude));
-					setOutput(String.format(
-							"%s is %s of way point %d", minPeople
-									.getName(),  DataUtil.dist2Str(minDist), dir, person + 1));
+					setOutput(String.format("%s is %s of way point %d",
+							minPeople.getName(), DataUtil.dist2Str(minDist),
+							dir, person + 1));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLoc.latitude * 1E6),
 									(int) (minLoc.longitude * 1E6)));
@@ -590,12 +614,12 @@ public class SpeechHandler implements SpeechCommandHandler,
 				}
 
 				if (minCp != null) {
-					String dir = DataUtil
-							.angle2String(DataUtil.calAngle(loc.getLatitude(),
-									loc.getLongitude(), minLat, minLon));
+					String dir = DataUtil.angle2String(DataUtil.calAngle(
+							loc.getLatitude(), loc.getLongitude(), minLat,
+							minLon));
 					setOutput(String.format(
-							"%s is closest way point, %s %s of you",
-							minCp.id,  DataUtil.dist2Str(minDist), dir));
+							"%s is closest way point, %s %s of you", minCp.id,
+							DataUtil.dist2Str(minDist), dir));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLat * 1E6),
 									(int) (minLon * 1E6)));
@@ -620,8 +644,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 			Location loc = parent.getMyLocation();
 			if (loc != null) {
 				for (RallyPoint ap : Repository.rallyList) {
-					double dist = DataUtil.calDistance(loc.getLatitude(), loc
-							.getLongitude(), ap.lat, ap.lon);
+					double dist = DataUtil.calDistance(loc.getLatitude(),
+							loc.getLongitude(), ap.lat, ap.lon);
 					if (dist < minDist) {
 						minDist = dist;
 						minCp = ap;
@@ -630,12 +654,12 @@ public class SpeechHandler implements SpeechCommandHandler,
 					}
 				}
 				if (minCp != null) {
-					String dir = DataUtil
-							.angle2String(DataUtil.calAngle(loc.getLatitude(),
-									loc.getLongitude(), minLat, minLon));
+					String dir = DataUtil.angle2String(DataUtil.calAngle(
+							loc.getLatitude(), loc.getLongitude(), minLat,
+							minLon));
 					setOutput(String.format(
 							"%s is closest rally point, %s %s of you",
-							minCp.id,  DataUtil.dist2Str(minDist), dir));
+							minCp.id, DataUtil.dist2Str(minDist), dir));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLat * 1E6),
 									(int) (minLon * 1E6)));
@@ -660,15 +684,16 @@ public class SpeechHandler implements SpeechCommandHandler,
 				else
 					for (CheckPoint cp : Repository.checkPoints) {
 						if (cp.isObj()) {
-							double dist = DataUtil.calDistance(loc
-									.getLatitude(), loc.getLongitude(), cp.lat,
-									cp.lon);
-							String direction = DataUtil.angle2String(DataUtil
-									.calAngle(loc.getLatitude(), loc
-											.getLongitude(), cp.lat, cp.lon));
+							double dist = DataUtil.calDistance(
+									loc.getLatitude(), loc.getLongitude(),
+									cp.lat, cp.lon);
+							String direction = DataUtil
+									.angle2String(DataUtil.calAngle(
+											loc.getLatitude(),
+											loc.getLongitude(), cp.lat, cp.lon));
 							setOutput(String.format(
 									"objective point is %s %s of you",
-									 DataUtil.dist2Str(dist), direction));
+									DataUtil.dist2Str(dist), direction));
 							parent.mapView.getController().animateTo(
 									new GeoPoint((int) (cp.lat * 1E6),
 											(int) (cp.lon * 1E6)));
@@ -692,14 +717,13 @@ public class SpeechHandler implements SpeechCommandHandler,
 			if (loc != null) {
 				if (rally >= 0 && rally < Repository.rallyList.size()) {
 					RallyPoint cp = Repository.rallyList.get(rally);
-					double dist = DataUtil.calDistance(loc.getLatitude(), loc
-							.getLongitude(), cp.lat, cp.lon);
+					double dist = DataUtil.calDistance(loc.getLatitude(),
+							loc.getLongitude(), cp.lat, cp.lon);
 					String direction = DataUtil.angle2String(DataUtil.calAngle(
 							loc.getLatitude(), loc.getLongitude(), cp.lat,
 							cp.lon));
-					setOutput(String.format(
-							"rally point %d is %s %s of you",
-							rally + 1,  DataUtil.dist2Str(dist), direction));
+					setOutput(String.format("rally point %d is %s %s of you",
+							rally + 1, DataUtil.dist2Str(dist), direction));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (cp.lat * 1E6),
 									(int) (cp.lon * 1E6)));
@@ -746,7 +770,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 							query.lat, query.lon, minLoc.latitude,
 							minLoc.longitude));
 					setOutput(String.format("%s is %s %s of %s",
-							minPeople.getName(),  DataUtil.dist2Str(minDist), dir, "objective"));
+							minPeople.getName(), DataUtil.dist2Str(minDist),
+							dir, "objective"));
 					parent.mapView.getController().animateTo(
 							new GeoPoint((int) (minLoc.latitude * 1E6),
 									(int) (minLoc.longitude * 1E6)));
@@ -789,7 +814,8 @@ public class SpeechHandler implements SpeechCommandHandler,
 								minLoc.longitude));
 						setOutput(String.format(
 								"%s is %s %s of rally point %d",
-								minPeople.getName(),  DataUtil.dist2Str(minDist), dir, rally + 1));
+								minPeople.getName(),
+								DataUtil.dist2Str(minDist), dir, rally + 1));
 						parent.mapView.getController().animateTo(
 								new GeoPoint((int) (minLoc.latitude * 1E6),
 										(int) (minLoc.longitude * 1E6)));
