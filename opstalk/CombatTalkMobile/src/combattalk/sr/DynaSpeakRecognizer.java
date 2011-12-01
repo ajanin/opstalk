@@ -277,13 +277,13 @@ public class DynaSpeakRecognizer {
 						return false;
 					}
 					if (unitStr.equals("Feet")) {
-    					distance = distance * 3.2808399;
+    					distance = distance / 3.2808399;
     				} else if (unitStr.equals("Yards")) {
-    					distance = distance * 1.0936133;
+    					distance = distance / 1.0936133;
     				} else if (unitStr.equals("KMs")) {
-    					distance = distance * 0.001;
+    					distance = distance * 1000.0;
     				} else if (unitStr.equals("Miles")) {
-    					distance = distance * 0.000621371192;
+    					distance = distance * 1609.344;
     				} else if (! unitStr.equals("Meters")) {
     					return false;
     				}
