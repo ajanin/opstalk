@@ -291,15 +291,18 @@ public class SpeechHandler implements SpeechCommandHandler,
 	public String parseAddress(String add) {
 		String newMes = "";
 		StringTokenizer st = new StringTokenizer(add, " ");
+		String[] brev = new String[] { "rd", "st", "ave", "n", "e", "s", "w",
+				"ne", "nw", "se", "sw" };
+		String[] full = new String[] { "road", "street", "avenue", "north",
+				"east", "south", "west", "northeast", "northwest", "southeast",
+				"southwest" };
 		while (st.hasMoreTokens()) {
 			String tmp = st.nextToken();
-			if (tmp.equalsIgnoreCase("rd") || tmp.equalsIgnoreCase("rd."))
-				tmp = "road";
-			else if (tmp.equalsIgnoreCase("st") || tmp.equalsIgnoreCase("st."))
-				tmp = "street";
-			else if (tmp.equalsIgnoreCase("ave")
-					|| tmp.equalsIgnoreCase("ave."))
-				tmp = "avenue";
+			for (int i = 0; i < brev.length; i++) {
+				if (tmp.equalsIgnoreCase(brev[i])
+						|| tmp.equalsIgnoreCase(brev[i] + '.'))
+					tmp = full[i];
+			}
 			newMes += tmp + " ";
 		}
 		return newMes;
