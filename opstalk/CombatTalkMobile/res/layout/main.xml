@@ -16,7 +16,7 @@
 	<com.google.android.maps.MapView
 		android:id="@+id/mapview" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:clickable="true"
-		android:apiKey="0Jhg2a6ikHVyMPLLLb9HB-aDaW7DRpk2MbJuOZA" />
-	<!-- Jeffery key android:apiKey="0Jhg2a6ikHVyMPLLLb9HB-aDaW7DRpk2MbJuOZA" -->
+		android:apiKey="0Jhg2a6ikHVyLy9ls3Aqfhu5Sow25aF9wug1org" />
+	<!-- Jeffery key android:apiKey="0Jhg2a6ikHVyLy9ls3Aqfhu5Sow25aF9wug1org" -->
 	<!-- Adam key android:apiKey="0MbAKLdH05M3TZ983KQVIz89fxHYEXlMYf6SnhA" -->
 </LinearLayout>
