@@ -32,6 +32,7 @@ public class Repository {
 	// public final static String rootPath = Environment
 	// .getExternalStorageDirectory().getAbsolutePath();
 	public final static String rootPath = "/sdcard";
+//	public final static String rootPath = "/nand";
 	public static String speakLine = null;
 
 	// public final static
