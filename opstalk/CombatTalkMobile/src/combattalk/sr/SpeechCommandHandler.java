@@ -23,7 +23,7 @@ public interface SpeechCommandHandler {
 	public void whereAmICommand();
 	public void sayAgainCommand();
 	public void voiceNoteCommand();
-	public void enemySpottedCommand();
+	public void enemySpottedCommand(double distanceInMeters, double bearingDegreesEastofNorth);
 	
 	public void parserError(String msg);
 }

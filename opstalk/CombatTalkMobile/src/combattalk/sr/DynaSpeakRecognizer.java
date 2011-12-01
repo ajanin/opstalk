@@ -129,6 +129,12 @@ public class DynaSpeakRecognizer {
     
     private class DynaSpeakRecognizerListener implements RecognitionResultListener, AudioCaptureListener {
     	//TODO: Redo this with enum
+    	//
+    	// NOTE: CommandPattern and dispatchCommand currently only work with commands that have
+    	// zero one one argument.
+    	// The EnemySpotted command has (potentially) distance, distance units, and bearing and
+    	// is handled specially in doFinalCommand. This is ugly!
+    	
     	private class CommandPattern {
     		public int command; // From SpeechCommandHandler
     		public Pattern pattern;
@@ -153,7 +159,6 @@ public class DynaSpeakRecognizer {
     	private static final int WHERE_AM_I = 15;
     	private static final int SAY_AGAIN = 16;
     	private static final int VOICE_NOTE = 17;
-    	private static final int ENEMY_SPOTTED = 18;
 
     	private final CommandPattern m_commands[] = {
     			new CommandPattern(WHERE_IS_PERSON, Pattern.compile("\\{Person_([0-9]+)\\}.*\\{WhereIs\\}"), 1),
@@ -176,7 +181,6 @@ public class DynaSpeakRecognizer {
     			new CommandPattern(WHERE_AM_I, Pattern.compile("\\{WhereAmI\\}"), 0),
     			new CommandPattern(SAY_AGAIN, Pattern.compile("\\{Repeat\\}"), 0),
     			new CommandPattern(VOICE_NOTE, Pattern.compile("\\{VoiceNote\\}"), 0),
-    			new CommandPattern(ENEMY_SPOTTED, Pattern.compile("\\{EnemySpotted\\}"), 0)
     	};
     	
     	private void dispatchCommand(int command, int arg) {
@@ -202,7 +206,6 @@ public class DynaSpeakRecognizer {
     		case SAY_AGAIN:				  m_commandHandler.sayAgainCommand();				break;
     		case VOICE_NOTE:			  m_commandHandler.voiceNoteCommand();				break;
     		
-    		case ENEMY_SPOTTED:			  m_commandHandler.enemySpottedCommand();			break;
     		default: m_commandHandler.parserError("Got a bad command index. This shouldn't happen.");
     		}
     	}
@@ -244,10 +247,57 @@ public class DynaSpeakRecognizer {
     				}
     			}
     		}
-    		// If we get here, no patterns matches.
+    		// If we get here, no patterns matched. This means either an unrecognized command,
+    		// or a command (such as EnemySpotted) that cannot be handled with the simple matcher.
+    		
+    		if (tryEnemySpotted(m)) {
+    			return;
+    		}
     		m_commandHandler.parserError("No matching command found.");
     	}
     
+    	private final Pattern enemySpottedPattern = Pattern.compile("\\{EnemySpotted\\}");
+    	private final Pattern enemySpottedFullPattern = Pattern.compile(
+    		"\\{StartNumber\\}(.*)\\{EndNumber\\}.*\\{DistanceUnit(.*)\\}.*\\{Direction(.*)\\}.*\\{EnemySpotted\\}"
+    	);
+    	
+    	private boolean tryEnemySpotted(String m) {
+    		Matcher matcher = enemySpottedPattern.matcher(m);
+    		if (matcher.find()) {
+    			double distance = 0.0;
+    			double bearing = 0.0;
+    			Matcher fullmatcher = enemySpottedFullPattern.matcher(m);
+    			if (fullmatcher.find()) {
+    				String distanceStr = fullmatcher.group(1);
+    				String unitStr = fullmatcher.group(2);
+    				String bearingStr = fullmatcher.group(3);
+    				try {
+						distance = (double) ParseNum.text2long(distanceStr);
+					} catch (NumberFormatException e) {
+						return false;
+					}
+					if (unitStr.equals("Feet")) {
+    					distance = distance * 3.2808399;
+    				} else if (unitStr.equals("Yards")) {
+    					distance = distance * 1.0936133;
+    				} else if (unitStr.equals("KMs")) {
+    					distance = distance * 0.001;
+    				} else if (unitStr.equals("Miles")) {
+    					distance = distance * 0.000621371192;
+    				} else if (! unitStr.equals("Meters")) {
+    					return false;
+    				}
+					if (!ParseNum.isBearing(bearingStr)) {
+						return false;
+					}
+					bearing = ParseNum.bearingStringToDegrees(bearingStr);
+    			}
+				m_commandHandler.enemySpottedCommand(distance, bearing);
+    			return true;
+    		}
+    		return false;
+    	}
+    	
     	@Override
     	public void partialResult(String id, String m) {
     		if (m_resultsHandler != null) {

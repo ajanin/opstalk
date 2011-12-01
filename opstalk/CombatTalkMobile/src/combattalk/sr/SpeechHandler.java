@@ -266,9 +266,10 @@ public class SpeechHandler implements SpeechCommandHandler,
 	}
 	
 	@Override
-	public void enemySpottedCommand() {
-		Location loc = parent.getMyLocation();
-		if (loc != null) {
+	public void enemySpottedCommand(double distanceInMeters, double bearingDegreesEastofNorth) {
+		Location myloc = parent.getMyLocation();
+		if (myloc != null) {
+			Location loc = ParseNum.addBearingDistance(myloc, distanceInMeters, bearingDegreesEastofNorth);
 			/* send enemy spotted event */
 			Event enemyEvent = new Event(Event.MESSAGE,
 					System.currentTimeMillis(), loc.getLatitude(),
