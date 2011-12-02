@@ -206,7 +206,7 @@ public class ParseNum {
 	public static Location addBearingDistance(Location inloc,
 											   double distanceInMeters, double bearingDegreesEastofNorth) {
 		double rdistance = distanceInMeters / 6371000.0; // Mean spherical radius of Earth in meters
-		double rbearing = deg2rad(bearingDegreesEastofNorth);
+		double rbearing = -deg2rad(bearingDegreesEastofNorth);
 		double rinlat = deg2rad(inloc.getLatitude());
 		double rinlon = deg2rad(inloc.getLongitude());
 		double routlat = Math.asin(Math.sin(rinlat)*Math.cos(rdistance) + 
