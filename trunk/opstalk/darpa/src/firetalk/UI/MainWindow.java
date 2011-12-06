@@ -73,7 +73,6 @@ public class MainWindow extends JFrame {
 		initialize();
 		this.doInit();
 		new UIClient(this).start();
-		//new Server(this).start();
 		Timer timer = new Timer();
 		timer.schedule(new ReadLocation(), 1000, 1000);
 

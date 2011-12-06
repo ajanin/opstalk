@@ -1,6 +1,5 @@
 package firetalk.UI;
 
-
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,7 +11,6 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
-
 import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
 import firetalk.model.Enemy;
@@ -20,7 +18,6 @@ import firetalk.model.Event;
 import firetalk.model.IEDPoint;
 import firetalk.model.People;
 import firetalk.util.NetUtil;
-
 
 public class UIClient extends Thread {
 	private volatile Thread blinkerThread = null;
@@ -49,6 +46,7 @@ public class UIClient extends Thread {
 	public synchronized Status getStatus() {
 		return status;
 	}
+
 	MainWindow parent;
 	OutputStream out = null;
 	InputStream input = null;
@@ -65,7 +63,7 @@ public class UIClient extends Thread {
 	private LinkedList<Event> events = new LinkedList<Event>();
 
 	private OutputHandle outputHandle = null;
-//	private CheckConnectivity checkConnectThread = null;
+	// private CheckConnectivity checkConnectThread = null;
 	private HandleConnectFail handleFailThread;
 	private int netId;
 
@@ -78,7 +76,7 @@ public class UIClient extends Thread {
 	}
 
 	public UIClient(MainWindow parent) {
-		this.parent=parent;
+		this.parent = parent;
 	}
 
 	public void addEvent(Event event) {
@@ -91,47 +89,6 @@ public class UIClient extends Thread {
 			e.fillInStackTrace();
 		}
 	}
-
-//	class CheckConnectivity extends Thread {
-//		private volatile Thread blinker = null;
-//
-//		public void stopThread() {
-//			Thread tmpBlinker = blinker;
-//			blinker = null;
-//			if (tmpBlinker != null) {
-//				tmpBlinker.interrupt();
-//			}
-//		}
-//
-//		@Override
-//		public void run() {
-//			Thread checkThread = Thread.currentThread();
-//			blinker = checkThread;
-//			try {
-//				while (blinker == checkThread && !isStopped()) {
-//					Thread.yield();
-//					if (Thread.currentThread().isInterrupted()) {
-//						throw new InterruptedException(
-//								"Stopped by ifInterruptedStop()");
-//					}
-//					if (events.isEmpty())
-//						events.addFirst(new Event(Event.DUMMY));
-//					if (getStatus() == Status.CONNECTED) {
-//						// parent.speak("network strength is poor");
-//						handleConnectFailure();
-//					}
-//					try {
-//						Thread.sleep(5000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			} catch (InterruptedException e) {
-//				// parent.speak("check interrupted");
-//			}
-//		}
-//	}
 
 	class OutputHandle extends Thread {
 		private volatile Thread blinker = null;
@@ -159,22 +116,15 @@ public class UIClient extends Thread {
 					while (!events.isEmpty()) {
 						Event event = events.removeLast();
 						if (getStatus() == Status.CONNECTED) {
-							if (UIClient.this.sendEvent(event))
-								continue;
-						} else if (event.getEventType() == Event.MESSAGE
-								|| event.getEventType() == Event.CHECK_REACH)
-							UIRepository.events.addFirst(event);
+							UIClient.this.sendEvent(event);
+
+						}
 					}
-					// if (s == null || !s.isConnected() || s.isClosed()
-					// || s.isInputShutdown() || s.isOutputShutdown()) {
-					// handleConnectFailure();
-					// }
 					Thread.sleep(1000);
 
 				}
 			} catch (InterruptedException e) {
-				// parent.speak("interrupted output");
-				// throw new RuntimeException("Interrupted", e);
+				e.printStackTrace();
 			}
 
 		}
@@ -185,7 +135,7 @@ public class UIClient extends Thread {
 		setStopped(false);
 		this.setStatus(Status.LOST);
 		(handleFailThread = new HandleConnectFail()).start();
-//		(checkConnectThread = new CheckConnectivity()).start();
+		// (checkConnectThread = new CheckConnectivity()).start();
 		Thread connectThread = Thread.currentThread();
 		blinkerThread = connectThread;
 		// String ip = "128.195.53.240";
@@ -193,8 +143,7 @@ public class UIClient extends Thread {
 		// String ip = "128.195.185.30";
 		int port = 9001;
 		try {
-			// sc = SocketChannel.open();
-			// sc.connect(new InetSocketAddress(ip, port));
+
 			s = new Socket(ip, port);
 			out = s.getOutputStream();
 			input = s.getInputStream();
@@ -228,11 +177,8 @@ public class UIClient extends Thread {
 	 */
 	public void stopThread() {
 		try {
-			// handleConnectFailure();
 			setStopped(true); // indicate the network component is stopped
 			this.setStatus(Status.LOST);
-//			if (checkConnectThread != null)
-//				checkConnectThread.stopThread();
 			if (outputHandle != null)
 				outputHandle.stopThread();
 			Thread tmpBlinker = blinkerThread;
@@ -253,26 +199,17 @@ public class UIClient extends Thread {
 				input.close();
 				input = null;
 			}
-//			if (checkConnectThread != null && checkConnectThread.isAlive())
-//				checkConnectThread.stop();
 			if (outputHandle != null && outputHandle.isAlive())
 				outputHandle.stop();
 			this.stop();
-			// if (sc != null) {
-			// sc.close();
-			// sc = null;
-			// }
-
-			// parent.speak("Connection lost");
 		} catch (Exception e) {
-			//parent.addToSpeak("exception while stopping network component");
 		}
 	}
 
 	public boolean isAllKilled() {
 		return !(this.isAlive() || outputHandle != null
 				&& outputHandle.isAlive() || this.handleFailThread != null
-				&& this.handleFailThread.isAlive() );
+				&& this.handleFailThread.isAlive());
 	}
 
 	class HandleConnectFail extends Thread {
@@ -290,7 +227,7 @@ public class UIClient extends Thread {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-				//	parent.addToSpeak("exception in handleconnetFail");
+					// parent.addToSpeak("exception in handleconnetFail");
 				}
 			}
 		}
@@ -325,10 +262,11 @@ public class UIClient extends Thread {
 					if (content != null) { // parse content
 						switch (eventType) {
 						case Event.MESSAGE:
-							IEDPoint mes = new IEDPoint(userId,
-									new String(content), validTime, lat, lon);
-							if(mes.getMes().equals("$enemy$"))
-								UIRepository.addEnemy(new Enemy(mes.getLatitude(),mes.getLongitude()));
+							IEDPoint mes = new IEDPoint(userId, new String(
+									content), validTime, lat, lon);
+							if (mes.getMes().equals("$enemy$"))
+								UIRepository.addEnemy(new Enemy(mes
+										.getLatitude(), mes.getLongitude()));
 							else
 								UIRepository.addIED(mes);
 							parent.updateCheckPoints();
@@ -343,7 +281,7 @@ public class UIClient extends Thread {
 							System.out.println("speed: " + speed);
 							double direction = Double.parseDouble(st
 									.nextToken());
-							People user=UIRepository.peopleList.get(userId);
+							People user = UIRepository.peopleList.get(userId);
 							user.addLocation(lon, lat, speed, direction);
 							break;
 						case Event.CONTEXT:
@@ -388,8 +326,8 @@ public class UIClient extends Thread {
 						}
 
 					}
-					Event event = new Event(eventType, userId,
-							validTime, transTime, lat, lon);
+					Event event = new Event(eventType, userId, validTime,
+							transTime, lat, lon);
 					event.setContent(content);
 					parent.addEvent2UI(event);
 					UIRepository.transTime.put(this.otherId, transTime);
