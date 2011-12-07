@@ -75,7 +75,7 @@ public class ServerManagerUI extends JFrame {
 	public void updateUIList() {
 		modelUI.clear();
 		for (UIStreamHandle handle : Repository.handles.values())
-			modelUI.addElement(handle.remoteAddress);
+			modelUI.addElement(handle.userId);
 		this.jList.repaint();
 	}
 
