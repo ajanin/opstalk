@@ -11,12 +11,15 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
+import firetalk.db.Repository;
 import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
+import firetalk.model.DBEvent;
 import firetalk.model.Enemy;
 import firetalk.model.Event;
 import firetalk.model.IEDPoint;
 import firetalk.model.People;
+import firetalk.model.DBEvent.DBType;
 import firetalk.util.NetUtil;
 
 public class UIClient extends Thread {
@@ -145,6 +148,7 @@ public class UIClient extends Thread {
 		try {
 
 			s = new Socket(ip, port);
+			userId=s.getLocalAddress().getHostAddress();
 			out = s.getOutputStream();
 			input = s.getInputStream();
 			outputHandle = new OutputHandle();
@@ -243,94 +247,124 @@ public class UIClient extends Thread {
 
 	}
 
+	private void updateDB(int dbType, byte[] content) {
+		try {
+			UIRepository.storeDB(dbType, content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (dbType == DBType.IED.ordinal()) {
+			parent.updateIEDList();
+		} else if (dbType == DBType.rally.ordinal()) {
+			parent.updateRallyList();
+		} else if (dbType == DBType.objPoint.ordinal()||dbType == DBType.wayPoint.ordinal()) {
+			parent.updateObjList();
+		}
+
+	}
+
 	private boolean receiveEvent() {
 		try {
 			if (this.getStatus() == Status.CONNECTED) {
 				// read event type (5)
 				int eventType = (int) NetUtil.readValue(input, 3);
 				if (eventType != Event.DUMMY) {
-					String userId = NetUtil.readString(input, 20);
-					// read valid time and trans time (20)
-					long validTime = (long) NetUtil.readValue(input, 20);
-					long transTime = (long) NetUtil.readValue(input, 20);
-					// read lat and lon (20)
-					double lat = NetUtil.readValue(input, 20);
-					double lon = NetUtil.readValue(input, 20);
-					// read content
-					int contentLen = (int) NetUtil.readValue(input, 10);
-					byte[] content = NetUtil.readBytes(input, contentLen);
-					if (content != null) { // parse content
-						switch (eventType) {
-						case Event.MESSAGE:
-							IEDPoint mes = new IEDPoint(userId, new String(
-									content), validTime, lat, lon);
-							if (mes.getMes().equals("$enemy$"))
-								UIRepository.addEnemy(new Enemy(mes
-										.getLatitude(), mes.getLongitude()));
-							else
-								UIRepository.addIED(mes);
-							parent.updateCheckPoints();
-							break;
-						case Event.QUERY:
-						case Event.LOCATION:
-							// parse location, format:<speed direction>
-							String str = new String(content);
-							StringTokenizer st = new StringTokenizer(str, " "
-									+ NetUtil.delimiter);
-							double speed = Double.parseDouble(st.nextToken());
-							System.out.println("speed: " + speed);
-							double direction = Double.parseDouble(st
-									.nextToken());
-							People user = UIRepository.peopleList.get(userId);
-							user.addLocation(lon, lat, speed, direction);
-							break;
-						case Event.CONTEXT:
-						case Event.IMAGE:
-						case Event.CHECK_REACH:
-							System.out.println("check point event received");
-							String cpID = "";
-							for (int i = 0; i < content.length; i++)
-								cpID += (char) content[i];
-							for (CheckPoint cp : UIRepository.checkPoints) {
-								if (cp.id.equals(cpID))
-									cp.setReached(true);
-							}
-							parent.updateCheckPoints();
-							break;
-						case Event.AUDIO:
-							File file = new File("data/audio/" + userId + "_"
-									+ validTime + ".pcm");
-							// Delete any previous recording.
-							if (file.exists())
-								file.delete();
-
-							// Create the new file.
-							try {
-								file.createNewFile();
-							} catch (IOException e) {
-								System.out.println("Failed to create "
-										+ file.toString());
+					if (eventType == Event.DB_SYNC) {
+						int dbType = (int) NetUtil.readValue(input, 3);
+						int contentLen = (int) NetUtil.readValue(input, 10);
+						byte[] content = NetUtil.readBytes(input, contentLen);
+						this.updateDB(dbType, content);
+					} else {
+						String userId = NetUtil.readString(input, 20);
+						// read valid time and trans time (20)
+						long validTime = (long) NetUtil.readValue(input, 20);
+						long transTime = (long) NetUtil.readValue(input, 20);
+						// read lat and lon (20)
+						double lat = NetUtil.readValue(input, 20);
+						double lon = NetUtil.readValue(input, 20);
+						// read content
+						int contentLen = (int) NetUtil.readValue(input, 10);
+						byte[] content = NetUtil.readBytes(input, contentLen);
+						if (content != null) { // parse content
+							switch (eventType) {
+							case Event.MESSAGE:
+								IEDPoint mes = new IEDPoint(userId, new String(
+										content), validTime, lat, lon);
+								if (mes.getMes().equals("$enemy$"))
+									UIRepository
+											.addEnemy(new Enemy(mes
+													.getLatitude(), mes
+													.getLongitude()));
+								else
+									UIRepository.addIED(mes);
+								parent.updateCheckPoints();
 								break;
-							}
-							try {
-								OutputStream os = new FileOutputStream(file);
-								BufferedOutputStream bos = new BufferedOutputStream(
-										os);
-								DataOutputStream dos = new DataOutputStream(bos);
-								dos.write(content, 0, content.length);
-								dos.close();
-								UIRepository.addAudio(this.userId, file);
-							} catch (Throwable t) {
-								System.out.println(t.getMessage());
-							}
-						}
+							case Event.QUERY:
+							case Event.LOCATION:
+								// parse location, format:<speed direction>
+								String str = new String(content);
+								StringTokenizer st = new StringTokenizer(str,
+										" " + NetUtil.delimiter);
+								double speed = Double.parseDouble(st
+										.nextToken());
+								System.out.println("speed: " + speed);
+								double direction = Double.parseDouble(st
+										.nextToken());
+								People user = UIRepository.peopleList
+										.get(userId);
+								user.addLocation(lon, lat, speed, direction);
+								break;
+							case Event.CONTEXT:
+							case Event.IMAGE:
+							case Event.CHECK_REACH:
+								System.out
+										.println("check point event received");
+								String cpID = "";
+								for (int i = 0; i < content.length; i++)
+									cpID += (char) content[i];
+								for (CheckPoint cp : UIRepository.checkPoints) {
+									if (cp.id.equals(cpID))
+										cp.setReached(true);
+								}
+								parent.updateCheckPoints();
+								break;
+							case Event.AUDIO:
+								File file = new File("data/audio/" + userId
+										+ "_" + validTime + ".pcm");
+								// Delete any previous recording.
+								if (file.exists())
+									file.delete();
 
+								// Create the new file.
+								try {
+									file.createNewFile();
+								} catch (IOException e) {
+									System.out.println("Failed to create "
+											+ file.toString());
+									break;
+								}
+								try {
+									OutputStream os = new FileOutputStream(file);
+									BufferedOutputStream bos = new BufferedOutputStream(
+											os);
+									DataOutputStream dos = new DataOutputStream(
+											bos);
+									dos.write(content, 0, content.length);
+									dos.close();
+									UIRepository.addAudio(this.userId, file);
+								} catch (Throwable t) {
+									System.out.println(t.getMessage());
+								}
+							}
+
+						}
+						Event event = new Event(eventType, userId, validTime,
+								transTime, lat, lon);
+						event.setContent(content);
+						parent.addEvent2UI(event);
+						UIRepository.transTime.put(this.otherId, transTime);
 					}
-					Event event = new Event(eventType, userId, validTime,
-							transTime, lat, lon);
-					event.setContent(content);
-					parent.addEvent2UI(event);
-					UIRepository.transTime.put(this.otherId, transTime);
 				}
 				// this.serverTransTime = transTime;
 				return true;
@@ -353,7 +387,14 @@ public class UIClient extends Thread {
 			try {
 				if (event.getEventType() == Event.DUMMY)
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
-				else if (event.getTransTime() > this.serverTransTime) {
+				else if (event.getEventType() == Event.DB_SYNC) {
+					out.write(NetUtil.value2bytes(event.getEventType(), 3));
+					out.write(NetUtil.value2bytes(((DBEvent) event).getDbType()
+							.ordinal(), 3));
+					out.write(NetUtil
+							.value2bytes(event.getContent().length, 10));
+					out.write(event.getContent());
+				} else if (event.getTransTime() > this.serverTransTime) {
 					// if this event have not been seen by server
 
 					// send event type (2)
