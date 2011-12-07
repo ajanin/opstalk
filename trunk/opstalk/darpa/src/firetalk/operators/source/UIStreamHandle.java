@@ -173,9 +173,8 @@ public class UIStreamHandle extends Thread {
 
 	public UIStreamHandle(UIServer server, Socket con) {
 		this.server = server;
-		// this.sc = con;
 		this.conn = con;
-		this.remoteAddress = con.getInetAddress().getHostName();
+		this.remoteAddress = con.getInetAddress().getHostAddress();
 		this.status = Status.CONNECT;
 		this.userId=con.getInetAddress().getHostAddress();
 		checkHandle.start();
