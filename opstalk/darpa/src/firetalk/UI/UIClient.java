@@ -127,7 +127,7 @@ public class UIClient extends Thread {
 
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				handleConnectFailure();
 			}
 
 		}
@@ -167,9 +167,6 @@ public class UIClient extends Thread {
 				receiveEvent();
 			}
 
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			// parent.speak("input interrupted");
 		} catch (Exception e) {
 			// parent.speak("connect exception ");
 			this.handleConnectFailure();
@@ -207,6 +204,7 @@ public class UIClient extends Thread {
 				outputHandle.stop();
 			this.stop();
 		} catch (Exception e) {
+			handleConnectFailure();
 		}
 	}
 
@@ -230,8 +228,7 @@ public class UIClient extends Thread {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					// parent.addToSpeak("exception in handleconnetFail");
+					e.printStackTrace();
 				}
 			}
 		}
