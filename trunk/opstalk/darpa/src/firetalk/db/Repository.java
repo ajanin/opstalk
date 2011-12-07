@@ -96,6 +96,7 @@ public class Repository {
 
 	public static void parseRallyFromFile() {
 		try {
+			rallyList.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.serverDBFolder
 					+ Parameter.rallyFileName));
 			while (scan.hasNext()) {
@@ -150,6 +151,7 @@ public class Repository {
 
 	public static void parseObjectivesFromFile() {
 		try {
+			objPoints.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.serverDBFolder
 					+ Parameter.objFileName));
 			while (scan.hasNext()) {
@@ -173,6 +175,7 @@ public class Repository {
 
 	public static void parseTeamFromFile(String fileName) {
 		try {
+			teamList.clear();
 			Scanner scan = new Scanner(new FileReader(fileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
@@ -192,6 +195,7 @@ public class Repository {
 
 	public static void parseCheckPointsFromFile() {
 		try {
+			checkPoints.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.serverDBFolder
 					+ Parameter.wayPointFileName));
 			while (scan.hasNext()) {
@@ -225,6 +229,7 @@ public class Repository {
 
 	public static void parsePeopleFromFile(String fileName) {
 		try {
+			peopleList.clear();
 			Scanner scan = new Scanner(new FileReader(fileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
@@ -249,6 +254,7 @@ public class Repository {
 
 	public static void parseIEDFromFile() {
 		try {
+			IEDList.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.serverDBFolder
 					+ Parameter.IEDFileName));
 			while (scan.hasNext()) {
