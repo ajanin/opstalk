@@ -16,20 +16,20 @@ public class UIServer extends Thread {
 	final int maxConnection = 100;
 	private ServerManagerUI parent;
 
-//	public MainWindow parent;
+	// public MainWindow parent;
 
 	// ContextManager contextManager = new ContextManager();
-//	public UIServer(MainWindow parent) {
-//		this.parent = parent;
-//	}
+	// public UIServer(MainWindow parent) {
+	// this.parent = parent;
+	// }
 
-//	public void updateCheckPoints() {
-//		parent.updateMarkers();
-//		parent.updateList();
-//	}
+	// public void updateCheckPoints() {
+	// parent.updateMarkers();
+	// parent.updateList();
+	// }
 
 	public UIServer(ServerManagerUI parent) {
-		this.parent=parent;
+		this.parent = parent;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class UIServer extends Thread {
 
 	public synchronized void addStreamHandle(UIStreamHandle handle) {
 		int prevN = Repository.handles.size();
-		String id = handle.remoteAddress;
+		String id = handle.userId;
 		UIStreamHandle h = null;
 		if (id != null) {
 			h = Repository.handles.get(id);
@@ -100,7 +100,9 @@ public class UIServer extends Thread {
 			if (prevN != Repository.handles.size())
 				System.out
 						.println("\n*******************\nRepository.handles error: Prev: "
-								+ prevN + "after: " + Repository.handles.size()
+								+ prevN
+								+ "after: "
+								+ Repository.handles.size()
 								+ "\n***************");
 			if (!h.isAllKilled())
 				System.out.println("<<<<<Not all killed>>>>");
@@ -113,16 +115,15 @@ public class UIServer extends Thread {
 	 *            that this people is updated
 	 */
 	public void updateEvent(Event event) {
-//		if (event.getEventType() == Event.MESSAGE)
-//			Repository.events.addFirst(event);
-		System.out.print("<notifyAll>: " + event);
-		for (Iterator<UIStreamHandle> it = Repository.handles.values().iterator(); it
-				.hasNext();) {
-			UIStreamHandle handle = it.next();
-			if (handle != null)
-				handle.addEvent(event);
+		if (event.getEventType() == Event.DB_SYNC) {
+			System.out.print("<notifyAll>: " + event);
+			for (Iterator<UIStreamHandle> it = Repository.handles.values()
+					.iterator(); it.hasNext();) {
+				UIStreamHandle handle = it.next();
+				if (handle != null && !handle.userId.equals(event.getId()))
+					handle.addEvent(event);
+			}
 		}
-	//	parent.addEvent2UI(event);
 
 	}
 }

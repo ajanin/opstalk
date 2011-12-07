@@ -29,7 +29,7 @@ public class UIStreamHandle extends Thread {
 	// private SocketChannel sc = null;
 	private InputStream is = null;
 	private OutputStream out = null;
-	private String userId;
+	public String userId;
 	private Status status;
 	private boolean isStopped = false;
 	private OutputHandle outputHandle = new OutputHandle();
@@ -42,7 +42,6 @@ public class UIStreamHandle extends Thread {
 	private volatile Thread blinkerThread;
 	private int id;
 	private long transTime = 0;
-	public String remoteAddress = "";
 
 	class OutputHandle extends Thread {
 		private volatile Thread blinker = null;
@@ -173,7 +172,6 @@ public class UIStreamHandle extends Thread {
 	public UIStreamHandle(UIServer server, Socket con) {
 		this.server = server;
 		this.conn = con;
-		this.remoteAddress = con.getInetAddress().getHostAddress();
 		this.status = Status.CONNECT;
 		this.userId=con.getInetAddress().getHostAddress();
 		checkHandle.start();
@@ -270,7 +268,7 @@ public class UIStreamHandle extends Thread {
 						Repository.storeDB(dbType, content);
 						DBEvent event = new DBEvent(dbType, content,userId);
 						event.setContent(content);
-						// server.updateEvent(event);
+						server.updateEvent(event);
 					} else {
 						long validTime = (long) NetUtil.readValue(is, 20);
 						long transTime = (long) NetUtil.readValue(is, 20);
@@ -428,7 +426,7 @@ public class UIStreamHandle extends Thread {
 			out = conn.getOutputStream();
 			outputHandle.start();
 			System.out.println(UIStreamHandle.this.id
-					+ " Connection is established for <" + this.remoteAddress
+					+ " Connection is established for <" + this.userId
 					+ "> ");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
