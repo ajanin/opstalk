@@ -1,5 +1,6 @@
 package firetalk.db;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -22,6 +23,8 @@ import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
 import firetalk.model.Team;
+import firetalk.model.DBEvent.DBType;
+import firetalk.util.Parameter;
 
 public class UIRepository {
 	public static LinkedList<Event> events = new LinkedList<Event>(); // events
@@ -69,12 +72,12 @@ public class UIRepository {
 	}
 
 	public static void init() {
-		parsePeopleFromFile("db/peopleList.txt");
-		parseCheckPointsFromFile("db/checkPoints.txt");
-		parseTeamFromFile("db/teamList.txt");
-		parseObjectivesFromFile("db/objectives.txt");
-		parseRallyFromFile("db/rallyPoints.txt");
-		retrieveIEDFromFile();
+		parsePeopleFromFile(Parameter.uiDBFolder + "peopleList.txt");
+		parseCheckPointsFromFile();
+		parseTeamFromFile(Parameter.uiDBFolder + "teamList.txt");
+		parseObjectivesFromFile();
+		parseRallyFromFile();
+		parseIEDFromFile();
 		printPeople();
 		readOperations();
 		// try {
@@ -86,9 +89,11 @@ public class UIRepository {
 
 	}
 
-	public static void parseRallyFromFile(String fileName) {
+	public static void parseRallyFromFile() {
 		try {
-			Scanner scan = new Scanner(new FileReader(fileName));
+			UIRepository.rallyList.clear();
+			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
+					+ Parameter.rallyFileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
 				if (!line.startsWith("#")) {
@@ -110,7 +115,8 @@ public class UIRepository {
 
 	public static void readOperations() {
 		try {
-			Scanner scan = new Scanner(new FileReader("db/operations.txt"));
+			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
+					+ "operations.txt"));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
 				UIRepository.overallObjs.add(line);
@@ -124,7 +130,8 @@ public class UIRepository {
 
 	public static void storeRallyPoints() {
 		try {
-			FileWriter fw = new FileWriter("db/rallyPoints.txt");
+			FileWriter fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.rallyFileName);
 			fw.write("# id lat lon name userId\n");
 			for (RallyPoint cp : UIRepository.rallyList) {
 				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat, cp.lon,
@@ -137,9 +144,11 @@ public class UIRepository {
 		}
 	}
 
-	public static void parseObjectivesFromFile(String fileName) {
+	public static void parseObjectivesFromFile() {
 		try {
-			Scanner scan = new Scanner(new FileReader(fileName));
+			UIRepository.objPoints.clear();
+			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
+					+ Parameter.objFileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
 				if (!line.startsWith("#")) {
@@ -178,9 +187,11 @@ public class UIRepository {
 		}
 	}
 
-	public static void parseCheckPointsFromFile(String fileName) {
+	public static void parseCheckPointsFromFile() {
 		try {
-			Scanner scan = new Scanner(new FileReader(fileName));
+			UIRepository.checkPoints.clear();
+			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
+					+ Parameter.wayPointFileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
 				if (!line.startsWith("#")) {
@@ -203,6 +214,76 @@ public class UIRepository {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static void storeDB(int type, byte[] content) throws IOException {
+		FileWriter fw = null;
+		char[] cbuf = new char[content.length];
+		for (int i = 0; i < content.length; i++)
+			cbuf[i] = (char) content[i];
+		if (type == DBType.IED.ordinal()) {
+			fw = new FileWriter(Parameter.uiDBFolder + Parameter.IEDFileName,false);
+			fw.write(cbuf);
+			fw.close();
+			parseIEDFromFile();
+		} else if (type == DBType.objPoint.ordinal()) {
+			fw = new FileWriter(Parameter.uiDBFolder + Parameter.objFileName,false);
+			fw.write(cbuf);
+			fw.close();
+			parseObjectivesFromFile();
+		} else if (type == DBType.rally.ordinal()) {
+			fw = new FileWriter(Parameter.uiDBFolder + Parameter.rallyFileName,false);
+			fw.write(cbuf);
+			fw.close();
+			parseRallyFromFile();
+		} else if (type == DBType.wayPoint.ordinal()) {
+			fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.wayPointFileName,false);
+			fw.write(cbuf);
+			fw.close();
+			parseCheckPointsFromFile();
+		}
+
+	}
+
+	public static byte[] retrieveDB(int type) {
+		BufferedReader fr = null;
+		Vector<Byte> buf = new Vector<Byte>();
+		byte[] bytes = null;
+		try {
+			if (type == DBType.IED.ordinal()) {
+
+				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
+						+ Parameter.IEDFileName));
+			} else if (type == DBType.objPoint.ordinal()) {
+				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
+						+ Parameter.objFileName));
+			} else if (type == DBType.rally.ordinal()) {
+				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
+						+ Parameter.rallyFileName));
+			} else if (type == DBType.wayPoint.ordinal()) {
+				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
+						+ Parameter.wayPointFileName));
+			}
+			if (fr != null) {
+				String line = null;
+				while ((line = fr.readLine()) != null) {
+					for (int i = 0; i < line.length(); i++)
+						buf.add((byte) line.charAt(i));
+					buf.add((byte) ('\n'));
+				}
+				fr.close();
+				bytes = new byte[buf.size()];
+				for (int i = 0; i < bytes.length; i++)
+					bytes[i] = buf.get(i);
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bytes;
+
 	}
 
 	public static void printPeople() {
@@ -234,9 +315,11 @@ public class UIRepository {
 
 	}
 
-	public static void retrieveIEDFromFile() {
+	public static void parseIEDFromFile() {
 		try {
-			Scanner scan = new Scanner(new FileReader("db/IEDPoints.txt"));
+			UIRepository.IEDList.clear();
+			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
+					+ Parameter.IEDFileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
 				if (!line.startsWith("#")) {
@@ -259,7 +342,8 @@ public class UIRepository {
 	public static void storeObjPoints() {
 
 		try {
-			FileWriter fw = new FileWriter("db/objectives.txt");
+			FileWriter fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.objFileName);
 			fw.write("# id lat lon name userId\n");
 			for (ObjPoint cp : UIRepository.objPoints.values()) {
 				fw.write(String.format("%s$%f$%f$%s\n", cp.id, cp.lat, cp.lon,
@@ -276,7 +360,8 @@ public class UIRepository {
 	public static void storeCheckPoints() {
 
 		try {
-			FileWriter fw = new FileWriter("db/checkPoints.txt");
+			FileWriter fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.wayPointFileName);
 			fw.write("# id lat lon name userId\n");
 			for (CheckPoint cp : UIRepository.checkPoints) {
 				fw.write(String.format("%s$%f$%f$%s$%s$%s$%s\n", cp.id, cp.lat,
@@ -294,7 +379,8 @@ public class UIRepository {
 
 	public static void storeIEDPoints() {
 		try {
-			FileWriter fw = new FileWriter("db/IEDPoints.txt");
+			FileWriter fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.IEDFileName);
 			fw.write("#lat lon userId mes\n");
 			for (IEDPoint cp : UIRepository.IEDList) {
 				fw.write(String.format("%f$%f$%s$%s$%d\n", cp.getLatitude(), cp

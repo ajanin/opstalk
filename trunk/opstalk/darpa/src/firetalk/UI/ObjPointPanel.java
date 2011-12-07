@@ -32,9 +32,12 @@ import com.sun.java.swing.plaf.windows.WindowsButtonUI;
 import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
 import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 
+import firetalk.UI.UIClient.Status;
 import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
+import firetalk.model.DBEvent;
 import firetalk.model.ObjPoint;
+import firetalk.model.DBEvent.DBType;
 
 public class ObjPointPanel extends JPanel {
 
@@ -85,11 +88,21 @@ public class ObjPointPanel extends JPanel {
 	public void setParent(MainWindow parent) {
 		this.parent = parent;
 	}
-
-	public void updateTree() {
+	public void updateTreeFromDB() {
+		this.createNodes();
+		this.repaint();
+	}
+	public void updateTreeToDB() {
 		this.createNodes();
 		UIRepository.storeObjPoints();
 		UIRepository.storeCheckPoints();
+		if (parent.network != null
+				&& parent.network.getStatus() == Status.CONNECTED) {
+			parent.network.addEvent(new DBEvent(DBType.objPoint, UIRepository
+					.retrieveDB(DBType.objPoint.ordinal()), parent.network.userId));
+			parent.network.addEvent(new DBEvent(DBType.wayPoint, UIRepository
+					.retrieveDB(DBType.wayPoint.ordinal()), parent.network.userId));
+		}
 		this.repaint();
 	}
 
@@ -180,7 +193,7 @@ public class ObjPointPanel extends JPanel {
 								false, deadline));
 					}
 					updateCombo();
-					updateTree();
+					updateTreeToDB();
 					parent.updateMarkers();
 				}
 			});
@@ -203,7 +216,7 @@ public class ObjPointPanel extends JPanel {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							UIRepository.checkPoints.clear();
 							UIRepository.objPoints.clear();
-							updateTree();
+							updateTreeToDB();
 							updateCombo();
 							parent.updateMarkers();
 						}
@@ -251,7 +264,7 @@ public class ObjPointPanel extends JPanel {
 								break;
 							}
 
-							updateTree();
+							updateTreeToDB();
 							updateCombo();
 							parent.updateMarkers();
 

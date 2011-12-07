@@ -25,8 +25,11 @@ import javax.swing.event.ListSelectionListener;
 
 import com.sun.java.swing.plaf.windows.WindowsButtonUI;
 
+import firetalk.UI.UIClient.Status;
 import firetalk.db.UIRepository;
+import firetalk.model.DBEvent;
 import firetalk.model.IEDPoint;
+import firetalk.model.DBEvent.DBType;
 
 public class IEDPanel extends JPanel {
 
@@ -66,11 +69,23 @@ public class IEDPanel extends JPanel {
 		this.parent = parent;
 	}
 
-	public void updateList() {
+	public void updateListFromDB() {
+		model.clear();
+		for (int i = 0; i < UIRepository.IEDList.size(); i++)
+			model.addElement("" + i);
+		this.jList.repaint();
+	}
+
+	public void updateListToDB() {
 		model.clear();
 		for (int i = 0; i < UIRepository.IEDList.size(); i++)
 			model.addElement("" + i);
 		UIRepository.storeIEDPoints();
+		if (parent.network != null
+				&& parent.network.getStatus() == Status.CONNECTED) {
+			parent.network.addEvent(new DBEvent(DBType.IED, UIRepository
+					.retrieveDB(DBType.IED.ordinal()), parent.network.userId));
+		}
 		this.jList.repaint();
 	}
 
@@ -130,7 +145,7 @@ public class IEDPanel extends JPanel {
 				}
 			});
 			jList.setModel(model);
-			updateList();
+			updateListFromDB();
 		}
 		return jList;
 	}
@@ -172,7 +187,7 @@ public class IEDPanel extends JPanel {
 					double lon = Double.parseDouble(lonField.getText());
 					UIRepository.IEDList.add(new IEDPoint("server", mes, System
 							.currentTimeMillis(), lat, lon));
-					updateList();
+					updateListToDB();
 					parent.updateMarkers();
 				}
 			});
@@ -194,7 +209,7 @@ public class IEDPanel extends JPanel {
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							UIRepository.IEDList.clear();
-							updateList();
+							updateListToDB();
 							parent.updateMarkers();
 						}
 					});
@@ -220,7 +235,7 @@ public class IEDPanel extends JPanel {
 							int i = 0;
 							int j = 0;
 							for (IEDPoint p : UIRepository.IEDList) {
-								if (j>=inds.length||i != inds[j])
+								if (j >= inds.length || i != inds[j])
 									temp.add(p);
 								else
 									j++;
@@ -229,7 +244,7 @@ public class IEDPanel extends JPanel {
 
 							UIRepository.IEDList = temp;
 
-							updateList();
+							updateListToDB();
 							parent.updateMarkers();
 
 						}
@@ -363,9 +378,9 @@ public class IEDPanel extends JPanel {
 	}
 
 	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel2
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
@@ -378,27 +393,27 @@ public class IEDPanel extends JPanel {
 	}
 
 	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes jButton
+	 * 
+	 * @return javax.swing.JButton
 	 */
 	private JButton getJButton() {
 		jButton = new JButton();
 		jButton.setText("show");
-		jButton.addActionListener(new ActionListener(){
+		jButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(jPanel1.isVisible()){
+				if (jPanel1.isVisible()) {
 					jPanel1.setVisible(false);
 					jButton.setText("show");
-				}
-				else{
+				} else {
 					jPanel1.setVisible(true);
 					jButton.setText("hide");
 				}
-				
-			}});
+
+			}
+		});
 		return jButton;
 	}
 }

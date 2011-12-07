@@ -67,6 +67,19 @@ public class NetUtil {
 		}
 		return lenb;
 	}
+	public static byte[] value2bytes(int v, int len) {
+		String lenStr = Integer.toString(v);
+		if (lenStr.length() > len)
+			return null;
+		byte[] lenb = new byte[len];
+		for (int i = 0; i < len; i++) {
+			if (i < lenStr.length())
+				lenb[i] = (byte) lenStr.charAt(i);
+			else
+				lenb[i] = (byte) delimiter;
+		}
+		return lenb;
+	}
 	public static byte[] readBytes(InputStream is, int len) throws IOException {
 		
 		byte[] lenb = null;

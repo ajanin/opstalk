@@ -30,7 +30,9 @@ import com.sun.java.swing.plaf.windows.WindowsLabelUI;
 
 import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
+import firetalk.model.DBEvent;
 import firetalk.model.RallyPoint;
+import firetalk.model.DBEvent.DBType;
 
 public class RallyPanel extends JPanel {
 
@@ -72,11 +74,19 @@ public class RallyPanel extends JPanel {
 		this.parent = parent;
 	}
 
-	public void updateList() {
+	public void updateListFromDB(){ //update list from repository
+		model.clear();
+		for (int i = 0; i < UIRepository.rallyList.size(); i++)
+			model.addElement("" + i);
+		this.jList.repaint();
+	}
+	public void updateListToDB() { //update list, and write to DB
 		model.clear();
 		for (int i = 0; i < UIRepository.rallyList.size(); i++)
 			model.addElement("" + i);
 		UIRepository.storeRallyPoints();
+		parent.network.addEvent(new DBEvent(DBType.rally, UIRepository
+				.retrieveDB(DBType.rally.ordinal()), parent.network.userId));
 		this.jList.repaint();
 	}
 
@@ -131,7 +141,7 @@ public class RallyPanel extends JPanel {
 				}
 			});
 			jList.setModel(model);
-			updateList();
+			updateListFromDB();
 			// jList.setModel(new javax.swing.AbstractListModel() {
 			//
 			// /**
@@ -192,7 +202,7 @@ public class RallyPanel extends JPanel {
 					userID = userID.substring(0, userID.indexOf(':'));
 					UIRepository.rallyList.add(new RallyPoint(id, userID, name,
 							lat, lon));
-					updateList();
+					updateListToDB();
 					parent.updateMarkers();
 				}
 			});
@@ -214,7 +224,7 @@ public class RallyPanel extends JPanel {
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							UIRepository.rallyList.clear();
-							updateList();
+							updateListToDB();
 							parent.updateMarkers();
 						}
 					});
@@ -249,7 +259,7 @@ public class RallyPanel extends JPanel {
 
 							UIRepository.rallyList = temp;
 
-							updateList();
+							updateListToDB();
 							parent.updateMarkers();
 							
 

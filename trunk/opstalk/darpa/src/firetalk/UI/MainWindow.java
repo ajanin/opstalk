@@ -64,7 +64,7 @@ public class MainWindow extends JFrame {
 	private JPanel jPanel2 = null;
 	private OpsClock opsClock = null;
 	private AudioPanel audioPanel = null;
-
+	public UIClient network=null;
 	/**
 	 * This is the default constructor
 	 */
@@ -72,7 +72,7 @@ public class MainWindow extends JFrame {
 		super();
 		initialize();
 		this.doInit();
-		new UIClient(this).start();
+		(network=new UIClient(this)).start();
 		Timer timer = new Timer();
 		timer.schedule(new ReadLocation(), 1000, 1000);
 
@@ -112,10 +112,18 @@ public class MainWindow extends JFrame {
 	}
 
 	public void updateList() {
-		this.objPointPanel.updateTree();
-		this.IEDPanel.updateList();
+		this.objPointPanel.updateTreeToDB();
+		this.IEDPanel.updateListToDB();
 	}
-
+	public void updateRallyList(){
+		this.rallyPointPanel.updateListFromDB();
+	}
+	public void updateObjList(){
+		this.objPointPanel.updateTreeFromDB();
+	}
+	public void updateIEDList(){
+		this.IEDPanel.updateListFromDB();
+	}
 	public void updateMarkers() {
 		mapPanel.reloadMap();
 	}
