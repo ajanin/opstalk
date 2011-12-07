@@ -132,7 +132,6 @@ public class Repository {
 			e.printStackTrace();
 		}
 	}
-
 	public static void storeRallyPoints() {
 		try {
 			FileWriter fw = new FileWriter(Parameter.serverDBFolder
