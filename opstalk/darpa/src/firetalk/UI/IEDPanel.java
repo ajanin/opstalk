@@ -29,7 +29,6 @@ import firetalk.UI.UIClient.Status;
 import firetalk.db.UIRepository;
 import firetalk.model.DBEvent;
 import firetalk.model.IEDPoint;
-import firetalk.model.DBEvent.DBType;
 
 public class IEDPanel extends JPanel {
 
@@ -83,8 +82,8 @@ public class IEDPanel extends JPanel {
 		UIRepository.storeIEDPoints();
 		if (parent.network != null
 				&& parent.network.getStatus() == Status.CONNECTED) {
-			parent.network.addEvent(new DBEvent(DBType.IED, UIRepository
-					.retrieveDB(DBType.IED.ordinal()), parent.network.userId));
+			parent.network.addEvent(new DBEvent(DBEvent.IED, UIRepository
+					.retrieveDB(DBEvent.IED), parent.network.userId));
 		}
 		this.jList.repaint();
 	}

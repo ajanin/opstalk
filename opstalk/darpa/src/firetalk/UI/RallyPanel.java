@@ -32,7 +32,6 @@ import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
 import firetalk.model.DBEvent;
 import firetalk.model.RallyPoint;
-import firetalk.model.DBEvent.DBType;
 
 public class RallyPanel extends JPanel {
 
@@ -85,8 +84,8 @@ public class RallyPanel extends JPanel {
 		for (int i = 0; i < UIRepository.rallyList.size(); i++)
 			model.addElement("" + i);
 		UIRepository.storeRallyPoints();
-		parent.network.addEvent(new DBEvent(DBType.rally, UIRepository
-				.retrieveDB(DBType.rally.ordinal()), parent.network.userId));
+		parent.network.addEvent(new DBEvent(DBEvent.rally, UIRepository
+				.retrieveDB(DBEvent.rally), parent.network.userId));
 		this.jList.repaint();
 	}
 

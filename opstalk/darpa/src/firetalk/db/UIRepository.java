@@ -23,7 +23,7 @@ import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
 import firetalk.model.Team;
-import firetalk.model.DBEvent.DBType;
+import firetalk.model.DBEvent;
 import firetalk.util.Parameter;
 
 public class UIRepository {
@@ -222,22 +222,22 @@ public class UIRepository {
 		char[] cbuf = new char[content.length];
 		for (int i = 0; i < content.length; i++)
 			cbuf[i] = (char) content[i];
-		if (type == DBType.IED.ordinal()) {
+		if (type == DBEvent.IED) {
 			fw = new FileWriter(Parameter.uiDBFolder + Parameter.IEDFileName,false);
 			fw.write(cbuf);
 			fw.close();
 			parseIEDFromFile();
-		} else if (type == DBType.objPoint.ordinal()) {
+		} else if (type == DBEvent.objPoint) {
 			fw = new FileWriter(Parameter.uiDBFolder + Parameter.objFileName,false);
 			fw.write(cbuf);
 			fw.close();
 			parseObjectivesFromFile();
-		} else if (type == DBType.rally.ordinal()) {
+		} else if (type == DBEvent.rally) {
 			fw = new FileWriter(Parameter.uiDBFolder + Parameter.rallyFileName,false);
 			fw.write(cbuf);
 			fw.close();
 			parseRallyFromFile();
-		} else if (type == DBType.wayPoint.ordinal()) {
+		} else if (type == DBEvent.wayPoint) {
 			fw = new FileWriter(Parameter.uiDBFolder
 					+ Parameter.wayPointFileName,false);
 			fw.write(cbuf);
@@ -252,17 +252,17 @@ public class UIRepository {
 		Vector<Byte> buf = new Vector<Byte>();
 		byte[] bytes = null;
 		try {
-			if (type == DBType.IED.ordinal()) {
+			if (type == DBEvent.IED) {
 
 				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
 						+ Parameter.IEDFileName));
-			} else if (type == DBType.objPoint.ordinal()) {
+			} else if (type == DBEvent.objPoint) {
 				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
 						+ Parameter.objFileName));
-			} else if (type == DBType.rally.ordinal()) {
+			} else if (type == DBEvent.rally) {
 				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
 						+ Parameter.rallyFileName));
-			} else if (type == DBType.wayPoint.ordinal()) {
+			} else if (type == DBEvent.wayPoint) {
 				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
 						+ Parameter.wayPointFileName));
 			}

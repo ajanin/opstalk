@@ -112,17 +112,17 @@ public class UIServer extends Thread {
 	 *            : people whose information is updated notify other devices
 	 *            that this people is updated
 	 */
-//	public void updateEvent(Event event) {
-////		if (event.getEventType() == Event.MESSAGE)
-////			Repository.events.addFirst(event);
-//		System.out.print("<notifyAll>: " + event);
-//		for (Iterator<UIStreamHandle> it = Repository.handles.values().iterator(); it
-//				.hasNext();) {
-//			UIStreamHandle handle = it.next();
-//			if (handle != null)
-//				handle.addEvent(event);
-//		}
-//		parent.addEvent2UI(event);
-//
-//	}
+	public void updateEvent(Event event) {
+//		if (event.getEventType() == Event.MESSAGE)
+//			Repository.events.addFirst(event);
+		System.out.print("<notifyAll>: " + event);
+		for (Iterator<UIStreamHandle> it = Repository.handles.values().iterator(); it
+				.hasNext();) {
+			UIStreamHandle handle = it.next();
+			if (handle != null)
+				handle.addEvent(event);
+		}
+	//	parent.addEvent2UI(event);
+
+	}
 }

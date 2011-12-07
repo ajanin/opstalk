@@ -37,7 +37,6 @@ import firetalk.db.UIRepository;
 import firetalk.model.CheckPoint;
 import firetalk.model.DBEvent;
 import firetalk.model.ObjPoint;
-import firetalk.model.DBEvent.DBType;
 
 public class ObjPointPanel extends JPanel {
 
@@ -98,10 +97,10 @@ public class ObjPointPanel extends JPanel {
 		UIRepository.storeCheckPoints();
 		if (parent.network != null
 				&& parent.network.getStatus() == Status.CONNECTED) {
-			parent.network.addEvent(new DBEvent(DBType.objPoint, UIRepository
-					.retrieveDB(DBType.objPoint.ordinal()), parent.network.userId));
-			parent.network.addEvent(new DBEvent(DBType.wayPoint, UIRepository
-					.retrieveDB(DBType.wayPoint.ordinal()), parent.network.userId));
+			parent.network.addEvent(new DBEvent(DBEvent.objPoint, UIRepository
+					.retrieveDB(DBEvent.objPoint), parent.network.userId));
+			parent.network.addEvent(new DBEvent(DBEvent.wayPoint, UIRepository
+					.retrieveDB(DBEvent.wayPoint), parent.network.userId));
 		}
 		this.repaint();
 	}
