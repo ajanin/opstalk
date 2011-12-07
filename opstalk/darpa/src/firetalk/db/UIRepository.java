@@ -91,7 +91,7 @@ public class UIRepository {
 
 	public static void parseRallyFromFile() {
 		try {
-			UIRepository.rallyList.clear();
+			rallyList.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
 					+ Parameter.rallyFileName));
 			while (scan.hasNext()) {
@@ -146,7 +146,7 @@ public class UIRepository {
 
 	public static void parseObjectivesFromFile() {
 		try {
-			UIRepository.objPoints.clear();
+			objPoints.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
 					+ Parameter.objFileName));
 			while (scan.hasNext()) {
@@ -170,6 +170,7 @@ public class UIRepository {
 
 	public static void parseTeamFromFile(String fileName) {
 		try {
+			teamList.clear();
 			Scanner scan = new Scanner(new FileReader(fileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
@@ -189,7 +190,7 @@ public class UIRepository {
 
 	public static void parseCheckPointsFromFile() {
 		try {
-			UIRepository.checkPoints.clear();
+			checkPoints.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
 					+ Parameter.wayPointFileName));
 			while (scan.hasNext()) {
@@ -293,6 +294,7 @@ public class UIRepository {
 
 	public static void parsePeopleFromFile(String fileName) {
 		try {
+			peopleList.clear();
 			Scanner scan = new Scanner(new FileReader(fileName));
 			while (scan.hasNext()) {
 				String line = scan.nextLine();
@@ -317,7 +319,7 @@ public class UIRepository {
 
 	public static void parseIEDFromFile() {
 		try {
-			UIRepository.IEDList.clear();
+			IEDList.clear();
 			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
 					+ Parameter.IEDFileName));
 			while (scan.hasNext()) {
