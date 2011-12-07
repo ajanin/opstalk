@@ -278,7 +278,7 @@ public class StreamHandle extends Thread {
 								Repository.addEnemy(new Enemy(mes.getLatitude(),mes.getLongitude()));
 							else
 								Repository.addIED(mes);
-//							server.updateCheckPoints();
+							Repository.storeIEDPoints();
 							break;
 						case Event.QUERY:
 						case Event.LOCATION:
@@ -303,7 +303,8 @@ public class StreamHandle extends Thread {
 								if (cp.id.equals(cpID))
 									cp.setReached(true);
 							}
-//							server.updateCheckPoints();
+							Repository.storeCheckPoints();
+							Repository.storeObjPoints();
 							break;
 						case Event.AUDIO:
 							File file = new File("data/audio/" + userId + "_"

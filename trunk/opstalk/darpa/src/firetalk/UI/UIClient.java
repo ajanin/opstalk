@@ -294,7 +294,7 @@ public class UIClient extends Thread {
 													.getLongitude()));
 								else
 									UIRepository.addIED(mes);
-								parent.updateCheckPoints();
+								parent.updateIEDList();
 								break;
 							case Event.QUERY:
 							case Event.LOCATION:
@@ -323,7 +323,7 @@ public class UIClient extends Thread {
 									if (cp.id.equals(cpID))
 										cp.setReached(true);
 								}
-								parent.updateCheckPoints();
+								parent.updateObjList();
 								break;
 							case Event.AUDIO:
 								File file = new File("data/audio/" + userId

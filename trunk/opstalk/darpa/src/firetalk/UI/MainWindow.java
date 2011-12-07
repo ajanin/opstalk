@@ -110,19 +110,17 @@ public class MainWindow extends JFrame {
 	public void setInfoPanel(String text) {
 		this.jTextArea.setText(text);
 	}
-
-	public void updateList() {
-		this.objPointPanel.updateTreeToDB();
-		this.IEDPanel.updateListToDB();
-	}
 	public void updateRallyList(){
 		this.rallyPointPanel.updateListFromDB();
+		this.updateMarkers();
 	}
 	public void updateObjList(){
 		this.objPointPanel.updateTreeFromDB();
+		this.updateMarkers();
 	}
 	public void updateIEDList(){
 		this.IEDPanel.updateListFromDB();
+		this.updateMarkers();
 	}
 	public void updateMarkers() {
 		mapPanel.reloadMap();
@@ -545,12 +543,6 @@ public class MainWindow extends JFrame {
 			jContentPane.add(getJSplitPane(), BorderLayout.CENTER);
 		}
 		return jContentPane;
-	}
-
-	public void updateCheckPoints() {
-		this.updateMarkers();
-		this.updateList();
-		
 	}
 
 } // @jve:decl-index=0:visual-constraint="28,10"
