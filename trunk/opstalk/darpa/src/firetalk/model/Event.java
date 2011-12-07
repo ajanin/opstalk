@@ -8,6 +8,7 @@ public class Event {
 	private int eventType;
 	private byte[] content;
 	private String id = null; // id of the device who generate the event
+
 	public String extractInfo() {
 		String content = "";
 		for (int i = 0; i < this.getContent().length; i++)
@@ -46,9 +47,13 @@ public class Event {
 	public static final int IMAGE = 6;
 	public static final int QUERY_RESULT = 7;
 	public static final int CHECK_REACH = 8;
-	public static final int DB_SYNC=10; //event to synchronize between server and display
+	public static final int ENEMY = 9;
+	public static final int DB_SYNC = 20; // event to synchronize between server
+											// and display
 
-	public Event(){}
+	public Event() {
+	}
+
 	public Event(int type) {
 		this.eventType = type;
 	}

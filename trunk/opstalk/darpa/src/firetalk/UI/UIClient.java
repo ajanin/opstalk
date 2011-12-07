@@ -284,16 +284,21 @@ public class UIClient extends Thread {
 						byte[] content = NetUtil.readBytes(input, contentLen);
 						if (content != null) { // parse content
 							switch (eventType) {
+							case Event.ENEMY:
+								StringTokenizer ste = new StringTokenizer(
+										new String(content), " "
+												+ NetUtil.delimiter);
+								double dist = Double.parseDouble(ste.nextToken());
+								double degree = Double.parseDouble(ste.nextToken());
+								System.out.println("dist: " + dist + " degree: "
+										+ degree);
+								UIRepository.addEnemy(new Enemy(lat, lon, dist,
+										degree));
+								break;
 							case Event.MESSAGE:
 								IEDPoint mes = new IEDPoint(userId, new String(
 										content), validTime, lat, lon);
-								if (mes.getMes().equals("$enemy$"))
-									UIRepository
-											.addEnemy(new Enemy(mes
-													.getLatitude(), mes
-													.getLongitude()));
-								else
-									UIRepository.addIED(mes);
+								UIRepository.addIED(mes);
 								parent.updateIEDList();
 								break;
 							case Event.QUERY:

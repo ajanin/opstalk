@@ -173,7 +173,7 @@ public class UIStreamHandle extends Thread {
 		this.server = server;
 		this.conn = con;
 		this.status = Status.CONNECT;
-		this.userId=con.getInetAddress().getHostAddress();
+		this.userId = con.getInetAddress().getHostAddress();
 		checkHandle.start();
 		failHandle.start();
 
@@ -211,7 +211,8 @@ public class UIStreamHandle extends Thread {
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
 				else if (event.getEventType() == Event.DB_SYNC) {
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
-					out.write(NetUtil.value2bytes(((DBEvent) event).getDbType(), 3));
+					out.write(NetUtil.value2bytes(
+							((DBEvent) event).getDbType(), 3));
 					out.write(NetUtil
 							.value2bytes(event.getContent().length, 10));
 					out.write(event.getContent());
@@ -266,7 +267,7 @@ public class UIStreamHandle extends Thread {
 						int contentLen = (int) NetUtil.readValue(is, 10);
 						byte[] content = NetUtil.readBytes(is, contentLen);
 						Repository.storeDB(dbType, content);
-						DBEvent event = new DBEvent(dbType, content,userId);
+						DBEvent event = new DBEvent(dbType, content, userId);
 						event.setContent(content);
 						server.updateEvent(event);
 					} else {
@@ -284,13 +285,7 @@ public class UIStreamHandle extends Thread {
 								IEDPoint mes = new IEDPoint(this.getPeopleId(),
 										new String(content), validTime, lat,
 										lon);
-								if (mes.getMes().equals("$enemy$"))
-									Repository
-											.addEnemy(new Enemy(mes
-													.getLatitude(), mes
-													.getLongitude()));
-								else
-									Repository.addIED(mes);
+								Repository.addIED(mes);
 								// server.updateCheckPoints();
 								break;
 							case Event.QUERY:
@@ -416,18 +411,17 @@ public class UIStreamHandle extends Thread {
 			is = conn.getInputStream();
 			server.addStreamHandle(this);
 			this.addEvent(new DBEvent(DBEvent.IED, Repository
-					.retrieveDB(DBEvent.IED),this.userId));
+					.retrieveDB(DBEvent.IED), this.userId));
 			this.addEvent(new DBEvent(DBEvent.objPoint, Repository
-					.retrieveDB(DBEvent.objPoint),this.userId));
+					.retrieveDB(DBEvent.objPoint), this.userId));
 			this.addEvent(new DBEvent(DBEvent.rally, Repository
-					.retrieveDB(DBEvent.rally),this.userId));
+					.retrieveDB(DBEvent.rally), this.userId));
 			this.addEvent(new DBEvent(DBEvent.wayPoint, Repository
-					.retrieveDB(DBEvent.wayPoint),this.userId));
+					.retrieveDB(DBEvent.wayPoint), this.userId));
 			out = conn.getOutputStream();
 			outputHandle.start();
 			System.out.println(UIStreamHandle.this.id
-					+ " Connection is established for <" + this.userId
-					+ "> ");
+					+ " Connection is established for <" + this.userId + "> ");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

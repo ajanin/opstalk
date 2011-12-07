@@ -271,24 +271,31 @@ public class StreamHandle extends Thread {
 					byte[] content = NetUtil.readBytes(is, contentLen);
 					if (content != null) { // parse content
 						switch (eventType) {
+						case Event.ENEMY:
+							StringTokenizer ste = new StringTokenizer(
+									new String(content), " "
+											+ NetUtil.delimiter);
+							double dist = Double.parseDouble(ste.nextToken());
+							double degree = Double.parseDouble(ste.nextToken());
+							System.out.println("dist: " + dist + " degree: "
+									+ degree);
+							Repository.addEnemy(new Enemy(lat, lon, dist,
+									degree));
+							break;
 						case Event.MESSAGE:
 							IEDPoint mes = new IEDPoint(this.user.getId(),
 									new String(content), validTime, lat, lon);
-							if(mes.getMes().equals("$enemy$"))
-								Repository.addEnemy(new Enemy(mes.getLatitude(),mes.getLongitude()));
-							else
-								Repository.addIED(mes);
+							Repository.addIED(mes);
 							Repository.storeIEDPoints();
 							break;
 						case Event.QUERY:
 						case Event.LOCATION:
 							// parse location, format:<speed direction>
-							String str = new String(content);
-							StringTokenizer st = new StringTokenizer(str, " "
-									+ NetUtil.delimiter);
-							double speed = Double.parseDouble(st.nextToken());
-							System.out.println("speed: " + speed);
-							double direction = Double.parseDouble(st
+							StringTokenizer stl = new StringTokenizer(
+									new String(content), " "
+											+ NetUtil.delimiter);
+							double speed = Double.parseDouble(stl.nextToken());
+							double direction = Double.parseDouble(stl
 									.nextToken());
 							this.user.addLocation(lon, lat, speed, direction);
 							break;
@@ -474,7 +481,7 @@ public class StreamHandle extends Thread {
 			e1.printStackTrace();
 			this.handleConnectionFailure();
 			return;
-		} 
+		}
 		People p = Repository.peopleList.get(userId);
 		if (p == null) {
 			Repository.peopleList.put(userId, new People());
