@@ -19,7 +19,6 @@ import firetalk.model.Enemy;
 import firetalk.model.Event;
 import firetalk.model.IEDPoint;
 import firetalk.model.People;
-import firetalk.model.DBEvent.DBType;
 import firetalk.util.NetUtil;
 
 public class UIClient extends Thread {
@@ -148,7 +147,7 @@ public class UIClient extends Thread {
 		try {
 
 			s = new Socket(ip, port);
-			userId=s.getLocalAddress().getHostAddress();
+			userId = s.getLocalAddress().getHostAddress();
 			out = s.getOutputStream();
 			input = s.getInputStream();
 			outputHandle = new OutputHandle();
@@ -251,11 +250,11 @@ public class UIClient extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (dbType == DBType.IED.ordinal()) {
+		if (dbType == DBEvent.IED) {
 			parent.updateIEDList();
-		} else if (dbType == DBType.rally.ordinal()) {
+		} else if (dbType == DBEvent.rally) {
 			parent.updateRallyList();
-		} else if (dbType == DBType.objPoint.ordinal()||dbType == DBType.wayPoint.ordinal()) {
+		} else if (dbType == DBEvent.objPoint || dbType == DBEvent.wayPoint) {
 			parent.updateObjList();
 		}
 
@@ -386,8 +385,8 @@ public class UIClient extends Thread {
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
 				else if (event.getEventType() == Event.DB_SYNC) {
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
-					out.write(NetUtil.value2bytes(((DBEvent) event).getDbType()
-							.ordinal(), 3));
+					out.write(NetUtil.value2bytes(
+							((DBEvent) event).getDbType(), 3));
 					out.write(NetUtil
 							.value2bytes(event.getContent().length, 10));
 					out.write(event.getContent());

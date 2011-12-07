@@ -21,7 +21,6 @@ import firetalk.model.Event;
 import firetalk.model.IEDPoint;
 import firetalk.model.People;
 import firetalk.model.RallyPoint;
-import firetalk.model.DBEvent.DBType;
 import firetalk.util.NetUtil;
 
 public class UIStreamHandle extends Thread {
@@ -214,8 +213,7 @@ public class UIStreamHandle extends Thread {
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
 				else if (event.getEventType() == Event.DB_SYNC) {
 					out.write(NetUtil.value2bytes(event.getEventType(), 3));
-					out.write(NetUtil.value2bytes(((DBEvent) event).getDbType()
-							.ordinal(), 3));
+					out.write(NetUtil.value2bytes(((DBEvent) event).getDbType(), 3));
 					out.write(NetUtil
 							.value2bytes(event.getContent().length, 10));
 					out.write(event.getContent());
@@ -270,6 +268,9 @@ public class UIStreamHandle extends Thread {
 						int contentLen = (int) NetUtil.readValue(is, 10);
 						byte[] content = NetUtil.readBytes(is, contentLen);
 						Repository.storeDB(dbType, content);
+						DBEvent event = new DBEvent(dbType, content,userId);
+						event.setContent(content);
+						// server.updateEvent(event);
 					} else {
 						long validTime = (long) NetUtil.readValue(is, 20);
 						long transTime = (long) NetUtil.readValue(is, 20);
@@ -416,14 +417,14 @@ public class UIStreamHandle extends Thread {
 			this.events.clear();
 			is = conn.getInputStream();
 			server.addStreamHandle(this);
-			this.addEvent(new DBEvent(DBType.IED, Repository
-					.retrieveDB(DBType.IED.ordinal()),this.userId));
-			this.addEvent(new DBEvent(DBType.objPoint, Repository
-					.retrieveDB(DBType.objPoint.ordinal()),this.userId));
-			this.addEvent(new DBEvent(DBType.rally, Repository
-					.retrieveDB(DBType.rally.ordinal()),this.userId));
-			this.addEvent(new DBEvent(DBType.wayPoint, Repository
-					.retrieveDB(DBType.wayPoint.ordinal()),this.userId));
+			this.addEvent(new DBEvent(DBEvent.IED, Repository
+					.retrieveDB(DBEvent.IED),this.userId));
+			this.addEvent(new DBEvent(DBEvent.objPoint, Repository
+					.retrieveDB(DBEvent.objPoint),this.userId));
+			this.addEvent(new DBEvent(DBEvent.rally, Repository
+					.retrieveDB(DBEvent.rally),this.userId));
+			this.addEvent(new DBEvent(DBEvent.wayPoint, Repository
+					.retrieveDB(DBEvent.wayPoint),this.userId));
 			out = conn.getOutputStream();
 			outputHandle.start();
 			System.out.println(UIStreamHandle.this.id

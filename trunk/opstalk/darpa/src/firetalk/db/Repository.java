@@ -19,6 +19,7 @@ import java.util.Vector;
 import com.sun.mail.iap.ByteArray;
 
 import firetalk.model.CheckPoint;
+import firetalk.model.DBEvent;
 import firetalk.model.Enemy;
 import firetalk.model.Event;
 import firetalk.model.ObjPoint;
@@ -26,7 +27,6 @@ import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
 import firetalk.model.Team;
-import firetalk.model.DBEvent.DBType;
 import firetalk.operators.source.UIStreamHandle;
 import firetalk.util.Parameter;
 
@@ -344,16 +344,16 @@ public class Repository {
 		BufferedReader fr = null;
 		Vector<Byte> buf = new Vector<Byte>();
 		byte[] bytes=null;
-		if (type == DBType.IED.ordinal()) {
+		if (type == DBEvent.IED) {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.IEDFileName));
-		} else if (type == DBType.objPoint.ordinal()) {
+		} else if (type == DBEvent.objPoint) {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.objFileName));
-		} else if (type == DBType.rally.ordinal()) {
+		} else if (type == DBEvent.rally) {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.rallyFileName));
-		} else if (type == DBType.wayPoint.ordinal()) {
+		} else if (type == DBEvent.wayPoint) {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.wayPointFileName));
 		}
@@ -378,25 +378,25 @@ public class Repository {
 		char[] cbuf = new char[content.length];
 		for (int i = 0; i < content.length; i++)
 			cbuf[i] = (char) content[i];
-		if (type == DBType.IED.ordinal()) {
+		if (type == DBEvent.IED) {
 			fw = new FileWriter(Parameter.serverDBFolder
 					+ Parameter.IEDFileName,false);
 			fw.write(cbuf);
 			fw.close();
 			parseIEDFromFile();
-		} else if (type == DBType.objPoint.ordinal()) {
+		} else if (type == DBEvent.objPoint) {
 			fw = new FileWriter(Parameter.serverDBFolder
 					+ Parameter.objFileName,false);
 			fw.write(cbuf);
 			fw.close();
 			parseObjectivesFromFile();
-		} else if (type == DBType.rally.ordinal()) {
+		} else if (type == DBEvent.rally) {
 			fw = new FileWriter(Parameter.serverDBFolder
 					+ Parameter.rallyFileName,false);
 			fw.write(cbuf);
 			fw.close();
 			parseRallyFromFile();
-		} else if (type == DBType.wayPoint.ordinal()) {
+		} else if (type == DBEvent.wayPoint) {
 			fw = new FileWriter(Parameter.serverDBFolder
 					+ Parameter.wayPointFileName,false);
 			fw.write(cbuf);
