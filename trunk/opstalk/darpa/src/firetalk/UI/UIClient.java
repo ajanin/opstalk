@@ -286,16 +286,8 @@ public class UIClient extends Thread {
 						byte[] content = NetUtil.readBytes(input, contentLen);
 						if (content != null) { // parse content
 							switch (eventType) {
-							case Event.ENEMY:
-								StringTokenizer ste = new StringTokenizer(
-										new String(content), " "
-												+ NetUtil.delimiter);
-								double dist = Double.parseDouble(ste.nextToken());
-								double degree = Double.parseDouble(ste.nextToken());
-								System.out.println("dist: " + dist + " degree: "
-										+ degree);
-								UIRepository.addEnemy(new Enemy(lat, lon, dist,
-										degree));
+							case Event.ENEMY:			
+								UIRepository.addEnemy(new Enemy(lat, lon));
 								parent.updateEnemyList();
 								break;
 							case Event.MESSAGE:

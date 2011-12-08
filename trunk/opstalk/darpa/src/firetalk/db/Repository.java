@@ -276,7 +276,6 @@ public class Repository {
 		}
 	}
 
-	
 	public static void parseEnemyFromFile() {
 		try {
 			enemyList.clear();
@@ -288,9 +287,7 @@ public class Repository {
 					StringTokenizer st = new StringTokenizer(line, "$");
 					double lat = Double.parseDouble(st.nextToken());
 					double lon = Double.parseDouble(st.nextToken());
-					double dist = Double.parseDouble(st.nextToken());
-					double degree = Double.parseDouble(st.nextToken());
-					enemyList.add(new Enemy(lat, lon, dist, degree));
+					enemyList.add(new Enemy(lat, lon));
 				}
 			}
 			scan.close();
@@ -299,14 +296,15 @@ public class Repository {
 			e.printStackTrace();
 		}
 	}
+
 	public static void storeEnemys() {
 		try {
 			FileWriter fw = new FileWriter(Parameter.serverDBFolder
 					+ Parameter.enemyFileName);
 			fw.write("#lat lon dist degree\n");
 			for (Enemy cp : Repository.enemyList) {
-				fw.write(String.format("%f$%f$%f$%f$\n", cp.getLatitude(), cp
-						.getLongitude(), cp.getDist(), cp.getDegree()));
+				fw.write(String.format("%f$%f$\n", cp.getLatitude(),
+						cp.getLongitude()));
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -314,6 +312,7 @@ public class Repository {
 			e.printStackTrace();
 		}
 	}
+
 	public static void storeObjPoints() {
 		try {
 			FileWriter fw = new FileWriter(Parameter.serverDBFolder
@@ -339,8 +338,8 @@ public class Repository {
 			fw.write("# id lat lon name userId\n");
 			for (CheckPoint cp : Repository.checkPoints) {
 				fw.write(String.format("%s$%f$%f$%s$%s$%s$%s\n", cp.id, cp.lat,
-						cp.lon, cp.userID, cp.isObj() ? "1" : "0", cp
-								.isReached() ? "1" : "0", cp.deadline));
+						cp.lon, cp.userID, cp.isObj() ? "1" : "0",
+						cp.isReached() ? "1" : "0", cp.deadline));
 
 			}
 			fw.close();
@@ -357,9 +356,9 @@ public class Repository {
 					+ Parameter.IEDFileName);
 			fw.write("#lat lon userId mes\n");
 			for (IEDPoint cp : Repository.IEDList) {
-				fw.write(String.format("%f$%f$%s$%s$%d\n", cp.getLatitude(), cp
-						.getLongitude(), cp.getUserId(), cp.getMes(), cp
-						.getValidTime()));
+				fw.write(String.format("%f$%f$%s$%s$%d\n", cp.getLatitude(),
+						cp.getLongitude(), cp.getUserId(), cp.getMes(),
+						cp.getValidTime()));
 			}
 			fw.close();
 		} catch (IOException e) {
@@ -395,7 +394,7 @@ public class Repository {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.wayPointFileName));
 		}
-		if(type==DBEvent.enemy){
+		if (type == DBEvent.enemy) {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.enemyFileName));
 		}
@@ -444,8 +443,7 @@ public class Repository {
 			fw.write(cbuf);
 			fw.close();
 			parseCheckPointsFromFile();
-		}
-		else if (type == DBEvent.enemy) {
+		} else if (type == DBEvent.enemy) {
 			fw = new FileWriter(Parameter.serverDBFolder
 					+ Parameter.enemyFileName, false);
 			fw.write(cbuf);

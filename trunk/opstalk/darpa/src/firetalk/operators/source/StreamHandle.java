@@ -272,15 +272,7 @@ public class StreamHandle extends Thread {
 					if (content != null) { // parse content
 						switch (eventType) {
 						case Event.ENEMY:
-							StringTokenizer ste = new StringTokenizer(
-									new String(content), " "
-											+ NetUtil.delimiter);
-							double dist = Double.parseDouble(ste.nextToken());
-							double degree = Double.parseDouble(ste.nextToken());
-							System.out.println("dist: " + dist + " degree: "
-									+ degree);
-							Repository.addEnemy(new Enemy(lat, lon, dist,
-									degree));
+							Repository.addEnemy(new Enemy(lat, lon));
 							Repository.storeEnemys();
 							break;
 						case Event.MESSAGE:
