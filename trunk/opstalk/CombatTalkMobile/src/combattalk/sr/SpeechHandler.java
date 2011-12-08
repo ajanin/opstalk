@@ -27,6 +27,7 @@ import combattalk.mobile.data.RallyPoint;
 import combattalk.mobile.data.Repository;
 import combattalk.mobile.data.People.LocationInfo;
 import combattalk.mobile.util.DataUtil;
+import combattalk.mobile.util.NetUtil;
 
 // Handle simple speech commands. Most of this is to make up for the fact that the Google
 // ASR component doesn't handle grammars.
@@ -275,10 +276,11 @@ public class SpeechHandler implements SpeechCommandHandler,
 			Location loc = ParseNum.addBearingDistance(myloc, distanceInMeters,
 					bearingDegreesEastofNorth);
 			/* send enemy spotted event */
-			Event enemyEvent = new Event(Event.MESSAGE,
+			Event enemyEvent = new Event(Event.ENEMY,
 					System.currentTimeMillis(), loc.getLatitude(),
 					loc.getLongitude());
-			enemyEvent.setContent(new String("$enemy$").getBytes());
+			enemyEvent.setContent(NetUtil.string2bytes(String.format("%.1f %.1f#",
+					distanceInMeters, bearingDegreesEastofNorth), 20));
 			parent.addEvent(enemyEvent);
 			/*---------------------------------*/
 			Repository

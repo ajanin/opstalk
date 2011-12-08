@@ -20,6 +20,7 @@ public class Event {
 	public static final int IMAGE=6;
 	public static final int QUERY_RESULT=7;
 	public static final int CHECK_REACH=8;
+	public static final int	ENEMY=9;
 	public Event(int type){
 		this.eventType=type;
 	}
