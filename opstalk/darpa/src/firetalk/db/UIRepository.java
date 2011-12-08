@@ -101,7 +101,7 @@ public class UIRepository {
 					double lon = Double.parseDouble(st.nextToken());
 					double dist = Double.parseDouble(st.nextToken());
 					double degree = Double.parseDouble(st.nextToken());
-					enemyList.add(new Enemy(lat, lon, dist, degree));
+					enemyList.add(new Enemy(lat, lon));
 				}
 			}
 			scan.close();
@@ -116,8 +116,8 @@ public class UIRepository {
 					+ Parameter.enemyFileName);
 			fw.write("#lat lon dist degree\n");
 			for (Enemy cp : UIRepository.enemyList) {
-				fw.write(String.format("%f$%f$%f$%f$\n", cp.getLatitude(), cp
-						.getLongitude(), cp.getDist(), cp.getDegree()));
+				fw.write(String.format("%f$%f$\n", cp.getLatitude(), cp
+						.getLongitude()));
 			}
 			fw.close();
 		} catch (IOException e) {
