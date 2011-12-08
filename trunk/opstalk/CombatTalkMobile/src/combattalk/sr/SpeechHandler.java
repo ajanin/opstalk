@@ -273,18 +273,18 @@ public class SpeechHandler implements SpeechCommandHandler,
 			double bearingDegreesEastofNorth) {
 		Location myloc = parent.getMyLocation();
 		if (myloc != null) {
-			Location loc = ParseNum.addBearingDistance(myloc, distanceInMeters,
+			Location enemyloc = ParseNum.addBearingDistance(myloc, distanceInMeters,
 					bearingDegreesEastofNorth);
 			/* send enemy spotted event */
 			Event enemyEvent = new Event(Event.ENEMY,
-					System.currentTimeMillis(), loc.getLatitude(),
-					loc.getLongitude());
+					System.currentTimeMillis(), enemyloc.getLatitude(),
+					enemyloc.getLongitude());
 			enemyEvent.setContent(NetUtil.string2bytes(String.format("%.1f %.1f#",
 					distanceInMeters, bearingDegreesEastofNorth), 20));
 			parent.addEvent(enemyEvent);
 			/*---------------------------------*/
 			Repository
-					.addEnemy(new Enemy(loc.getLatitude(), loc.getLongitude()));
+					.addEnemy(new Enemy(enemyloc.getLatitude(), enemyloc.getLongitude()));
 		} else
 			setOutput("Your location is not available");
 		parent.resetButton();
