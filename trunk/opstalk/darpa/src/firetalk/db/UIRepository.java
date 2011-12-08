@@ -115,7 +115,7 @@ public class UIRepository {
 			FileWriter fw = new FileWriter(Parameter.uiDBFolder
 					+ Parameter.enemyFileName);
 			fw.write("#lat lon dist degree\n");
-			for (Enemy cp : Repository.enemyList) {
+			for (Enemy cp : UIRepository.enemyList) {
 				fw.write(String.format("%f$%f$%f$%f$\n", cp.getLatitude(), cp
 						.getLongitude(), cp.getDist(), cp.getDegree()));
 			}
