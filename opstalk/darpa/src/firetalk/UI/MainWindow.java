@@ -65,6 +65,7 @@ public class MainWindow extends JFrame {
 	private OpsClock opsClock = null;
 	private AudioPanel audioPanel = null;
 	public UIClient network=null;
+	private EnemyPanel enemyPanel = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -268,6 +269,7 @@ public class MainWindow extends JFrame {
 			jTabbedPane
 					.addTab("Rally Points", null, getRallyPointPanel(), null);
 			jTabbedPane.addTab("IED", null, getIEDPanel(), null);
+			jTabbedPane.addTab("Enemy", null, getEnemyPanel(), null);
 		}
 		return jTabbedPane;
 	}
@@ -502,6 +504,18 @@ public class MainWindow extends JFrame {
 							Font.BOLD, 12), new Color(51, 51, 51)));
 		}
 		return audioPanel;
+	}
+
+	/**
+	 * This method initializes enemyPanel	
+	 * 	
+	 * @return firetalk.UI.EnemyPanel	
+	 */
+	private EnemyPanel getEnemyPanel() {
+		if (enemyPanel == null) {
+			enemyPanel = new EnemyPanel();
+		}
+		return enemyPanel;
 	}
 
 	/**
