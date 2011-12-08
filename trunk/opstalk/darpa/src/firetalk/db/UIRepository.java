@@ -308,6 +308,10 @@ public class UIRepository {
 				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
 						+ Parameter.wayPointFileName));
 			}
+			else if (type == DBEvent.enemy) {
+				fr = new BufferedReader(new FileReader(Parameter.uiDBFolder
+						+ Parameter.enemyFileName));
+			}
 			if (fr != null) {
 				String line = null;
 				while ((line = fr.readLine()) != null) {
