@@ -278,6 +278,7 @@ public class SpeechHandler implements SpeechCommandHandler,
 			Event enemyEvent = new Event(Event.ENEMY,
 					System.currentTimeMillis(), enemyloc.getLatitude(),
 					enemyloc.getLongitude());
+			enemyEvent.setContent(new byte[1]);
 			parent.addEvent(enemyEvent);
 			/*---------------------------------*/
 			Repository
