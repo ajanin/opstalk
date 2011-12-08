@@ -60,8 +60,8 @@ import combattalk.sr.SpeechHandler;
 public class CombatTalkView extends MapActivity {
 	private EventHandleOverlay eventHandleOverlay;
 	private MessageOverlay mesOverlay;
-//	private CheckPointOverlay checkOverlay;
-//	private RallyPointOverlay rallyOverlay;
+	// private CheckPointOverlay checkOverlay;
+	// private RallyPointOverlay rallyOverlay;
 	// MyMapView mapView;
 	private List<Overlay> mapOverlays;
 	private BaloonLayout noteBaloon;
@@ -85,7 +85,7 @@ public class CombatTalkView extends MapActivity {
 		// this.myLocationOverlay = myLocationOverlay;
 	}
 
-	//private HashMap<String, DrawOverLay> drawOverlays = new HashMap();
+	// private HashMap<String, DrawOverLay> drawOverlays = new HashMap();
 	private boolean isSpokenQuery = false;
 	public MapView mapView;
 	private ConnectThread connectThread = null;
@@ -207,23 +207,9 @@ public class CombatTalkView extends MapActivity {
 					.getDrawable(R.drawable.warning_small));
 			if (this.mesOverlay.size() != 0)
 				mapOverlays.add(this.mesOverlay);
-//			this.checkOverlay = new CheckPointOverlay(this.getResources()
-//					.getDrawable(R.drawable.checkpoint));
-//			if (this.checkOverlay.size() != 0)
-//				mapOverlays.add(this.checkOverlay);
-//			this.rallyOverlay = new RallyPointOverlay(this.getResources()
-//					.getDrawable(R.drawable.rallypoint));
-//			if (this.rallyOverlay.size() != 0)
-//				mapOverlays.add(this.rallyOverlay);
-//			for (Iterator<String> it = Repository.peopleList.keySet()
-//					.iterator(); it.hasNext();) {
-//				String id = it.next();
-				// if (!id.equalsIgnoreCase(this.account)) {
-				DrawOverLay overlay = new DrawOverLay(this);
-			//	drawOverlays.put(id, overlay);
-				mapOverlays.add(overlay);
-//				// }
-//			}
+			DrawOverLay overlay = new DrawOverLay(this);
+			mapOverlays.add(overlay);
+
 			locationHandler = new GeoUpdateHandler(this);
 			myLocationOverlay = new LocationOverlay(this, mapView, this);
 			mapOverlays.add(myLocationOverlay);
@@ -320,7 +306,6 @@ public class CombatTalkView extends MapActivity {
 			if (loc == null)
 				addToSpeak("Your location is not available");
 			else {
-
 
 				String result = matches.get(0);
 				if (result != null) {
@@ -561,7 +546,7 @@ public class CombatTalkView extends MapActivity {
 			Repository.messages.clear();
 			Repository.checkPoints.clear();
 			this.updateMesOverlay();
-		//	this.updateCheckOverlay();
+			// this.updateCheckOverlay();
 			break;
 		}
 		return true;
@@ -574,13 +559,13 @@ public class CombatTalkView extends MapActivity {
 		this.mesOverlay.updateInfo();
 	}
 
-//	public void updateCheckOverlay() {
-//		this.checkOverlay.updateInfo();
-//	}
-//
-//	public void updateRallyOverlay() {
-//		this.rallyOverlay.updateInfo();
-//	}
+	// public void updateCheckOverlay() {
+	// this.checkOverlay.updateInfo();
+	// }
+	//
+	// public void updateRallyOverlay() {
+	// this.rallyOverlay.updateInfo();
+	// }
 
 	/**
 	 * @param location
