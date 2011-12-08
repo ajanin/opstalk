@@ -20,6 +20,7 @@ import firetalk.model.Event;
 import firetalk.model.IEDPoint;
 import firetalk.model.People;
 import firetalk.util.NetUtil;
+import firetalk.util.Parameter;
 
 public class UIClient extends Thread {
 	private volatile Thread blinkerThread = null;
@@ -140,9 +141,8 @@ public class UIClient extends Thread {
 		// (checkConnectThread = new CheckConnectivity()).start();
 		Thread connectThread = Thread.currentThread();
 		blinkerThread = connectThread;
-		// String ip = "128.195.53.240";
-		String ip = "169.234.133.205";
-		// String ip = "128.195.185.30";
+		String ip = Parameter.serverIP;
+
 		int port = 9001;
 		try {
 
