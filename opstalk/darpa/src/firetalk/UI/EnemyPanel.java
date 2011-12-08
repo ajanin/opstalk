@@ -25,8 +25,10 @@ import javax.swing.event.ListSelectionListener;
 
 import com.sun.java.swing.plaf.windows.WindowsButtonUI;
 
+import firetalk.UI.UIClient.Status;
 import firetalk.db.UIRepository;
 
+import firetalk.model.DBEvent;
 import firetalk.model.Enemy;
 
 
@@ -41,17 +43,8 @@ public class EnemyPanel extends JPanel {
 	private JButton deleteAllButton = null;
 	private JButton deleteSelectButton = null;
 	private JPanel jPanel1 = null;
-	private JTextField mesField = null;
-	private JTextField latField = null;
-	private JTextField lonField = null;
-	private JPanel jPanel3 = null;
-	private JPanel jPanel4 = null;
-	private JPanel jPanel5 = null;
 	private DefaultListModel model = null;
 	private MainWindow parent = null;
-	private JLabel mesLabel = null;
-	private JLabel jLabel = null;
-	private JLabel jLabel1 = null;
 	private JPanel jPanel2 = null;
 	private JButton jButton = null;
 
@@ -74,7 +67,18 @@ public class EnemyPanel extends JPanel {
 			model.addElement("" + i);
 		this.jList.repaint();
 	}
-
+	public void updateListToDB() {
+		model.clear();
+		for (int i = 0; i < UIRepository.enemyList.size(); i++)
+			model.addElement("" + i);
+		UIRepository.storeEnemys();
+		if (parent.network != null
+				&& parent.network.getStatus() == Status.CONNECTED) {
+			parent.network.addEvent(new DBEvent(DBEvent.enemy, UIRepository
+					.retrieveDB(DBEvent.enemy), parent.network.userId));
+		}
+		this.jList.repaint();
+	}
 	/**
 	 * This method initializes this
 	 * 
@@ -169,6 +173,7 @@ public class EnemyPanel extends JPanel {
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							UIRepository.enemyList.clear();
+							updateListToDB();
 							parent.updateMarkers();
 						}
 					});
@@ -202,9 +207,8 @@ public class EnemyPanel extends JPanel {
 							}
 
 							UIRepository.enemyList = temp;
-
+							updateListToDB();
 							parent.updateMarkers();
-
 						}
 					});
 		}
@@ -213,11 +217,6 @@ public class EnemyPanel extends JPanel {
 
 	public void selectListItem(int index) {
 		jList.setSelectedIndex(index);
-	}
-
-	public void addNewCheckPointFields(double lat, double lon) {
-		latField.setText("" + lat);
-		lonField.setText("" + lon);
 	}
 
 	/**
@@ -231,108 +230,8 @@ public class EnemyPanel extends JPanel {
 			jPanel1.setLayout(new BoxLayout(getJPanel1(), BoxLayout.Y_AXIS));
 			jPanel1.setVisible(false);
 			jPanel1.add(getJPanel(), null);
-			jPanel1.add(getJPanel3(), null);
-			jPanel1.add(getJPanel4(), null);
-			jPanel1.add(getJPanel5(), null);
 		}
 		return jPanel1;
-	}
-
-	/**
-	 * This method initializes mesField
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getMesField() {
-		if (mesField == null) {
-			mesField = new JTextField();
-			mesField.setText("                        ");
-		}
-		return mesField;
-	}
-
-	/**
-	 * This method initializes latField
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getLatField() {
-		if (latField == null) {
-			latField = new JTextField();
-			latField.setText("                        ");
-			latField.setMinimumSize(new Dimension(4, 22));
-		}
-		return latField;
-	}
-
-	/**
-	 * This method initializes lonField
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getLonField() {
-		if (lonField == null) {
-			lonField = new JTextField();
-			lonField.setText("                        ");
-		}
-		return lonField;
-	}
-
-	/**
-	 * This method initializes jPanel3
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel3() {
-		if (jPanel3 == null) {
-			mesLabel = new JLabel();
-			mesLabel.setText("Message");
-			FlowLayout flowLayout2 = new FlowLayout();
-			flowLayout2.setAlignment(FlowLayout.LEFT);
-			jPanel3 = new JPanel();
-			jPanel3.setLayout(flowLayout2);
-			jPanel3.add(mesLabel, null);
-			jPanel3.add(getMesField(), null);
-		}
-		return jPanel3;
-	}
-
-	/**
-	 * This method initializes jPanel4
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel4() {
-		if (jPanel4 == null) {
-			jLabel = new JLabel();
-			jLabel.setText("latitude");
-			FlowLayout flowLayout3 = new FlowLayout();
-			flowLayout3.setAlignment(FlowLayout.LEFT);
-			jPanel4 = new JPanel();
-			jPanel4.setLayout(flowLayout3);
-			jPanel4.add(jLabel, null);
-			jPanel4.add(getLatField(), null);
-		}
-		return jPanel4;
-	}
-
-	/**
-	 * This method initializes jPanel5
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel5() {
-		if (jPanel5 == null) {
-			jLabel1 = new JLabel();
-			jLabel1.setText("longitude");
-			FlowLayout flowLayout4 = new FlowLayout();
-			flowLayout4.setAlignment(FlowLayout.LEFT);
-			jPanel5 = new JPanel();
-			jPanel5.setLayout(flowLayout4);
-			jPanel5.add(jLabel1, null);
-			jPanel5.add(getLonField(), null);
-		}
-		return jPanel5;
 	}
 
 	/**
@@ -357,7 +256,6 @@ public class EnemyPanel extends JPanel {
 	 */
 	private JButton getJButton() {
 		jButton = new JButton();
-		jButton.setEnabled(false);
 		jButton.setText("show");
 		jButton.addActionListener(new ActionListener() {
 
