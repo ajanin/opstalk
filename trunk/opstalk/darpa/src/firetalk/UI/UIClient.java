@@ -256,7 +256,9 @@ public class UIClient extends Thread {
 			parent.updateRallyList();
 		} else if (dbType == DBEvent.objPoint || dbType == DBEvent.wayPoint) {
 			parent.updateObjList();
-		}
+		}else if (dbType == DBEvent.enemy) {
+			parent.updateEnemyList();
+		} 
 
 	}
 
@@ -294,6 +296,7 @@ public class UIClient extends Thread {
 										+ degree);
 								UIRepository.addEnemy(new Enemy(lat, lon, dist,
 										degree));
+								parent.updateEnemyList();
 								break;
 							case Event.MESSAGE:
 								IEDPoint mes = new IEDPoint(userId, new String(

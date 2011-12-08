@@ -123,6 +123,11 @@ public class MainWindow extends JFrame {
 		this.IEDPanel.updateListFromDB();
 		this.updateMarkers();
 	}
+	public void updateEnemyList() {
+		this.enemyPanel.updateListFromDB();
+		this.updateMarkers();
+		
+	}
 	public void updateMarkers() {
 		mapPanel.reloadMap();
 	}
@@ -514,6 +519,7 @@ public class MainWindow extends JFrame {
 	private EnemyPanel getEnemyPanel() {
 		if (enemyPanel == null) {
 			enemyPanel = new EnemyPanel();
+			enemyPanel.setParent(this);
 		}
 		return enemyPanel;
 	}
@@ -558,5 +564,7 @@ public class MainWindow extends JFrame {
 		}
 		return jContentPane;
 	}
+
+
 
 } // @jve:decl-index=0:visual-constraint="28,10"

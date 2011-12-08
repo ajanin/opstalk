@@ -88,7 +88,43 @@ public class UIRepository {
 		// }
 
 	}
-
+	public static void parseEnemyFromFile() {
+		try {
+			enemyList.clear();
+			Scanner scan = new Scanner(new FileReader(Parameter.uiDBFolder
+					+ Parameter.enemyFileName));
+			while (scan.hasNext()) {
+				String line = scan.nextLine();
+				if (!line.startsWith("#")) {
+					StringTokenizer st = new StringTokenizer(line, "$");
+					double lat = Double.parseDouble(st.nextToken());
+					double lon = Double.parseDouble(st.nextToken());
+					double dist = Double.parseDouble(st.nextToken());
+					double degree = Double.parseDouble(st.nextToken());
+					enemyList.add(new Enemy(lat, lon, dist, degree));
+				}
+			}
+			scan.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void storeEnemys() {
+		try {
+			FileWriter fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.enemyFileName);
+			fw.write("#lat lon dist degree\n");
+			for (Enemy cp : Repository.enemyList) {
+				fw.write(String.format("%f$%f$%f$%f$\n", cp.getLatitude(), cp
+						.getLongitude(), cp.getDist(), cp.getDegree()));
+			}
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static void parseRallyFromFile() {
 		try {
 			rallyList.clear();
@@ -243,6 +279,12 @@ public class UIRepository {
 			fw.write(cbuf);
 			fw.close();
 			parseCheckPointsFromFile();
+		}else if (type == DBEvent.enemy) {
+			fw = new FileWriter(Parameter.uiDBFolder
+					+ Parameter.enemyFileName,false);
+			fw.write(cbuf);
+			fw.close();
+			parseEnemyFromFile();
 		}
 
 	}
