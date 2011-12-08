@@ -99,8 +99,6 @@ public class UIRepository {
 					StringTokenizer st = new StringTokenizer(line, "$");
 					double lat = Double.parseDouble(st.nextToken());
 					double lon = Double.parseDouble(st.nextToken());
-					double dist = Double.parseDouble(st.nextToken());
-					double degree = Double.parseDouble(st.nextToken());
 					enemyList.add(new Enemy(lat, lon));
 				}
 			}
