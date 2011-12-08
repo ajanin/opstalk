@@ -617,9 +617,6 @@ public class MapPanel extends JPanel {
 
 	private SwingUIHookAdapter _initHook(SwingUIHookAdapter hook) {
 		hook.enableRecieveStatusNotification(true);
-		// hook.enableSendStatusNotification(checkboxSendStatus.isSelected());
-
-		// hook.setProgressMessage(ttfProgressMsg.getText());
 
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -838,8 +835,6 @@ public class MapPanel extends JPanel {
 		}
 		this.initMapInfo(38.882690483333334, -77.09945643333333, 512, 512, 16);
 
-		// this.initMapInfo(37.87013435694719, -122.2714068423748, 512, 512,
-		// 15);
 	}
 
 	public void setParent(MainWindow parent) {
@@ -884,4 +879,4 @@ public class MapPanel extends JPanel {
 		return jPanel1;
 	}
 
-} // @jve:decl-index=0:visual-constraint="10,10"
+} 
