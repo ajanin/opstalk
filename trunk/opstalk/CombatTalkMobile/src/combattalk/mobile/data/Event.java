@@ -10,7 +10,7 @@ public class Event {
 	private double latitude;
 	private double longitude;
 	private int eventType;
-	private byte[] content;
+	private byte[] content=new byte[0];
 	public static final int DUMMY=0;
 	public static final int MESSAGE=1;
 	public static final int QUERY=2;

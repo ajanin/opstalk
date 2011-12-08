@@ -275,10 +275,9 @@ public class SpeechHandler implements SpeechCommandHandler,
 			Location enemyloc = ParseNum.addBearingDistance(myloc, distanceInMeters,
 					bearingDegreesEastofNorth);
 			/* send enemy spotted event */
-			Event enemyEvent = new Event(Event.MESSAGE,
+			Event enemyEvent = new Event(Event.ENEMY,
 					System.currentTimeMillis(), enemyloc.getLatitude(),
 					enemyloc.getLongitude());
-			enemyEvent.setContent(new String("$enemy$").getBytes());
 			parent.addEvent(enemyEvent);
 			/*---------------------------------*/
 			Repository
