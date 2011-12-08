@@ -132,6 +132,7 @@ public class Repository {
 			e.printStackTrace();
 		}
 	}
+
 	public static void storeRallyPoints() {
 		try {
 			FileWriter fw = new FileWriter(Parameter.serverDBFolder
@@ -275,6 +276,44 @@ public class Repository {
 		}
 	}
 
+	
+	public static void parseEnemyFromFile() {
+		try {
+			enemyList.clear();
+			Scanner scan = new Scanner(new FileReader(Parameter.serverDBFolder
+					+ Parameter.enemyFileName));
+			while (scan.hasNext()) {
+				String line = scan.nextLine();
+				if (!line.startsWith("#")) {
+					StringTokenizer st = new StringTokenizer(line, "$");
+					double lat = Double.parseDouble(st.nextToken());
+					double lon = Double.parseDouble(st.nextToken());
+					double dist = Double.parseDouble(st.nextToken());
+					double degree = Double.parseDouble(st.nextToken());
+					enemyList.add(new Enemy(lat, lon, dist, degree));
+				}
+			}
+			scan.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void storeEnemys() {
+		try {
+			FileWriter fw = new FileWriter(Parameter.serverDBFolder
+					+ Parameter.enemyFileName);
+			fw.write("#lat lon dist degree\n");
+			for (Enemy cp : Repository.enemyList) {
+				fw.write(String.format("%f$%f$%f$%f$\n", cp.getLatitude(), cp
+						.getLongitude(), cp.getDist(), cp.getDegree()));
+			}
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static void storeObjPoints() {
 		try {
 			FileWriter fw = new FileWriter(Parameter.serverDBFolder
@@ -342,7 +381,7 @@ public class Repository {
 	public static byte[] retrieveDB(int type) throws IOException {
 		BufferedReader fr = null;
 		Vector<Byte> buf = new Vector<Byte>();
-		byte[] bytes=null;
+		byte[] bytes = null;
 		if (type == DBEvent.IED) {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.IEDFileName));
@@ -356,12 +395,16 @@ public class Repository {
 			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
 					+ Parameter.wayPointFileName));
 		}
+		if(type==DBEvent.enemy){
+			fr = new BufferedReader(new FileReader(Parameter.serverDBFolder
+					+ Parameter.enemyFileName));
+		}
 		if (fr != null) {
-			String line=null;
-			while ((line = fr.readLine())!= null) {
-				for(int i=0;i<line.length();i++)
-					buf.add((byte)line.charAt(i));
-				buf.add((byte)('\n'));
+			String line = null;
+			while ((line = fr.readLine()) != null) {
+				for (int i = 0; i < line.length(); i++)
+					buf.add((byte) line.charAt(i));
+				buf.add((byte) ('\n'));
 			}
 			fr.close();
 			bytes = new byte[buf.size()];
@@ -379,28 +422,35 @@ public class Repository {
 			cbuf[i] = (char) content[i];
 		if (type == DBEvent.IED) {
 			fw = new FileWriter(Parameter.serverDBFolder
-					+ Parameter.IEDFileName,false);
+					+ Parameter.IEDFileName, false);
 			fw.write(cbuf);
 			fw.close();
 			parseIEDFromFile();
 		} else if (type == DBEvent.objPoint) {
 			fw = new FileWriter(Parameter.serverDBFolder
-					+ Parameter.objFileName,false);
+					+ Parameter.objFileName, false);
 			fw.write(cbuf);
 			fw.close();
 			parseObjectivesFromFile();
 		} else if (type == DBEvent.rally) {
 			fw = new FileWriter(Parameter.serverDBFolder
-					+ Parameter.rallyFileName,false);
+					+ Parameter.rallyFileName, false);
 			fw.write(cbuf);
 			fw.close();
 			parseRallyFromFile();
 		} else if (type == DBEvent.wayPoint) {
 			fw = new FileWriter(Parameter.serverDBFolder
-					+ Parameter.wayPointFileName,false);
+					+ Parameter.wayPointFileName, false);
 			fw.write(cbuf);
 			fw.close();
 			parseCheckPointsFromFile();
+		}
+		else if (type == DBEvent.enemy) {
+			fw = new FileWriter(Parameter.serverDBFolder
+					+ Parameter.enemyFileName, false);
+			fw.write(cbuf);
+			fw.close();
+			parseEnemyFromFile();
 		}
 
 	}

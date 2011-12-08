@@ -418,6 +418,8 @@ public class UIStreamHandle extends Thread {
 					.retrieveDB(DBEvent.rally), this.userId));
 			this.addEvent(new DBEvent(DBEvent.wayPoint, Repository
 					.retrieveDB(DBEvent.wayPoint), this.userId));
+			this.addEvent(new DBEvent(DBEvent.enemy, Repository
+					.retrieveDB(DBEvent.enemy), this.userId));
 			out = conn.getOutputStream();
 			outputHandle.start();
 			System.out.println(UIStreamHandle.this.id

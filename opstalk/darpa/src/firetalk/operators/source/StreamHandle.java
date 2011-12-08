@@ -281,6 +281,7 @@ public class StreamHandle extends Thread {
 									+ degree);
 							Repository.addEnemy(new Enemy(lat, lon, dist,
 									degree));
+							Repository.storeEnemys();
 							break;
 						case Event.MESSAGE:
 							IEDPoint mes = new IEDPoint(this.user.getId(),
