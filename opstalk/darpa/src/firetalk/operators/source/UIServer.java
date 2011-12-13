@@ -81,9 +81,8 @@ public class UIServer extends Thread {
 			if (Repository.uiHandles.get(id) != null)
 				System.out.println("<Replace happens>");
 			Repository.uiHandles.put(id, handle);
-			handle.setMainDisplay(Repository.uiHandles.size() == 1);
-
 			parent.updateUIList();
+			handle.setMainDisplay(Repository.uiHandles.size() == 1);
 			System.out.println(handle.getHandleId() + " < Add " + id
 					+ " to Repository.handles > ");
 		}
