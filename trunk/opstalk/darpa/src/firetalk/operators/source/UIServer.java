@@ -15,19 +15,6 @@ import firetalk.model.Event;
 public class UIServer extends Thread {
 	final int maxConnection = 100;
 	private ServerManagerUI parent;
-
-	// public MainWindow parent;
-
-	// ContextManager contextManager = new ContextManager();
-	// public UIServer(MainWindow parent) {
-	// this.parent = parent;
-	// }
-
-	// public void updateCheckPoints() {
-	// parent.updateMarkers();
-	// parent.updateList();
-	// }
-
 	public UIServer(ServerManagerUI parent) {
 		this.parent = parent;
 	}
@@ -36,23 +23,16 @@ public class UIServer extends Thread {
 	public void run() {
 		try {
 			InetAddress addr = InetAddress.getByName("169.234.133.205");
-			// ServerSocketChannel ssChannel1 = ServerSocketChannel.open();
-			// ssChannel1.socket().bind(new InetSocketAddress(addr, 8989));
-
+			
 			ExecutorService service = Executors
 					.newFixedThreadPool(maxConnection);
 			int id = 0;
 			// service.execute(contextManager);
 			ServerSocket ss = new ServerSocket(9001);
-			while (true) {
-				// SocketChannel sChannel = ssChannel1.accept();
+			while (true) {			
 				Socket s = ss.accept();
-				// System.out.println("new connection: " + sChannel);
 				UIStreamHandle handle = new UIStreamHandle(this, s);
 				id++;
-				// contextManager.addStreamHandle(handle); // add stream handle
-				// to
-				// stream handle pool
 				service.execute(handle);
 			}
 		} catch (IOException e) {
@@ -65,21 +45,29 @@ public class UIServer extends Thread {
 		// contextManager.removeStreamHandle(handle);
 		// handle.stopAll();
 		String id = handle.getUserId();
-		if (id != null && Repository.handles.containsValue(handle)) {
-			Repository.handles.remove(id);
+		if (id != null && Repository.uiHandles.containsValue(handle)) {
+			Repository.uiHandles.remove(id);
+			if (handle.isMainDisplay()) {
+				if (Repository.uiHandles.size() > 0) {
+					UIStreamHandle h = Repository.uiHandles.values().iterator()
+							.next();
+					h.setMainDisplay(true);
+				}
+			}
+			parent.updateUIList();
 		}
 	}
 
 	public synchronized void addStreamHandle(UIStreamHandle handle) {
-		int prevN = Repository.handles.size();
+		int prevN = Repository.uiHandles.size();
 		String id = handle.userId;
 		UIStreamHandle h = null;
 		if (id != null) {
-			h = Repository.handles.get(id);
+			h = Repository.uiHandles.get(id);
 			if (h != null) {
 				System.out.println("Thread " + h.getHandleId() + "is to end");
 				h.stopThread();
-				Repository.handles.remove(id);
+				Repository.uiHandles.remove(id);
 			}
 
 			try {
@@ -89,20 +77,22 @@ public class UIServer extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (Repository.handles.get(id) != null)
+			if (Repository.uiHandles.get(id) != null)
 				System.out.println("<Replace happens>");
-			Repository.handles.put(id, handle);
+			Repository.uiHandles.put(id, handle);
+			if (Repository.uiHandles.size() == 1)
+				handle.setMainDisplay(true);
 			parent.updateUIList();
 			System.out.println(handle.getHandleId() + " < Add " + id
 					+ " to Repository.handles > ");
 		}
 		if (h != null) {
-			if (prevN != Repository.handles.size())
+			if (prevN != Repository.uiHandles.size())
 				System.out
 						.println("\n*******************\nRepository.handles error: Prev: "
 								+ prevN
 								+ "after: "
-								+ Repository.handles.size()
+								+ Repository.uiHandles.size()
 								+ "\n***************");
 			if (!h.isAllKilled())
 				System.out.println("<<<<<Not all killed>>>>");
@@ -117,7 +107,7 @@ public class UIServer extends Thread {
 	public void updateEvent(Event event) {
 		if (event.getEventType() == Event.DB_SYNC) {
 			System.out.print("<notifyAll>: " + event);
-			for (Iterator<UIStreamHandle> it = Repository.handles.values()
+			for (Iterator<UIStreamHandle> it = Repository.uiHandles.values()
 					.iterator(); it.hasNext();) {
 				UIStreamHandle handle = it.next();
 				if (handle != null && !handle.userId.equals(event.getId()))

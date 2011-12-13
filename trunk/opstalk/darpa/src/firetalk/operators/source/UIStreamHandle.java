@@ -42,6 +42,15 @@ public class UIStreamHandle extends Thread {
 	private volatile Thread blinkerThread;
 	private int id;
 	private long transTime = 0;
+	private boolean isMainDisplay=false;
+
+	public boolean isMainDisplay() {
+		return isMainDisplay;
+	}
+
+	public void setMainDisplay(boolean isMainDisplay) {
+		this.isMainDisplay = isMainDisplay;
+	}
 
 	class OutputHandle extends Thread {
 		private volatile Thread blinker = null;
