@@ -15,6 +15,7 @@ import firetalk.model.Event;
 public class UIServer extends Thread {
 	final int maxConnection = 100;
 	private ServerManagerUI parent;
+
 	public UIServer(ServerManagerUI parent) {
 		this.parent = parent;
 	}
@@ -23,13 +24,13 @@ public class UIServer extends Thread {
 	public void run() {
 		try {
 			InetAddress addr = InetAddress.getByName("169.234.133.205");
-			
+
 			ExecutorService service = Executors
 					.newFixedThreadPool(maxConnection);
 			int id = 0;
 			// service.execute(contextManager);
 			ServerSocket ss = new ServerSocket(9001);
-			while (true) {			
+			while (true) {
 				Socket s = ss.accept();
 				UIStreamHandle handle = new UIStreamHandle(this, s);
 				id++;
@@ -80,8 +81,8 @@ public class UIServer extends Thread {
 			if (Repository.uiHandles.get(id) != null)
 				System.out.println("<Replace happens>");
 			Repository.uiHandles.put(id, handle);
-			if (Repository.uiHandles.size() == 1)
-				handle.setMainDisplay(true);
+			handle.setMainDisplay(Repository.uiHandles.size() == 1);
+
 			parent.updateUIList();
 			System.out.println(handle.getHandleId() + " < Add " + id
 					+ " to Repository.handles > ");
