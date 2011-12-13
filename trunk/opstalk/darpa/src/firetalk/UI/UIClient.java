@@ -273,7 +273,7 @@ public class UIClient extends Thread {
 						int contentLen = (int) NetUtil.readValue(input, 10);
 						byte[] content = NetUtil.readBytes(input, contentLen);
 						if (dbType == DBEvent.display_change) {
-							parent.setMain(content[0] == 0 ? false : true);
+							parent.setMain(content[0] == '0' ? false : true);
 						} else {
 							this.updateDB(dbType, content);
 						}
