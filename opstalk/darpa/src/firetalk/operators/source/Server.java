@@ -23,7 +23,6 @@ import firetalk.model.People;
 public class Server extends Thread {
 	final int maxConnection = 100;
 	ServerManagerUI parent=null;
-	HashMap<String, StreamHandle> handles = new HashMap();
 
 //	public MainWindow parent;
 
@@ -74,21 +73,22 @@ public class Server extends Thread {
 		// contextManager.removeStreamHandle(handle);
 		// handle.stopAll();
 		String id = handle.getUserId();
-		if (id != null && handles.containsValue(handle)) {
-			handles.remove(id);
+		if (id != null && Repository.androidHandles.containsValue(handle)) {
+			Repository.androidHandles.remove(id);
+			parent.updateAndroidList();
 		}
 	}
 
 	public synchronized void addStreamHandle(StreamHandle handle) {
-		int prevN = handles.size();
+		int prevN = Repository.androidHandles.size();
 		String id = handle.getUserId();
 		StreamHandle h = null;
 		if (id != null) {
-			h = handles.get(id);
+			h = Repository.androidHandles.get(id);
 			if (h != null) {
 				System.out.println("Thread " + h.getHandleId() + "is to end");
 				h.stopThread();
-				handles.remove(id);
+				Repository.androidHandles.remove(id);
 			}
 
 			try {
@@ -98,18 +98,18 @@ public class Server extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (handles.get(id) != null)
+			if (Repository.androidHandles.get(id) != null)
 				System.out.println("<Replace happens>");
-			handles.put(id, handle);
+			Repository.androidHandles.put(id, handle);
 			parent.updateAndroidList();
 			System.out.println(handle.getHandleId() + " < Add " + id
 					+ " to handles > ");
 		}
 		if (h != null) {
-			if (prevN != handles.size())
+			if (prevN != Repository.androidHandles.size())
 				System.out
 						.println("\n*******************\nhandles error: Prev: "
-								+ prevN + "after: " + handles.size()
+								+ prevN + "after: " + Repository.androidHandles.size()
 								+ "\n***************");
 			if (!h.isAllKilled())
 				System.out.println("<<<<<Not all killed>>>>");
@@ -125,11 +125,11 @@ public class Server extends Thread {
 //		if (event.getEventType() == Event.MESSAGE)
 //			Repository.events.addFirst(event);
 		System.out.print("<notifyAll>: " + event);
-		for (StreamHandle handle : handles.values()) {
+		for (StreamHandle handle : Repository.androidHandles.values()) {
 			if (handle != null)
 				handle.addEvent(event);
 		}
-		for(UIStreamHandle handle:Repository.handles.values()){
+		for(UIStreamHandle handle:Repository.uiHandles.values()){
 			if(handle!=null)
 				handle.addEvent(event);
 		}

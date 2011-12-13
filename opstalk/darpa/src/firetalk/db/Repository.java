@@ -27,6 +27,7 @@ import firetalk.model.People;
 import firetalk.model.IEDPoint;
 import firetalk.model.RallyPoint;
 import firetalk.model.Team;
+import firetalk.operators.source.StreamHandle;
 import firetalk.operators.source.UIStreamHandle;
 import firetalk.util.Parameter;
 
@@ -44,8 +45,8 @@ public class Repository {
 	public static HashMap<String, ObjPoint> objPoints = new HashMap<String, ObjPoint>();
 	public static HashMap<String, Vector<File>> audioFiles = new HashMap();
 	public static LinkedList<Enemy> enemyList = new LinkedList<Enemy>();
-	public static HashMap<String, UIStreamHandle> handles = new HashMap();
-
+	public static HashMap<String, UIStreamHandle> uiHandles = new HashMap();
+	public static HashMap<String, StreamHandle> androidHandles = new HashMap();
 	public static void addEnemy(Enemy e) {
 		enemyList.add(e);
 	}
