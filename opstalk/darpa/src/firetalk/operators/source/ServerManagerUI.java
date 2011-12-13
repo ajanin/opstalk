@@ -57,8 +57,23 @@ public class ServerManagerUI extends JFrame {
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				stop();
+			}
+		});
 	}
-
+	public void stop(){
+		for(StreamHandle handle:Repository.androidHandles.values()){
+			handle.stopThread();
+		}
+		for(UIStreamHandle handle:Repository.uiHandles.values()){
+			handle.stopThread();
+		}
+		this.server.stop();
+		this.serverUI.stop();
+		System.exit(0);
+	}
 	public void updateAndroidList() {
 		modelAndroid.clear();
 		for (StreamHandle handle : Repository.androidHandles.values())

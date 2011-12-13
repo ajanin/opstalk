@@ -388,7 +388,7 @@ public class UIStreamHandle extends Thread {
 			blinkerThread = null;
 			if (tmpBlinker != null) {
 				tmpBlinker.interrupt();
-				// tmpBlinker.stop();
+				tmpBlinker.stop();
 			}
 			if (conn != null && !conn.isClosed()) {
 				conn.close();
@@ -449,6 +449,8 @@ public class UIStreamHandle extends Thread {
 							"Stopped by ifInterruptedStop()");
 				}
 				receiveEvent();
+				
+				
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
