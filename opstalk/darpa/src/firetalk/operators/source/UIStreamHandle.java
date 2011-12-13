@@ -40,7 +40,6 @@ public class UIStreamHandle extends Thread {
 	private LinkedList<Event> events = new LinkedList<Event>(); // events to
 	private boolean isHandling;
 	private volatile Thread blinkerThread;
-	private int id;
 	private long transTime = 0;
 	private boolean isMainDisplay = false;
 
@@ -87,7 +86,7 @@ public class UIStreamHandle extends Thread {
 				e.printStackTrace();
 				handleConnectionFailure();
 			}
-			System.out.println(UIStreamHandle.this.id
+			System.out.println(UIStreamHandle.this.userId
 					+ " < OutputHandle end > ");
 
 		}
@@ -122,7 +121,7 @@ public class UIStreamHandle extends Thread {
 					e.printStackTrace();
 				}
 			}
-			System.out.println(UIStreamHandle.this.id
+			System.out.println(UIStreamHandle.this.userId
 					+ " < HandleConnectFail end >");
 		}
 
@@ -160,7 +159,7 @@ public class UIStreamHandle extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(UIStreamHandle.this.id
+			System.out.println(UIStreamHandle.this.userId
 					+ " < Check conectivity end >");
 		}
 	}
@@ -174,10 +173,6 @@ public class UIStreamHandle extends Thread {
 
 	public enum Status {
 		CONNECT, LOST
-	}
-
-	public int getHandleId() {
-		return this.id;
 	}
 
 	public UIStreamHandle(UIServer server, Socket con) {
@@ -379,7 +374,7 @@ public class UIStreamHandle extends Thread {
 	public synchronized void stopThread() {
 		try {
 			this.status = Status.LOST;
-			System.out.println(this.id + "<stop StreamHandle>");
+			System.out.println(this.userId + "<stop StreamHandle>");
 			if (outputHandle != null)
 				outputHandle.stopThread();
 			if (checkHandle != null)
@@ -433,7 +428,7 @@ public class UIStreamHandle extends Thread {
 					.retrieveDB(DBEvent.enemy), this.userId));
 			out = conn.getOutputStream();
 			outputHandle.start();
-			System.out.println(UIStreamHandle.this.id
+			System.out.println(UIStreamHandle.this.userId
 					+ " Connection is established for <" + this.userId + "> ");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -455,7 +450,7 @@ public class UIStreamHandle extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(UIStreamHandle.this.id + "< StreamHandle end >");
+		System.out.println(UIStreamHandle.this.userId + "< StreamHandle end >");
 		// handle pool
 
 	}

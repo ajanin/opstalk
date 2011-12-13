@@ -66,7 +66,7 @@ public class UIServer extends Thread {
 		if (id != null) {
 			h = Repository.uiHandles.get(id);
 			if (h != null) {
-				System.out.println("Thread " + h.getHandleId() + "is to end");
+				System.out.println("Thread " + h.userId + "is to end");
 				h.stopThread();
 				Repository.uiHandles.remove(id);
 			}
@@ -83,7 +83,7 @@ public class UIServer extends Thread {
 			Repository.uiHandles.put(id, handle);
 			parent.updateUIList();
 			handle.setMainDisplay(Repository.uiHandles.size() == 1);
-			System.out.println(handle.getHandleId() + " < Add " + id
+			System.out.println(handle.userId+ " < Add " + id
 					+ " to Repository.handles > ");
 		}
 		if (h != null) {
