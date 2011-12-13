@@ -256,9 +256,9 @@ public class UIClient extends Thread {
 			parent.updateRallyList();
 		} else if (dbType == DBEvent.objPoint || dbType == DBEvent.wayPoint) {
 			parent.updateObjList();
-		}else if (dbType == DBEvent.enemy) {
+		} else if (dbType == DBEvent.enemy) {
 			parent.updateEnemyList();
-		} 
+		}
 
 	}
 
@@ -272,7 +272,11 @@ public class UIClient extends Thread {
 						int dbType = (int) NetUtil.readValue(input, 3);
 						int contentLen = (int) NetUtil.readValue(input, 10);
 						byte[] content = NetUtil.readBytes(input, contentLen);
-						this.updateDB(dbType, content);
+						if (dbType == DBEvent.display_change) {
+							parent.setMain(content[0] == 0 ? false : true);
+						} else {
+							this.updateDB(dbType, content);
+						}
 					} else {
 						String userId = NetUtil.readString(input, 20);
 						// read valid time and trans time (20)
@@ -286,7 +290,7 @@ public class UIClient extends Thread {
 						byte[] content = NetUtil.readBytes(input, contentLen);
 						if (content != null) { // parse content
 							switch (eventType) {
-							case Event.ENEMY:			
+							case Event.ENEMY:
 								UIRepository.addEnemy(new Enemy(lat, lon));
 								parent.updateEnemyList();
 								break;

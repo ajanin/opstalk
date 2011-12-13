@@ -64,8 +64,9 @@ public class MainWindow extends JFrame {
 	private JPanel jPanel2 = null;
 	private OpsClock opsClock = null;
 	private AudioPanel audioPanel = null;
-	public UIClient network=null;
+	public UIClient network = null;
 	private EnemyPanel enemyPanel = null;
+
 	/**
 	 * This is the default constructor
 	 */
@@ -73,7 +74,7 @@ public class MainWindow extends JFrame {
 		super();
 		initialize();
 		this.doInit();
-		(network=new UIClient(this)).start();
+		(network = new UIClient(this)).start();
 		Timer timer = new Timer();
 		timer.schedule(new ReadLocation(), 1000, 1000);
 
@@ -111,23 +112,28 @@ public class MainWindow extends JFrame {
 	public void setInfoPanel(String text) {
 		this.jTextArea.setText(text);
 	}
-	public void updateRallyList(){
+
+	public void updateRallyList() {
 		this.rallyPointPanel.updateListFromDB();
 		this.updateMarkers();
 	}
-	public void updateObjList(){
+
+	public void updateObjList() {
 		this.objPointPanel.updateTreeFromDB();
 		this.updateMarkers();
 	}
-	public void updateIEDList(){
+
+	public void updateIEDList() {
 		this.IEDPanel.updateListFromDB();
 		this.updateMarkers();
 	}
+
 	public void updateEnemyList() {
 		this.enemyPanel.updateListFromDB();
 		this.updateMarkers();
-		
+
 	}
+
 	public void updateMarkers() {
 		mapPanel.reloadMap();
 	}
@@ -512,9 +518,9 @@ public class MainWindow extends JFrame {
 	}
 
 	/**
-	 * This method initializes enemyPanel	
-	 * 	
-	 * @return firetalk.UI.EnemyPanel	
+	 * This method initializes enemyPanel
+	 * 
+	 * @return firetalk.UI.EnemyPanel
 	 */
 	private EnemyPanel getEnemyPanel() {
 		if (enemyPanel == null) {
@@ -538,6 +544,18 @@ public class MainWindow extends JFrame {
 				thisClass.setVisible(true);
 			}
 		});
+	}
+
+	public void setMain(boolean isMain) {
+		this.objPointPanel.setMain(isMain);
+		this.rallyPointPanel.setMain(isMain);
+		this.IEDPanel.setMain(isMain);
+		this.enemyPanel.setMain(isMain);
+		if (isMain)
+			this.setTitle("Opstalk --- main display");
+		else
+			this.setTitle("Opstalk");
+
 	}
 
 	/**
@@ -564,7 +582,5 @@ public class MainWindow extends JFrame {
 		}
 		return jContentPane;
 	}
-
-
 
 } // @jve:decl-index=0:visual-constraint="28,10"

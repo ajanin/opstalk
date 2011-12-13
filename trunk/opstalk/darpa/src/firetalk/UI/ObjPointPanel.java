@@ -682,6 +682,11 @@ public class ObjPointPanel extends JPanel {
 		return jPanel7;
 	}
 
+	public void setMain(boolean isMain){
+		jPanel1.setVisible(false);
+		jButton.setText("show");
+		jButton.setEnabled(isMain);
+	}
 	/**
 	 * This method initializes jButton	
 	 * 	

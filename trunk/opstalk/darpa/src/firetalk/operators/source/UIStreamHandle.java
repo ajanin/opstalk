@@ -42,7 +42,7 @@ public class UIStreamHandle extends Thread {
 	private volatile Thread blinkerThread;
 	private int id;
 	private long transTime = 0;
-	private boolean isMainDisplay=false;
+	private boolean isMainDisplay = false;
 
 	public boolean isMainDisplay() {
 		return isMainDisplay;
@@ -50,6 +50,8 @@ public class UIStreamHandle extends Thread {
 
 	public void setMainDisplay(boolean isMainDisplay) {
 		this.isMainDisplay = isMainDisplay;
+		this.addEvent(new DBEvent(DBEvent.display_change, NetUtil.value2bytes(
+				isMainDisplay ? 1 : 0, 1), userId));
 	}
 
 	class OutputHandle extends Thread {

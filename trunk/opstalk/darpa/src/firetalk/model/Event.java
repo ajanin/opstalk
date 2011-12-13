@@ -50,6 +50,7 @@ public class Event {
 	public static final int ENEMY = 9;
 	public static final int DB_SYNC = 20; // event to synchronize between server
 											// and display
+	public static final int DISPLAY_CHANGE=21; // event to notify that main display is changed
 
 	public Event() {
 	}

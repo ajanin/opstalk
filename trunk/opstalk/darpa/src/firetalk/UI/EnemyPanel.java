@@ -214,7 +214,11 @@ public class EnemyPanel extends JPanel {
 		}
 		return deleteSelectButton;
 	}
-
+	public void setMain(boolean isMain){
+		jPanel1.setVisible(false);
+		jButton.setText("show");
+		jButton.setEnabled(isMain);
+	}
 	public void selectListItem(int index) {
 		jList.setSelectedIndex(index);
 	}
