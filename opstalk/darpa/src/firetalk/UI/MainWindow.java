@@ -535,7 +535,6 @@ public class MainWindow extends JFrame {
 	 */
 	public static void main(String[] args) {
 		UIRepository.init(); // initialize database
-		System.out.println(Long.MAX_VALUE);
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

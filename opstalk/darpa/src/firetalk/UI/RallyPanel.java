@@ -74,19 +74,17 @@ public class RallyPanel extends JPanel {
 	}
 
 	public void updateListFromDB(){ //update list from repository
-		model.clear();
+		model = new DefaultListModel();
 		for (int i = 0; i < UIRepository.rallyList.size(); i++)
 			model.addElement("" + i);
-		this.jList.repaint();
 	}
 	public void updateListToDB() { //update list, and write to DB
-		model.clear();
+		model = new DefaultListModel();
 		for (int i = 0; i < UIRepository.rallyList.size(); i++)
 			model.addElement("" + i);
 		UIRepository.storeRallyPoints();
 		parent.network.addEvent(new DBEvent(DBEvent.rally, UIRepository
 				.retrieveDB(DBEvent.rally), parent.network.userId));
-		this.jList.repaint();
 	}
 
 	/**
@@ -141,22 +139,6 @@ public class RallyPanel extends JPanel {
 			});
 			jList.setModel(model);
 			updateListFromDB();
-			// jList.setModel(new javax.swing.AbstractListModel() {
-			//
-			// /**
-			// *
-			// */
-			// private static final long serialVersionUID = 1L;
-			//
-			// public int getSize() {
-			// return Repository.checkPoints.size();
-			// }
-			//
-			// public Object getElementAt(int i) {
-			// return Repository.checkPoints.get(i);
-			// }
-			//
-			// });
 		}
 		return jList;
 	}

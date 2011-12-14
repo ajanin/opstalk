@@ -19,6 +19,8 @@ import javax.swing.JButton;
 import firetalk.UI.ServerListRenderer;
 import firetalk.db.Repository;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import java.awt.event.KeyEvent;
 
 public class ServerManagerUI extends JFrame {
 
@@ -36,7 +38,6 @@ public class ServerManagerUI extends JFrame {
 	private UIServer serverUI = null;
 	private JScrollPane jScrollPane = null;
 	private JScrollPane jScrollPane1 = null;
-
 	/**
 	 * This is the default constructor
 	 */
@@ -74,18 +75,20 @@ public class ServerManagerUI extends JFrame {
 		this.serverUI.stop();
 		System.exit(0);
 	}
-	public void updateAndroidList() {
-		modelAndroid.clear();
+	public synchronized void updateAndroidList() {
+		modelAndroid=new DefaultListModel();
 		for (StreamHandle handle : Repository.androidHandles.values())
 			modelAndroid.addElement(handle.getUserId());
-		this.jList.repaint();
 	}
 
-	public void updateUIList() {
-		modelUI.clear();
-		for (UIStreamHandle handle : Repository.uiHandles.values())
+	public synchronized void updateUIList() {
+		System.out.println("before model size: "+modelUI.size()+" handle size: "+Repository.uiHandles.size());
+		modelUI=new DefaultListModel();
+		for (UIStreamHandle handle : Repository.uiHandles.values()){
 			modelUI.addElement(handle.userId);
-		this.jList.repaint();
+			System.out.println("handle id: "+handle.userId);
+		}
+		jList1.setModel(modelUI);
 	}
 
 	/**
@@ -111,10 +114,10 @@ public class ServerManagerUI extends JFrame {
 	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.fill = GridBagConstraints.BOTH;
-			gridBagConstraints1.weighty = 1.0;
-			gridBagConstraints1.weightx = 1.0;
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			gridBagConstraints2.fill = GridBagConstraints.BOTH;
+			gridBagConstraints2.weighty = 1.0;
+			gridBagConstraints2.weightx = 1.0;
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
 			jPanel.setBorder(BorderFactory.createTitledBorder(null,
@@ -122,7 +125,7 @@ public class ServerManagerUI extends JFrame {
 					TitledBorder.DEFAULT_POSITION, new Font("Dialog",
 							Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanel.setPreferredSize(new Dimension(500, 500));
-			jPanel.add(getJScrollPane(), gridBagConstraints1);
+			jPanel.add(getJScrollPane(), gridBagConstraints2);
 		}
 		return jPanel;
 	}
@@ -155,6 +158,7 @@ public class ServerManagerUI extends JFrame {
 	private JList getJList() {
 		if (jList == null) {
 			jList = new JList();
+			jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			jList.setModel(modelAndroid);
 			// jList.setCellRenderer(new ServerListRenderer());
 			this.updateAndroidList();
@@ -170,6 +174,7 @@ public class ServerManagerUI extends JFrame {
 	private JList getJList1() {
 		if (jList1 == null) {
 			jList1 = new JList();
+			jList1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			jList1.setModel(modelUI);
 			jList1.setCellRenderer(new ServerListRenderer());
 			this.updateUIList();
@@ -200,6 +205,8 @@ public class ServerManagerUI extends JFrame {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setText("set main");
+			jButton.setMnemonic(KeyEvent.VK_UNDEFINED);
+			jButton.setPreferredSize(new Dimension(90, 18));
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					Object obj = jList1.getSelectedValue();
