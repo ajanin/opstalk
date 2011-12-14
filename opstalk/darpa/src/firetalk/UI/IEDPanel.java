@@ -72,7 +72,7 @@ public class IEDPanel extends JPanel {
 		model = new DefaultListModel();
 		for (int i = 0; i < UIRepository.IEDList.size(); i++)
 			model.addElement("" + i);
-		this.jList.repaint();
+		this.jList.setModel(model);
 	}
 
 	public void updateListToDB() {
@@ -85,7 +85,7 @@ public class IEDPanel extends JPanel {
 			parent.network.addEvent(new DBEvent(DBEvent.IED, UIRepository
 					.retrieveDB(DBEvent.IED), parent.network.userId));
 		}
-		this.jList.repaint();
+		this.jList.setModel(model);
 	}
 
 	/**
@@ -143,7 +143,6 @@ public class IEDPanel extends JPanel {
 
 				}
 			});
-			jList.setModel(model);
 			updateListFromDB();
 		}
 		return jList;

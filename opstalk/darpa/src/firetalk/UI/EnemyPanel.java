@@ -65,6 +65,7 @@ public class EnemyPanel extends JPanel {
 		model = new DefaultListModel();
 		for (int i = 0; i < UIRepository.enemyList.size(); i++)
 			model.addElement("" + i);
+		this.jList.setModel(model);
 	}
 	public void updateListToDB() {
 		model = new DefaultListModel();
@@ -76,6 +77,7 @@ public class EnemyPanel extends JPanel {
 			parent.network.addEvent(new DBEvent(DBEvent.enemy, UIRepository
 					.retrieveDB(DBEvent.enemy), parent.network.userId));
 		}
+		this.jList.setModel(model);
 	}
 	/**
 	 * This method initializes this
@@ -132,7 +134,6 @@ public class EnemyPanel extends JPanel {
 
 				}
 			});
-			jList.setModel(model);
 			updateListFromDB();
 		}
 		return jList;
