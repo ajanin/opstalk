@@ -77,6 +77,7 @@ public class RallyPanel extends JPanel {
 		model = new DefaultListModel();
 		for (int i = 0; i < UIRepository.rallyList.size(); i++)
 			model.addElement("" + i);
+		this.jList.setModel(model);
 	}
 	public void updateListToDB() { //update list, and write to DB
 		model = new DefaultListModel();
@@ -85,6 +86,7 @@ public class RallyPanel extends JPanel {
 		UIRepository.storeRallyPoints();
 		parent.network.addEvent(new DBEvent(DBEvent.rally, UIRepository
 				.retrieveDB(DBEvent.rally), parent.network.userId));
+		this.jList.setModel(model);
 	}
 
 	/**
@@ -137,7 +139,6 @@ public class RallyPanel extends JPanel {
 
 				}
 			});
-			jList.setModel(model);
 			updateListFromDB();
 		}
 		return jList;
