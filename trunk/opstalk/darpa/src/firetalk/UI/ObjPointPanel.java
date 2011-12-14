@@ -237,10 +237,6 @@ public class ObjPointPanel extends JPanel {
 			deleteSelectButton
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							// int[] inds = jList.getSelectedIndices();
-							// for (int i = 0; i < inds.length; i++) {
-							// Repository.checkPoints.remove(inds[i]);
-							// }
 							TreePath path = jTree.getSelectionPath();
 							String text = path.getLastPathComponent()
 									.toString();
@@ -441,9 +437,6 @@ public class ObjPointPanel extends JPanel {
 	 */
 	private JTree getJTree() {
 		if (jTree == null) {
-
-			// treeModel = new DefaultTreeModel(rootNode);
-			// createNodes(treeModel);
 			top = new DefaultMutableTreeNode("Objectives");
 			treeModel = new DefaultTreeModel(top);
 			jTree = new JTree();
@@ -467,7 +460,7 @@ public class ObjPointPanel extends JPanel {
 	}
 
 	private void createNodes() {
-		top.removeAllChildren();
+		top=new DefaultMutableTreeNode("Objectives");
 		DefaultMutableTreeNode objs = null;
 		DefaultMutableTreeNode waypoints = null;
 		for (ObjPoint obj : UIRepository.objPoints.values()) {
@@ -484,8 +477,6 @@ public class ObjPointPanel extends JPanel {
 			top.add(objs);
 		}
 		treeModel.reload();
-		// this.jTree.setModel(new DefaultTreeModel(top));
-
 	}
 
 	/**
@@ -525,7 +516,7 @@ public class ObjPointPanel extends JPanel {
 	}
 
 	private void createComboModel() {
-		this.comboModel.removeAllElements();
+		this.comboModel=new DefaultComboBoxModel();
 		for (String id : UIRepository.peopleList.keySet()) {
 			if ((UIRepository.objPoints.get(id) == null) == jCheckBox
 					.isSelected())
@@ -536,7 +527,6 @@ public class ObjPointPanel extends JPanel {
 
 	public void updateCombo() {
 		this.createComboModel();
-		this.jComboBox.repaint();
 	}
 
 	private void jTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {
