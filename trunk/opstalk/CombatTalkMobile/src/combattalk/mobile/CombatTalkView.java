@@ -60,6 +60,7 @@ import combattalk.sr.SpeechHandler;
 public class CombatTalkView extends MapActivity {
 	private EventHandleOverlay eventHandleOverlay;
 	private MessageOverlay mesOverlay;
+	private DrawOverLay drawOverlay;
 	// private CheckPointOverlay checkOverlay;
 	// private RallyPointOverlay rallyOverlay;
 	// MyMapView mapView;
@@ -207,8 +208,8 @@ public class CombatTalkView extends MapActivity {
 					.getDrawable(R.drawable.warning_small));
 			if (this.mesOverlay.size() != 0)
 				mapOverlays.add(this.mesOverlay);
-			DrawOverLay overlay = new DrawOverLay(this);
-			mapOverlays.add(overlay);
+			drawOverlay=new DrawOverLay(this);
+			mapOverlays.add(drawOverlay);
 
 			locationHandler = new GeoUpdateHandler(this);
 			myLocationOverlay = new LocationOverlay(this, mapView, this);
@@ -583,7 +584,7 @@ public class CombatTalkView extends MapActivity {
 				p.addLocation(p.new LocationInfo(latitude, longitude, speed,
 						angle));
 			}
-			// mapView.postInvalidate();
+//			 mapView.postInvalidate();
 			// }
 		} catch (Exception e) {
 			this.addToSpeak("exception in " + "updateMyLocation");
