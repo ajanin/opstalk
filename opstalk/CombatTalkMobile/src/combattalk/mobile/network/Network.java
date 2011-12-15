@@ -17,6 +17,7 @@ import android.location.Location;
 import combattalk.mobile.CombatTalkView;
 import combattalk.mobile.Preferences;
 import combattalk.mobile.data.CheckPoint;
+import combattalk.mobile.data.Enemy;
 import combattalk.mobile.data.Event;
 import combattalk.mobile.data.Message;
 import combattalk.mobile.data.People;
@@ -390,6 +391,9 @@ public class Network extends Thread {
 					byte[] content = NetUtil.readBytes(input, contentLen);
 					if (content != null) { // parse content
 						switch (eventType) {
+						case Event.ENEMY:
+							Repository.addEnemy(new Enemy(lat,lon));
+							break;
 						case Event.MESSAGE:
 							Message mes = new Message(userId, new String(
 									content), validTime, lat, lon);
