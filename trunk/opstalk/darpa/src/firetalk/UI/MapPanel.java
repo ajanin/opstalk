@@ -275,6 +275,7 @@ public class MapPanel extends JPanel {
 				g2d.setColor(Color.white);
 				g2d.drawOval(x-pRadius, y-pRadius, pRadius*2, pRadius*2);
 //				g2d.drawImage(friendImg, x - pRadius, y - pRadius, null);
+				g2d.setColor(Color.blue);
 				g2d.drawString(p.getRandName(), x - pRadius, y - pRadius);
 				//
 				// if (p.getLevel().equalsIgnoreCase("1")) {
