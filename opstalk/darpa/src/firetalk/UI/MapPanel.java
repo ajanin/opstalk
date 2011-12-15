@@ -96,6 +96,7 @@ public class MapPanel extends JPanel {
 	private Image wayImg2 = null;
 	public MainWindow parent = null;
 	private int pRadius = 8;
+	private int enemyRadius = 5;
 	private boolean isExecuting = false;
 	private boolean hasExeRequest = false;
 
@@ -139,7 +140,7 @@ public class MapPanel extends JPanel {
 				pRadius * 2, pRadius, Image.SCALE_DEFAULT);
 
 		enemyImg = ImageIO.read(new File("img/enemy.jpg")).getScaledInstance(
-				pRadius * 2, pRadius * 2, Image.SCALE_DEFAULT);
+				enemyRadius * 2, enemyRadius * 2, Image.SCALE_DEFAULT);
 		this.warningImg = ImageIO.read(new File("img/warning.jpg"))
 				.getScaledInstance(pRadius * 2, pRadius * 2,
 						Image.SCALE_DEFAULT);
@@ -249,7 +250,11 @@ public class MapPanel extends JPanel {
 		for (Enemy e : UIRepository.enemyList) {
 			int x = (int) this.longtoX(e.getLongitude());
 			int y = (int) this.lattoY(e.getLatitude());
-			g2d.drawImage(enemyImg, x - pRadius, y - pRadius, null);
+			g2d.setColor(Color.red);
+			g2d.fillOval(x-enemyRadius, y-enemyRadius, enemyRadius*2,enemyRadius*2);
+			g2d.setColor(Color.white);
+			g2d.drawOval(x-enemyRadius, y-enemyRadius, enemyRadius*2, enemyRadius*2);
+//			g2d.drawImage(enemyImg, x - pRadius, y - pRadius, null);
 		}
 		for (Iterator<String> it = UIRepository.peopleList.keySet().iterator(); it
 				.hasNext();) {
@@ -265,7 +270,11 @@ public class MapPanel extends JPanel {
 							pRadius * 4);
 				g2d.setColor(Color.black);
 				g2d.setFont(new Font("times", Font.BOLD, 9));
-				g2d.drawImage(friendImg, x - pRadius, y - pRadius, null);
+				g2d.setColor(Color.blue);
+				g2d.fillOval(x-pRadius, y-pRadius, pRadius*2, pRadius*2);
+				g2d.setColor(Color.white);
+				g2d.drawOval(x-pRadius, y-pRadius, pRadius*2, pRadius*2);
+//				g2d.drawImage(friendImg, x - pRadius, y - pRadius, null);
 				g2d.drawString(p.getRandName(), x - pRadius, y - pRadius);
 				//
 				// if (p.getLevel().equalsIgnoreCase("1")) {
