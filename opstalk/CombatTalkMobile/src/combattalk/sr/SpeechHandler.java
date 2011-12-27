@@ -158,6 +158,7 @@ public class SpeechHandler implements SpeechCommandHandler,
 	public void finalResult(String str) {
 		parent.showMessage(str);
 		parent.resetButton();
+		parent.enableCapture();
 	}
 
 	@Override

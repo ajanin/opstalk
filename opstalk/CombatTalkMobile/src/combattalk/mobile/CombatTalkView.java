@@ -54,6 +54,7 @@ import combattalk.mobile.map.MessageOverlay;
 import combattalk.mobile.map.RallyPointOverlay;
 import combattalk.mobile.network.Network;
 import combattalk.mobile.network.Network.Status;
+import combattalk.speech.SpeechCapture;
 import combattalk.speech.SpeechSynthesis;
 import combattalk.sr.SpeechHandler;
 
@@ -78,7 +79,7 @@ public class CombatTalkView extends MapActivity {
 	private SpeechSynthesis mTts;
 	private LinkedList<String> speakQueue = new LinkedList<String>();
 	public LocationOverlay myLocationOverlay = null;
-	// private SpeechCapture speechCap=null;
+	private SpeechCapture speechCap=null;
 	private boolean isTaskRunning = false;
 	private boolean isSpeaking = false;
 
@@ -128,6 +129,16 @@ public class CombatTalkView extends MapActivity {
 			return this.myLocationOverlay == null ? null
 					: this.myLocationOverlay.getLastFix();
 	}
+	
+	public void enableCapture() {
+		if (speechCap != null) {
+			try {
+				speechCap.start();
+			} catch (Exception e) {
+				addToSpeak("Unable to start speech capture");
+			}
+		}
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -153,7 +164,9 @@ public class CombatTalkView extends MapActivity {
 				@Override
 				public void onClick(View v) {
 					if (speechHandler.canListen()) {
-						// speechCap.stop();
+						if (speechCap != null) {
+							speechCap.stop();
+						}
 						speechButton.setText("Listening...");
 						speechButton.setEnabled(false);
 						speechHandler.start();
@@ -223,9 +236,8 @@ public class CombatTalkView extends MapActivity {
 			if (!connectThread.isAlive())
 				connectThread.start();
 
-			// Disabling speech capture since ASR doesn't seem to be working.
-			// speechCap=new SpeechCapture(this);
-			// speechCap.start();
+			speechCap=new SpeechCapture(this);
+			speechCap.start();
 
 		} catch (Exception e) {
 			this.addToSpeak("exception in " + "onCreate");

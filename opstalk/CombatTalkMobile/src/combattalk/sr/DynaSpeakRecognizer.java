@@ -65,7 +65,10 @@ public class DynaSpeakRecognizer {
     	if (m_capture != null) {
     		m_capture.stopRecording();
        	}
-    	m_recording = false;
+    	// Busy wait until the thread actually stops.
+    	// TODO change from busy wait to some sort of wait on the capture thread.
+    	while (m_recording) {
+    	}
     }
     
     public boolean canListen() {

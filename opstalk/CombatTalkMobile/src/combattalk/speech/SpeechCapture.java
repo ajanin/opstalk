@@ -33,7 +33,8 @@ import android.widget.TextView;
 
 public class SpeechCapture {
 
-	public boolean isRecording = true;
+	public volatile boolean doRecord = true;
+	public volatile boolean isRecording = false;
 	public int actOn = 1; // 1 speech act on, 0 speech act off
 
 	int frequency = 8000;
@@ -61,11 +62,15 @@ public class SpeechCapture {
 	}
 
 	public void stop() {
-		isRecording = false; 
+		doRecord = false; 
 		if (rThread != null) {
 //			rThread.interrupt();
 //			rThread.stop();
 			rThread.stopRecord();
+		}
+		// Busy wait until the thread actually finishes.
+		// TODO Change from busy wait to sleep until thread is done.
+		while (isRecording) {
 		}
 	}
 
@@ -93,7 +98,7 @@ public class SpeechCapture {
 			audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
 					frequency, channelConfiguration, audioEncoding, bufferSize);
 			audioRecord.startRecording();
-			while (isRecording) {
+			while (doRecord) {
 				try {
 					short[] buffer = new short[bufferSize];
 					int bufferReadResult = audioRecord.read(buffer, 0,
@@ -108,10 +113,12 @@ public class SpeechCapture {
 			}
 			audioRecord.stop();
 			audioRecord.release();
+			isRecording = false;
 		}
 	}
 
 	public void start() throws IOException {
+		doRecord = true;
 		isRecording = true;
 		// new streaming().start();
 		(rThread = new RecordThread()).start();
