@@ -2,12 +2,9 @@ package combattalk.mobile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -249,8 +246,8 @@ public class CombatTalkView extends MapActivity {
 			// return debugBool;
 			if (cm == null)
 				return false;
-			NetworkInfo mobileInfo = cm.getNetworkInfo(cm.TYPE_MOBILE);
-			NetworkInfo wifiInfo = cm.getNetworkInfo(cm.TYPE_WIFI);
+			NetworkInfo mobileInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+			NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			if ((mobileInfo != null) && mobileInfo.isConnectedOrConnecting()
 					|| wifiInfo != null && wifiInfo.isConnectedOrConnecting())
 				return true && debugBool;
