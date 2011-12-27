@@ -2,12 +2,9 @@ package combattalk.mobile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,13 +42,11 @@ import combattalk.mobile.data.Event;
 import combattalk.mobile.data.Message;
 import combattalk.mobile.data.People;
 import combattalk.mobile.data.Repository;
-import combattalk.mobile.map.CheckPointOverlay;
 import combattalk.mobile.map.DrawOverLay;
 import combattalk.mobile.map.EventHandleOverlay;
 import combattalk.mobile.map.GeoUpdateHandler;
 import combattalk.mobile.map.LocationOverlay;
 import combattalk.mobile.map.MessageOverlay;
-import combattalk.mobile.map.RallyPointOverlay;
 import combattalk.mobile.network.Network;
 import combattalk.mobile.network.Network.Status;
 import combattalk.speech.SpeechCapture;
