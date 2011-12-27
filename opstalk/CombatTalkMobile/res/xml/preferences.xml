@@ -36,5 +36,8 @@
 	<PreferenceCategory android:title="Speech Recognition">
 	   <ListPreference android:title="Model Directory"
 	        android:key="asrModelDirectory" />
+	    <CheckBoxPreference android:title="Enable Remote Recording"
+	     android:defaultValue="false" android:summary="Enable sending audio from the phone to a remote server"
+	     android:key="enableRemoteRecordingPref" />
 	</PreferenceCategory>
 </PreferenceScreen>

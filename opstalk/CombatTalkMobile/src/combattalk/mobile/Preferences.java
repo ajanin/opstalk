@@ -28,6 +28,7 @@ public class Preferences extends PreferenceActivity {
 	public static String defaultID = null;
 	public static boolean saveBattery = true;
 	public static int reachDist=20;  // distance that stands for reaching (in meter)
+	public static boolean enableRemoteRecording = false;
 
 	// NOTE: getPrefs() is called when the app starts up. onCreate() isn't called until the settings button is pressed.
 	// The two had better be consistent.
@@ -51,6 +52,7 @@ public class Preferences extends PreferenceActivity {
 		Preferences.serverIP = prefs.getString("ipPref", "169.234.133.205");
 		Preferences.saveBattery = prefs.getBoolean("batteryPref", true);
 		Preferences.asrModelDirectory = prefs.getString("asrModelDirectory", "English-16K-040701-02-g48");
+		Preferences.enableRemoteRecording = prefs.getBoolean("enableRemoteRecordingPref", false);
 	}
 
 	// @Override

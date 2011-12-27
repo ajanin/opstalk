@@ -230,9 +230,12 @@ public class CombatTalkView extends MapActivity {
 			connectThread = new ConnectThread();
 			if (!connectThread.isAlive())
 				connectThread.start();
-
-			speechCap=new SpeechCapture(this);
-			speechCap.start();
+			if (Preferences.enableRemoteRecording == true) {
+				speechCap=new SpeechCapture(this);
+				speechCap.start();
+			} else {
+				speechCap = null;
+			}
 
 		} catch (Exception e) {
 			this.addToSpeak("exception in " + "onCreate");
@@ -455,6 +458,19 @@ public class CombatTalkView extends MapActivity {
 
 				if (!this.account.equals(Preferences.userId)) {
 					this.setTitle("Use ID changed, please restart the application");
+				}
+				
+				// If you're currently recording, and preference is to not record,
+				// stop recording.
+				if (speechCap != null && Preferences.enableRemoteRecording == false) {
+					speechCap.stop();
+					speechCap = null;
+					
+				// If you're not recording, and preference is to record, create a new
+				// speechCap and start it up.
+				} else if (speechCap == null && Preferences.enableRemoteRecording == true) {
+					speechCap=new SpeechCapture(this);
+					speechCap.start();					
 				}
 			}
 		} catch (Exception e) {
