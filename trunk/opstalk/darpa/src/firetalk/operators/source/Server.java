@@ -19,6 +19,7 @@ import firetalk.UI.MainWindow;
 import firetalk.db.Repository;
 import firetalk.model.Event;
 import firetalk.model.People;
+import firetalk.util.Parameter;
 
 public class Server extends Thread {
 	final int maxConnection = 100;
@@ -43,7 +44,7 @@ public class Server extends Thread {
 	@Override
 	public void run() {
 		try {
-			InetAddress addr = InetAddress.getByName("169.234.133.205");
+			InetAddress addr = InetAddress.getByName(Parameter.serverIP);
 			// ServerSocketChannel ssChannel1 = ServerSocketChannel.open();
 			// ssChannel1.socket().bind(new InetSocketAddress(addr, 8989));
 

@@ -143,7 +143,7 @@ public class UIClient extends Thread {
 		blinkerThread = connectThread;
 		String ip = Parameter.serverIP;
 
-		int port = 9001;
+		int port = 9002;
 		try {
 
 			s = new Socket(ip, port);
