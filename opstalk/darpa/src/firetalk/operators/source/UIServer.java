@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import firetalk.UI.MainWindow;
 import firetalk.db.Repository;
 import firetalk.model.Event;
+import firetalk.util.Parameter;
 
 public class UIServer extends Thread {
 	final int maxConnection = 100;
@@ -23,13 +24,13 @@ public class UIServer extends Thread {
 	@Override
 	public void run() {
 		try {
-			InetAddress addr = InetAddress.getByName("169.234.133.205");
+			InetAddress addr = InetAddress.getByName(Parameter.serverIP);
 
 			ExecutorService service = Executors
 					.newFixedThreadPool(maxConnection);
 			int id = 0;
 			// service.execute(contextManager);
-			ServerSocket ss = new ServerSocket(9001);
+			ServerSocket ss = new ServerSocket(9002);
 			while (true) {
 				Socket s = ss.accept();
 				UIStreamHandle handle = new UIStreamHandle(this, s);

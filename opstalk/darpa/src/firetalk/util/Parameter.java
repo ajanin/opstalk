@@ -8,6 +8,6 @@ public class Parameter {
 	public static final String enemyFileName="enemys.txt";
 	public static final String serverDBFolder="db/";
 	public static final String uiDBFolder="dbUI/";
-	public static final String serverIP="169.234.133.205";
+	public static final String serverIP="128.195.53.158";
 	
 }
