@@ -1,1 +1,2 @@
 #lat lon userId mes
+33.641467$-117.834209$04$leave a message$1330625382288
